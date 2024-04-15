@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 const locales = [
-  Locale('en', 'US'), // English
-  Locale('rw', 'RW'), // Kinyarwanda
+  // Locale('en', 'US'), // English
+  // Locale('rw', 'RW'), // Kinyarwanda
   // Locale('es', 'ES'), // Spanish
   // Locale('fr', 'FR'), // French
   // Locale('ru', 'RU'), // Russian

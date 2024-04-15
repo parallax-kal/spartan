@@ -13,33 +13,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:  Text(AppLocalizations.of(context)!.helloWorld),
+        title: Text('Spartan'),
       ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            SizedBox(height: 8),
-            Text(
-              '0',
-              style: TextStyle(fontSize: 24),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TRY THIS: Uncomment the line below to increment the counter
-          // setState(() {
-          //   _counter++;
-          // });
-        },
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+      body: Container(),
     );
   }
 }

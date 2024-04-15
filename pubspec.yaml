@@ -1,5 +1,5 @@
-name: Spartan
-description: "A new Flutter project."
+name: spartan
+description: "The companion app for Spartan ensures seamless connectivity, allowing parents to monitor and control the baby bed effortlessly. It provides real-time updates on the baby's sleep status, personalized settings for optimal comfort, and educational resources for parents, fostering confidence and security in their baby's sleep routine."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
@@ -21,6 +21,8 @@ dependencies:
   flutter_native_splash: ^2.4.0
   flutter_launcher_icons: ^0.13.1
   awesome_bottom_bar: ^1.2.4
+  firebase_core: ^2.29.0
+  google_sign_in: ^6.2.1
 
 dev_dependencies:
   flutter_test:

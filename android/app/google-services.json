@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "756938937223",
+    "project_id": "spartan-3b328",
+    "storage_bucket": "spartan-3b328.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:756938937223:android:7c8aca2790f92bc674f922",
+        "android_client_info": {
+          "package_name": "com.example.spartan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDC6zbl4WpKBGYkh51JGHzO59zZyXITT28"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
