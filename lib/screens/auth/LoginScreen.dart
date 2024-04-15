@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spartan/constants/global.dart';
 import 'package:spartan/services/auth.dart';
 import 'package:spartan/services/toast.dart';
 
@@ -143,8 +144,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       try {
                         UserCredential usercredential =
                             await authService.signInWithGoogle();
-
-                        if (usercredential.additionalUserInfo!.isNewUser) {
+                        final user = await firestore.collection('users').doc(usercredential.user!.uid).get();
+                        final user_data = user.data();
+                        if (!user.exists && user_data?['country'] == null) {
                           context.go('/location');
                         } else {
                           context.go('/');

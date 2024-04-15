@@ -74,7 +74,7 @@ final GoRouter _router = GoRouter(
           ),
         ),
          GoRoute(
-          path: 'locationi',
+          path: 'location',
           pageBuilder: (context, state) => CustomTransitionPage(
             key: state.pageKey,
             child: const LocationScreen(),
