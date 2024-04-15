@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 enum POSITION { top, bottom }
 
 class ToastService {
-  static void showToast(BuildContext context, ContentType contentType,
-      POSITION position, String title, String message,
+  final BuildContext context;
+
+  ToastService(this.context);
+
+  void showToast(
+      ContentType contentType, POSITION position, String title, String message,
       {Duration duration = const Duration(seconds: 3)}) {
     final snackBar = SnackBar(
       /// need to set following properties for best effect of awesome_snackbar_content
@@ -14,7 +18,7 @@ class ToastService {
       backgroundColor: Colors.transparent,
       margin: EdgeInsets.only(
         bottom: position == POSITION.top
-            ? MediaQuery.of(context).size.height - 150
+            ? MediaQuery.of(context).size.height - 175
             : 0,
         right: 20,
         left: 20,
@@ -31,21 +35,19 @@ class ToastService {
       ..showSnackBar(snackBar);
   }
 
-  static void showSuccessToast(BuildContext context, String message) {
+  void showSuccessToast(String message) {
     showToast(
-      context,
       ContentType.success,
-      POSITION.bottom,
+      POSITION.top,
       '🎉 Congulaturations!',
       message,
     );
   }
 
-  static void showErrorToast(BuildContext context, String message) {
+  void showErrorToast(String message) {
     showToast(
-      context,
       ContentType.failure,
-      POSITION.bottom,
+      POSITION.top,
       '😢 Oops!',
       message,
     );

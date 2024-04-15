@@ -1,22 +1,29 @@
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:spartan/constants/global.dart';
 
 class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   // Sign in with Google
   Future<UserCredential> signInWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
-      final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount!.authentication;
+      final GoogleSignInAccount? googleSignInAccount =
+          await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount!.authentication;
 
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleSignInAuthentication.accessToken,
         idToken: googleSignInAuthentication.idToken,
       );
 
-      return await _auth.signInWithCredential(credential);
+      UserCredential userCredential =
+          await auth.signInWithCredential(credential);
+      if (userCredential.user == null) {
+        throw Exception('Failed to sign in with Google');
+      }
+      return userCredential;
     } catch (e) {
       throw Exception('Failed to sign in with Google: $e');
     }
@@ -24,7 +31,7 @@ class AuthService {
 
   // Sign out
   Future<void> signOut() async {
-    await _auth.signOut();
+    await auth.signOut();
     await _googleSignIn.signOut();
   }
 }

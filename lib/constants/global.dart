@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 const locales = [
   // Locale('en', 'US'), // English
@@ -13,4 +15,8 @@ const locales = [
   // Locale('ja', 'JP'), // Japanese
 ];
 
-const public_routes = ['/login', '/register'];
+const public_routes = ['/login', '/register', '/location'];
+
+FirebaseAuth auth = FirebaseAuth.instance;
+FirebaseFirestore firestore = FirebaseFirestore.instance;
+FirebaseApp app = Firebase.app();

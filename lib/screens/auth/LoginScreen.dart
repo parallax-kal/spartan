@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spartan/services/auth.dart';
+import 'package:spartan/services/toast.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -15,6 +18,9 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final currentYear = DateTime.now().year;
+    AuthService authService = AuthService();
+    ToastService toastService = ToastService(context);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -133,7 +139,27 @@ class _LoginScreenState extends State<LoginScreen> {
               Column(
                 children: [
                   OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      try {
+                        UserCredential usercredential =
+                            await authService.signInWithGoogle();
+
+                        if (usercredential.additionalUserInfo!.isNewUser) {
+                          context.go('/location');
+                        } else {
+                          context.go('/');
+                        }
+
+                        toastService.showSuccessToast(
+                          'You have successfully signed in with Google.',
+                        );
+                        return;
+                      } catch (e) {
+                        toastService.showErrorToast(
+                          'Failed to sign in with Google. Try again',
+                        );
+                      }
+                    },
                     style: OutlinedButton.styleFrom(
                       side:
                           const BorderSide(color: Color(0xFFDFDFDF), width: 2),

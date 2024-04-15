@@ -17,8 +17,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Container(
         child: GestureDetector(
-          onTap: () {
-           context.go('/login');
+          onTap: () async {
+            context.go('/login');
           },
           child: Center(
             child: Text('Go to Login'),

@@ -1,4 +1,3 @@
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -21,6 +20,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     final currentYear = DateTime.now().year;
     AuthService authService = AuthService();
+    ToastService toastService = ToastService(context);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -176,17 +176,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   OutlinedButton(
                     onPressed: () async {
                       try {
-                        UserCredential usercredential =
+                        UserCredential userCredential =
                             await authService.signInWithGoogle();
-                        if (usercredential.user != null) {
+                        if (userCredential.additionalUserInfo!.isNewUser) {
+                          context.go('/location');
+                        } else {
                           context.go('/');
-                          ToastService.showSuccessToast(context,
-                              'You have successfully signed in with Google.');
-                          return;
                         }
+                        toastService.showSuccessToast(
+                            'You have successfully signed in with Google.');
+                        return;
                       } catch (e) {
-                        ToastService.showErrorToast(
-                          context,
+                        print(e);
+                        toastService.showErrorToast(
                           'Failed to sign in with Google. Try again',
                         );
                       }
