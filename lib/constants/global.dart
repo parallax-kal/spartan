@@ -12,3 +12,5 @@ const locales = [
   // Locale('ko', 'KR'), // Korean
   // Locale('ja', 'JP'), // Japanese
 ];
+
+const public_routes = ['/login', '/register'];

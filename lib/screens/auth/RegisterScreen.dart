@@ -1,20 +1,27 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spartan/services/auth.dart';
+import 'package:spartan/services/toast.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
     final currentYear = DateTime.now().year;
+    AuthService authService = AuthService();
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -29,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    'Welcome back',
+                    'Create a New Account',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 24,
@@ -37,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const Text(
-                    'Sign in with email',
+                    'Using an email',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 12,
@@ -54,6 +61,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         horizontal: 18,
                       ),
                       hintText: 'Enter your email',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        borderSide: BorderSide(color: Color(0xFFDDDDDD)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    keyboardType: TextInputType.phone,
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 18,
+                      ),
+                      hintText: 'Phone number',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(6)),
                         borderSide: BorderSide(color: Color(0xFFDDDDDD)),
@@ -93,22 +116,40 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(
-                    height: 5,
+                    height: 20,
                   ),
-                  const SizedBox(
-                    width: double.infinity,
-                    child: Text(
-                      'Forgot Password ?',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13,
-                        color: Colors.black,
+                  TextFormField(
+                    obscureText: !_isConfirmPasswordVisible,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 18,
                       ),
-                      textAlign: TextAlign.right,
+                      hintText: 'Confirm Password',
+                      border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        borderSide: BorderSide(color: Color(0xFFDDDDDD)),
+                      ),
+                      focusedBorder: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        borderSide: BorderSide(color: Color(0xFF0C3D6B)),
+                      ),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _isConfirmPasswordVisible =
+                                !_isConfirmPasswordVisible;
+                          });
+                        },
+                        icon: Icon(
+                          _isConfirmPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 50,
                   ),
                   ElevatedButton(
                     onPressed: () {},
@@ -117,10 +158,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      minimumSize: const Size(double.infinity, 36),
+                      minimumSize: const Size(double.infinity, 40),
                     ),
                     child: const Text(
-                      'Sign In',
+                      'Create Account',
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 14.5,
@@ -133,7 +174,23 @@ class _LoginScreenState extends State<LoginScreen> {
               Column(
                 children: [
                   OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      try {
+                        UserCredential usercredential =
+                            await authService.signInWithGoogle();
+                        if (usercredential.user != null) {
+                          context.go('/');
+                          ToastService.showSuccessToast(context,
+                              'You have successfully signed in with Google.');
+                          return;
+                        }
+                      } catch (e) {
+                        ToastService.showErrorToast(
+                          context,
+                          'Failed to sign in with Google. Try again',
+                        );
+                      }
+                    },
                     style: OutlinedButton.styleFrom(
                       side:
                           const BorderSide(color: Color(0xFFDFDFDF), width: 2),
@@ -198,7 +255,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
-                        'New here ?',
+                        'Already have an account ?',
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 13,
@@ -210,17 +267,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          context.go('/register');
+                          context.go('/login');
                         },
                         child: const Text(
-                          'Create a new one',
+                          'Sign in',
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 13,
                             color: Color(0xFF0C3D6B),
                           ),
                         ),
-                      ),
+                      )
                     ],
                   ),
                   const SizedBox(
