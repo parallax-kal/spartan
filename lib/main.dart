@@ -1,16 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:spartan/constants/global.dart';
+import 'package:spartan/models/User.dart';
 import 'package:spartan/screens/auth/LoginScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:spartan/screens/auth/RegisterScreen.dart';
-import 'package:spartan/screens/auth/TermsAndConditions.dart';
+import 'package:spartan/screens/auth/Terms.dart';
 import 'firebase_options.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spartan/screens/HomeScreen.dart';
 import 'package:spartan/screens/auth/LocationScreen.dart';
 import 'package:spartan/constants/firebase.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +24,14 @@ void main() async {
     persistenceEnabled: true,
     cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
   );
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => UserModel()),
+      ],
+      child: const MyApp(),
+    ),
+  );
   FlutterNativeSplash.remove();
 }
 
@@ -93,10 +102,10 @@ final GoRouter _router = GoRouter(
           ),
         ),
         GoRoute(
-          path: 'terms-and-conditions',
+          path: 'terms',
           pageBuilder: (context, state) => CustomTransitionPage(
             key: state.pageKey,
-            child: const TermsAndConditions(),
+            child: const Terms(),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
               return SlideTransition(

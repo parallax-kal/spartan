@@ -1,10 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/constants/global.dart';
 import 'package:go_router/go_router.dart';
-import 'package:spartan/services/loading.dart';
-import 'package:spartan/services/toast.dart';
+import 'package:spartan/models/User.dart';
 
 class LocationScreen extends StatefulWidget {
   const LocationScreen({Key? key}) : super(key: key);
@@ -37,12 +36,13 @@ class _LocationScreenState extends State<LocationScreen> {
 
   String search = '';
 
-  String? selected_country;
+  String? selectedCountry;
 
   @override
   Widget build(BuildContext context) {
-    ToastService toastService = ToastService(context);
-    LoadingService loadingService = LoadingService(context);
+
+    UserModel usermodel = Provider.of<UserModel>(context, listen: false);
+
     return Scaffold(
       backgroundColor: const Color(0xFF908E8E),
       body: SafeArea(
@@ -152,16 +152,16 @@ class _LocationScreenState extends State<LocationScreen> {
                                   return ListTile(
                                     onTap: () {
                                       setState(() {
-                                        selected_country = filteredValue[index];
+                                        selectedCountry = filteredValue[index];
                                       });
                                     },
                                     title: Text(filteredValue[index]),
                                     leading: Radio(
                                       value: filteredValue[index],
-                                      groupValue: selected_country,
+                                      groupValue: selectedCountry,
                                       onChanged: (value) {
                                         setState(() {
-                                          selected_country = value.toString();
+                                          selectedCountry = value.toString();
                                         });
                                       },
                                     ),
@@ -186,34 +186,23 @@ class _LocationScreenState extends State<LocationScreen> {
                     ),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: selected_country == null
+                        backgroundColor: selectedCountry == null
                             ? const Color(0XFF93CACA)
                             : const Color(0xFF0C3D6B),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(6),
                         ),
                       ),
-                      onPressed: () async {
-                        try {
-                          if (selected_country == null) {
-                            return;
-                          }
-                          if (auth.currentUser == null) {
-                            context.go('/login');
-                            return;
-                          }
-                          loadingService.show();
-                          await firestore
-                              .collection('users')
-                              .doc(auth.currentUser!.uid)
-                              .set({'country': selected_country},
-                                  SetOptions(merge: true));
-                          loadingService.hide();
-                          toastService.showSuccessToast('Location saved');
-                          context.go('/terms-and-conditions');
-                        } catch (e) {
-                          toastService.showErrorToast('Error saving location');
+                      onPressed: () {
+                        if (selectedCountry == null) {
+                          return;
                         }
+                        if (auth.currentUser == null) {
+                          context.go('/login');
+                          return;
+                        }
+                        usermodel.setCountry(selectedCountry!);
+                        context.go('/terms');
                       },
                       child: const Text(
                         'Save',

@@ -195,11 +195,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             'You have successfully signed in with Google.');
                         return;
                       } catch (e) {
-                        print(e);
                         toastService.showErrorToast(
                           'Failed to sign in with Google. Try again',
                         );
-                      }
+                      } 
                     },
                     style: OutlinedButton.styleFrom(
                       side:

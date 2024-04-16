@@ -3,21 +3,29 @@ import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
 
 class LoadingService {
   final BuildContext context;
+  late SimpleFontelicoProgressDialog pd;
 
-  LoadingService(this.context);
+  LoadingService(this.context) {
+    pd = SimpleFontelicoProgressDialog(
+      context: context,
+      barrierDimisable: false,
+    );
+  }
 
-  void show() {
-    SimpleFontelicoProgressDialog pd = SimpleFontelicoProgressDialog(
-        context: context, barrierDimisable: false);
+  void show({
+    SimpleFontelicoProgressDialogType type =
+        SimpleFontelicoProgressDialogType.phoenix,
+    String message = 'Loading...',
+  }) {
     pd.show(
-      message: 'Please wait',
-      hideText: true,
+      type: type,
+      message: message,
+      hideText: false,
+      indicatorColor: const Color(0XFF0C3D6B),
     );
   }
 
   void hide() {
-    SimpleFontelicoProgressDialog pd = SimpleFontelicoProgressDialog(
-        context: context, barrierDimisable: false);
     pd.hide();
   }
 }

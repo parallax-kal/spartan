@@ -161,7 +161,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         } else {
                           context.go('/');
                         }
-                        loadingService.hide();
                         toastService.showSuccessToast(
                           'You have successfully signed in with Google.',
                         );
@@ -170,6 +169,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         toastService.showErrorToast(
                           'Failed to sign in with Google. Try again',
                         );
+                      } finally {
+                        loadingService.hide();
                       }
                     },
                     style: OutlinedButton.styleFrom(
