@@ -65,6 +65,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         borderRadius: BorderRadius.all(Radius.circular(6)),
                         borderSide: BorderSide(color: Color(0xFFDDDDDD)),
                       ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        borderSide: BorderSide(color: Color(0xFF0C3D6B)),
+                      ),
                     ),
                   ),
                   const SizedBox(
@@ -80,6 +84,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(6)),
                         borderSide: BorderSide(color: Color(0xFFDDDDDD)),
+                      ),
+                       focusedBorder:  OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        borderSide: BorderSide(color: Color(0xFF0C3D6B)),
                       ),
                     ),
                   ),

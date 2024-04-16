@@ -2,8 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:spartan/constants/global.dart';
+import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/services/auth.dart';
+import 'package:spartan/services/loading.dart';
 import 'package:spartan/services/toast.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -21,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final currentYear = DateTime.now().year;
     AuthService authService = AuthService();
     ToastService toastService = ToastService(context);
+    LoadingService loadingService = LoadingService(context);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -64,6 +66,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(6)),
                         borderSide: BorderSide(color: Color(0xFFDDDDDD)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        borderSide: BorderSide(color: Color(0xFF0C3D6B)),
                       ),
                     ),
                   ),
@@ -144,14 +150,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       try {
                         UserCredential usercredential =
                             await authService.signInWithGoogle();
-                        final user = await firestore.collection('users').doc(usercredential.user!.uid).get();
+                        loadingService.show();
+                        final user = await firestore
+                            .collection('users')
+                            .doc(usercredential.user!.uid)
+                            .get();
                         final user_data = user.data();
                         if (!user.exists && user_data?['country'] == null) {
                           context.go('/location');
                         } else {
                           context.go('/');
                         }
-
+                        loadingService.hide();
                         toastService.showSuccessToast(
                           'You have successfully signed in with Google.',
                         );

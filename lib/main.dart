@@ -4,11 +4,13 @@ import 'package:spartan/constants/global.dart';
 import 'package:spartan/screens/auth/LoginScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:spartan/screens/auth/RegisterScreen.dart';
+import 'package:spartan/screens/auth/TermsAndConditions.dart';
 import 'firebase_options.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spartan/screens/HomeScreen.dart';
 import 'package:spartan/screens/auth/LocationScreen.dart';
+import 'package:spartan/constants/firebase.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -73,11 +75,28 @@ final GoRouter _router = GoRouter(
             },
           ),
         ),
-         GoRoute(
+        GoRoute(
           path: 'location',
           pageBuilder: (context, state) => CustomTransitionPage(
             key: state.pageKey,
             child: const LocationScreen(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(0, 1),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
+              );
+            },
+          ),
+        ),
+        GoRoute(
+          path: 'terms-and-conditions',
+          pageBuilder: (context, state) => CustomTransitionPage(
+            key: state.pageKey,
+            child: const TermsAndConditions(),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
               return SlideTransition(
