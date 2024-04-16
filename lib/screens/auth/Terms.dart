@@ -38,7 +38,7 @@ class _TermsState extends State<Terms> {
           SetOptions(merge: true),
         );
         toastService
-            .showSuccessToast('Successfully accepted terms of service.');
+            .showSuccessToast('Successfully saved your decition and country.');
         context.go('/');
       } catch (error) {
         toastService.showErrorToast('Failed to accept terms of service.');
