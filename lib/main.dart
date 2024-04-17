@@ -9,7 +9,7 @@ import 'package:spartan/screens/auth/Terms.dart';
 import 'firebase_options.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:go_router/go_router.dart';
-import 'package:spartan/screens/HomeScreen.dart';
+import 'package:spartan/screens/dashboard/HomeScreen.dart';
 import 'package:spartan/screens/auth/LocationScreen.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:provider/provider.dart';
