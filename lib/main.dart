@@ -9,6 +9,7 @@ import 'package:spartan/screens/dashboard/ChatScreen.dart';
 import 'package:spartan/screens/dashboard/HomeScreen.dart';
 import 'package:spartan/screens/dashboard/ProfileScreen.dart';
 import 'package:spartan/screens/dashboard/StreamScreen.dart';
+import 'package:spartan/screens/dashboard/home/QrcodeScreen.dart';
 import 'firebase_options.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:go_router/go_router.dart';
@@ -75,6 +76,26 @@ final GoRouter _router = GoRouter(
                 return SlideTransition(
                   position: Tween<Offset>(
                     begin: const Offset(1, 0),
+                    end: Offset.zero,
+                  ).animate(animation),
+                  child: child,
+                );
+              },
+            );
+          },
+        ),
+        GoRoute(
+          path: '/home/qr',
+          parentNavigatorKey: _shellNavigatorKey,
+          pageBuilder: (context, state) {
+            return CustomTransitionPage(
+              key: state.pageKey,
+              child:  QRcodeScreen(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0, 1),
                     end: Offset.zero,
                   ).animate(animation),
                   child: child,

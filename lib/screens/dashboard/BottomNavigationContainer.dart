@@ -69,6 +69,8 @@ List<MyCustomBottomNavBarItem> tabs = [
   ),
 ];
 
+List<String> noAppbarScreens = ['/home/qr'];
+
 class BottomNavigationContainer extends StatefulWidget {
   final String location;
   const BottomNavigationContainer(
@@ -76,8 +78,8 @@ class BottomNavigationContainer extends StatefulWidget {
 
   final Widget child;
   static void changeTab(BuildContext context, String location) {
-    int index = tabs
-        .indexWhere((element) => element.initialLocation.location == location);
+    int index = tabs.indexWhere(
+        (element) => element.initialLocation.paths.contains(location));
     if (index == -1) return;
     GoRouter router = GoRouter.of(context);
     _BottomNavigationContainerState? state =
@@ -107,29 +109,31 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
     Location location = tabs[index].initialLocation;
 
     changeIndex(index);
-    router.go(location.location);
+    router.go(location.paths[0]);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        leading: Image.asset('assets/images/logo.png'),
-        leadingWidth: 160,
-        actions: [
-          Badge(
-            child: SvgPicture.asset('assets/icons/notifications.svg'),
-          ),
-          const SizedBox(
-            width: 15,
-          ),
-          const Icon(Icons.add),
-          const SizedBox(
-            width: 30,
-          )
-        ],
-      ),
+      appBar: !noAppbarScreens.contains(widget.location)
+          ? AppBar(
+              backgroundColor: Colors.white,
+              leading: Image.asset('assets/images/logo.png'),
+              leadingWidth: 160,
+              actions: [
+                Badge(
+                  child: SvgPicture.asset('assets/icons/notifications.svg'),
+                ),
+                const SizedBox(
+                  width: 15,
+                ),
+                const Icon(Icons.add),
+                const SizedBox(
+                  width: 30,
+                )
+              ],
+            )
+          : null,
       body: SafeArea(
         child: widget.child,
       ),
@@ -138,7 +142,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
         index: _currentIndex,
         items: tabs.map((tab) {
           return CurvedNavigationBarItem(
-            child: tab.initialLocation.location == widget.location
+            child: tab.initialLocation.paths.contains(widget.location)
                 ? tab.activeChild
                 : tab.child,
             label: tab.label,
@@ -159,13 +163,14 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
 }
 
 enum Location {
-  home('/'),
-  chat('/chat'),
-  stream('/stream'),
-  profile('/profile');
+  home(['/', '/home/qr']),
+  chat(['/chat']),
+  stream(['/stream']),
+  profile(['/profile']);
 
-  final String location;
-  const Location(this.location);
+  final List<String> paths;
+
+  const Location(this.paths);
 }
 
 class MyCustomBottomNavBarItem extends CurvedNavigationBarItem {
