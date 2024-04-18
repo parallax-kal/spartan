@@ -28,7 +28,6 @@ dependencies:
   provider: ^6.1.2
   curved_labeled_navigation_bar: ^2.0.2
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

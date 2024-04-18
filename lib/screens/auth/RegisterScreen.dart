@@ -187,7 +187,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         UserCredential userCredential =
                             await authService.signInWithGoogle();
                         if (userCredential.additionalUserInfo!.isNewUser) {
-                          context.go('/location');
+                          context.push('/location');
                         } else {
                           context.go('/');
                         }
@@ -276,7 +276,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          context.go('/login');
+                          context.push('/login');
                         },
                         child: const Text(
                           'Sign in',

@@ -157,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             .get();
                         final user_data = user.data();
                         if (!user.exists && user_data?['country'] == null) {
-                          context.go('/location');
+                          context.push('/location');
                         } else {
                           context.go('/');
                         }
@@ -249,7 +249,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          context.go('/register');
+                          context.push('/register');
                         },
                         child: const Text(
                           'Create a new one',

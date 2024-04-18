@@ -9,29 +9,29 @@ class _QRcodeScreenState extends State<QRcodeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('QR Code'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Scan QR Code',
-              style: TextStyle(fontSize: 20),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => const ScanScreen()),
-                // ); 
-              },
-              child: const Text('Scan'),
-            ),
-          ],
+      backgroundColor: const Color(0XFF083B69),
+      body: BottomSheet(
+        enableDrag: false,
+        onClosing: () {},
+        showDragHandle: true,
+        dragHandleColor: const Color(0xFFD9D9D9),
+        dragHandleSize: const Size(50, 4),
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(34),
+            topRight: Radius.circular(34),
+          ),
         ),
+        clipBehavior: Clip.antiAlias,
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.8,
+        ),
+        builder: (BuildContext context) {
+          return Container(
+            color: Colors.white,
+          );
+        },
       ),
     );
   }

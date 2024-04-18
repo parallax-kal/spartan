@@ -202,7 +202,7 @@ class _LocationScreenState extends State<LocationScreen> {
                           return;
                         }
                         usermodel.setCountry(selectedCountry!);
-                        context.go('/terms');
+                        context.push('/terms');
                       },
                       child: const Text(
                         'Save',

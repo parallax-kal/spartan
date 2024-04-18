@@ -18,19 +18,33 @@ class DeviceAddingOption {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<List<DeviceAddingOption>> device_adding_options = [
+  List<List<DeviceAddingOption>> deviceAddingOptions = [
     [
       DeviceAddingOption(
-          label: 'Manual', icon: SvgPicture.asset('assets/icons/manual.svg')),
+        label: 'Manual',
+        icon: SvgPicture.asset(
+          'assets/icons/manual.svg',
+        ),
+      ),
       DeviceAddingOption(
-          label: 'QR Code', icon: SvgPicture.asset('assets/icons/qr_code.svg')),
+        label: 'QR Code',
+        icon: SvgPicture.asset(
+          'assets/icons/qr_code.svg',
+        ),
+      ),
     ],
     [
       DeviceAddingOption(
-          label: 'Wi-Fi', icon: SvgPicture.asset('assets/icons/wifi.svg')),
+          label: 'Wi-Fi',
+          icon: SvgPicture.asset(
+            'assets/icons/wifi.svg',
+          )),
       DeviceAddingOption(
-          label: 'Bluetooth',
-          icon: SvgPicture.asset('assets/icons/bluetooth.svg')),
+        label: 'Bluetooth',
+        icon: SvgPicture.asset(
+          'assets/icons/bluetooth.svg',
+        ),
+      ),
     ]
   ];
 
@@ -115,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: 10,
                             ),
                             Column(
-                              children: device_adding_options
+                              children: deviceAddingOptions
                                   .map(
                                     (e) => Column(
                                       children: [
@@ -125,16 +139,26 @@ class _HomeScreenState extends State<HomeScreen> {
                                           children: e
                                               .map((option) => InkWell(
                                                     onTap: () async {
-                                                      if (option.label == 'Manual') {
-                                                        GoRouter.of(context).pushNamed('/home/manual');
-                                                      } else if (option.label == 'QR Code') {
-                                                        GoRouter.of(context).pushNamed('/home/qr');
-                                                      } else if (option.label == 'Wi-Fi') {
-                                                        GoRouter.of(context).pushNamed('/home/wifi');
-                                                      } else if (option.label == 'Bluetooth') {
-                                                        GoRouter.of(context).pushNamed('/home/bluetooth');
+                                                      if (option.label ==
+                                                          'Manual') {
+                                                        GoRouter.of(context)
+                                                            .push(
+                                                                '/home/manual');
+                                                      } else if (option.label ==
+                                                          'QR Code') {
+                                                        GoRouter.of(context)
+                                                            .push('/home/qr');
+                                                      } else if (option.label ==
+                                                          'Wi-Fi') {
+                                                        GoRouter.of(context)
+                                                            .push('/home/wifi');
+                                                      } else if (option.label ==
+                                                          'Bluetooth') {
+                                                        GoRouter.of(context).push(
+                                                            '/home/bluetooth');
                                                       }
-                                                      Navigator.of(context).pop();
+                                                      Navigator.of(context)
+                                                          .pop();
                                                     },
                                                     child: Container(
                                                       padding:
@@ -144,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                           MediaQuery.of(context)
                                                                   .size
                                                                   .width *
-                                                              0.3,
+                                                              0.26,
                                                       decoration: BoxDecoration(
                                                         color: Colors.white,
                                                         borderRadius:
@@ -155,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             color: const Color(
                                                                     0xFF000000)
                                                                 .withOpacity(
-                                                                    0.4),
+                                                                    0.1),
                                                             offset:
                                                                 const Offset(
                                                                     0, 4),
@@ -172,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                           Container(
                                                             padding:
                                                                 const EdgeInsets
-                                                                    .all(3),
+                                                                    .all(10),
                                                             decoration:
                                                                 BoxDecoration(
                                                               color: const Color(
@@ -185,15 +209,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             child: option.icon,
                                                           ),
                                                           const SizedBox(
-                                                            height: 5,
+                                                            height: 8,
                                                           ),
                                                           Text(
                                                             option.label,
                                                             style:
                                                                 const TextStyle(
                                                               color: Color(
-                                                                  0xFF002E58),
-                                                              fontSize: 10,
+                                                                  0XFF06345F),
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
                                                             ),
                                                           ),
                                                         ],
@@ -204,7 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                         const SizedBox(
                                             height:
-                                                10), // Add a SizedBox with height 10 between rows
+                                                12), // Add a SizedBox with height 10 between rows
                                       ],
                                     ),
                                   )

@@ -59,7 +59,7 @@ final GoRouter _router = GoRouter(
       pageBuilder: (context, state, child) {
         return NoTransitionPage(
           child: BottomNavigationContainer(
-            location: state.matchedLocation,
+            location: state.fullPath ?? '/',
             child: child,
           ),
         );
@@ -91,7 +91,7 @@ final GoRouter _router = GoRouter(
           pageBuilder: (context, state) {
             return CustomTransitionPage(
               key: state.pageKey,
-              child:  QRcodeScreen(),
+              child: QRcodeScreen(),
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
                 return SlideTransition(
@@ -149,7 +149,7 @@ final GoRouter _router = GoRouter(
           path: '/profile',
           parentNavigatorKey: _shellNavigatorKey,
           pageBuilder: (context, state) {
-            return  CustomTransitionPage(
+            return CustomTransitionPage(
               key: state.pageKey,
               child: const ProfileScreen(),
               transitionsBuilder:
@@ -254,6 +254,9 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
+        bottomSheetTheme: const BottomSheetThemeData(
+          surfaceTintColor: Colors.white,
+        ),
       ),
       routerConfig: _router,
     );

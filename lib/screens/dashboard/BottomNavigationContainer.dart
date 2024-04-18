@@ -109,7 +109,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
     Location location = tabs[index].initialLocation;
 
     changeIndex(index);
-    router.go(location.paths[0]);
+    router.push(location.paths[0]);
   }
 
   @override
