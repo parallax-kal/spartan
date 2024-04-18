@@ -1,6 +1,6 @@
 name: spartan
 description: "The companion app for Spartan ensures seamless connectivity, allowing parents to monitor and control the baby bed effortlessly. It provides real-time updates on the baby's sleep status, personalized settings for optimal comfort, and educational resources for parents, fostering confidence and security in their baby's sleep routine."
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: 'none'
 
 version: 1.0.0+1
 
@@ -15,7 +15,6 @@ dependencies:
   flutter_svg: ^2.0.10+1
   flutter_localizations:
     sdk: flutter
-  intl: any
   flutter_native_splash: ^2.4.0
   flutter_launcher_icons: ^0.13.1
   firebase_core: ^2.29.0
@@ -27,6 +26,16 @@ dependencies:
   simple_fontellico_progress_dialog: ^0.3.0
   provider: ^6.1.2
   curved_labeled_navigation_bar: ^2.0.2
+  flutter_chat_types: ^3.6.2
+  http: '>=0.13.6 <2.0.0'
+  image_picker: ^1.0.0
+  intl: ^0.18.1
+  mime: ^1.0.4
+  open_filex: ^4.3.2
+  path_provider: ^2.0.15
+  uuid: ^3.0.7
+  flutter_chat_ui: ^1.6.12
+  file_picker: ^8.0.1
 
 dev_dependencies:
   flutter_test:
@@ -44,3 +53,6 @@ flutter:
     - assets/fonts/
     - assets/icons/
     - assets/icons/home/
+    - packages/flutter_chat_ui/assets/icon-send.png
+    - packages/flutter_chat_ui/assets/icon-attachment.png
+    - packages/flutter_chat_ui/assets/3.0x/icon-attachment.png

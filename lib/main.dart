@@ -19,6 +19,8 @@ import 'package:spartan/screens/auth/LocationScreen.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:provider/provider.dart';
 import 'package:spartan/constants/global.dart';
+import 'package:spartan/screens/dashboard/chat/ChallAllScreen.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -30,14 +32,14 @@ void main() async {
     persistenceEnabled: true,
     cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
   );
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => UserModel()),
-      ],
-      child: const MyApp(),
-    ),
-  );
+  initializeDateFormatting().then((_) => runApp(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (context) => UserModel()),
+          ],
+          child: const MyApp(),
+        ),
+      ));
   FlutterNativeSplash.remove();
 }
 
@@ -127,7 +129,27 @@ final GoRouter _router = GoRouter(
           },
         ),
         GoRoute(
+          path: '/chat/all',
+          parentNavigatorKey: _shellNavigatorKey,
+          pageBuilder: (context, state) {
+            return NoTransitionPage(
+              key: state.pageKey,
+              child: const ChatAllScreen(),
+            );
+          },
+        ),
+        GoRoute(
           path: '/stream',
+          parentNavigatorKey: _shellNavigatorKey,
+          pageBuilder: (context, state) {
+            return NoTransitionPage(
+              key: state.pageKey,
+              child: const StreamScreen(),
+            );
+          },
+        ),
+        GoRoute(
+          path: '/stream/:id',
           parentNavigatorKey: _shellNavigatorKey,
           pageBuilder: (context, state) {
             return NoTransitionPage(

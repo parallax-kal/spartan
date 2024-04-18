@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -36,7 +37,9 @@ class _ChatScreenState extends State<ChatScreen> {
               height: 50,
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                context.go('/chat/all');
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF002E58),
                 shape: RoundedRectangleBorder(
