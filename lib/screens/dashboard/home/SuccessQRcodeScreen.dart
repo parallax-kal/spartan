@@ -20,18 +20,28 @@ class _SuccessQRcodeScreenState extends State<SuccessQRcodeScreen> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.only(top: 30, left: 10, right: 10),
+        padding: EdgeInsets.only(top: 30, left: 20, right: 20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SvgPicture.asset('assets/svg/success.svg'),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
+            const Text(
+              'Success',
+              style: TextStyle(
+                color: Color(0XFF002E58),
+                fontWeight: FontWeight.w600,
+                fontSize: 18,
+              ),
+            ),
+            const SizedBox(height: 10),
             const Text(
               'You have successfully added a new device. You can\nnow personalize your device by tapping on continue\nor skip for later changes.',
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 14,
                 fontWeight: FontWeight.w500,
                 color: Colors.black,
+                height: 1.4
               ),
             ),
             const SizedBox(height: 20),
@@ -41,6 +51,9 @@ class _SuccessQRcodeScreenState extends State<SuccessQRcodeScreen> {
                 OutlinedButton(
                   onPressed: () {},
                   style: OutlinedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
                     side: const BorderSide(
                       color: Color(0XFF002E58),
                     ),
