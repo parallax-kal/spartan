@@ -147,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       } else if (option.label ==
                                                           'QR Code') {
                                                         GoRouter.of(context)
-                                                            .push('/home/qr');
+                                                            .push('/home/qrcode');
                                                       } else if (option.label ==
                                                           'Wi-Fi') {
                                                         GoRouter.of(context)

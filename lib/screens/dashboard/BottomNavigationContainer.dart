@@ -69,7 +69,7 @@ List<MyCustomBottomNavBarItem> tabs = [
   ),
 ];
 
-List<String> noAppbarScreens = ['/home/qr'];
+List<String> noAppbarScreens = ['/home/qr', '/home/qrcode-success'];
 
 class BottomNavigationContainer extends StatefulWidget {
   final String location;
