@@ -70,19 +70,9 @@ final GoRouter _router = GoRouter(
           path: '/',
           parentNavigatorKey: _shellNavigatorKey,
           pageBuilder: (context, state) {
-            return CustomTransitionPage(
+            return NoTransitionPage(
               key: state.pageKey,
               child: const HomeScreen(),
-              transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) {
-                return SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(1, 0),
-                    end: Offset.zero,
-                  ).animate(animation),
-                  child: child,
-                );
-              },
             );
           },
         ),
@@ -130,19 +120,9 @@ final GoRouter _router = GoRouter(
           path: '/chat',
           parentNavigatorKey: _shellNavigatorKey,
           pageBuilder: (context, state) {
-            return CustomTransitionPage(
+            return NoTransitionPage(
               key: state.pageKey,
               child: const ChatScreen(),
-              transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) {
-                return SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(1, 0),
-                    end: Offset.zero,
-                  ).animate(animation),
-                  child: child,
-                );
-              },
             );
           },
         ),
@@ -150,19 +130,9 @@ final GoRouter _router = GoRouter(
           path: '/stream',
           parentNavigatorKey: _shellNavigatorKey,
           pageBuilder: (context, state) {
-            return CustomTransitionPage(
+            return NoTransitionPage(
               key: state.pageKey,
               child: const StreamScreen(),
-              transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) {
-                return SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(1, 0),
-                    end: Offset.zero,
-                  ).animate(animation),
-                  child: child,
-                );
-              },
             );
           },
         ),
@@ -170,19 +140,9 @@ final GoRouter _router = GoRouter(
           path: '/profile',
           parentNavigatorKey: _shellNavigatorKey,
           pageBuilder: (context, state) {
-            return CustomTransitionPage(
+            return NoTransitionPage(
               key: state.pageKey,
               child: const ProfileScreen(),
-              transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) {
-                return SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(1, 0),
-                    end: Offset.zero,
-                  ).animate(animation),
-                  child: child,
-                );
-              },
             );
           },
         ),
