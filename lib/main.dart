@@ -17,6 +17,7 @@ import 'package:spartan/screens/dashboard/BottomNavigationContainer.dart';
 import 'package:spartan/screens/auth/LocationScreen.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:provider/provider.dart';
+import 'package:spartan/constants/global.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -45,13 +46,13 @@ final _shellNavigatorKey = GlobalKey<NavigatorState>();
 final GoRouter _router = GoRouter(
   initialLocation: '/',
   navigatorKey: _rootNavigatorKey,
-  // redirect: (context, state) {
-  //   final userAutheticated = auth.currentUser != null;
-  //   if (!userAutheticated && !public_routes.contains(state.fullPath)) {
-  //     return '/login';
-  //   }
-  //   return null;
-  // },
+  redirect: (context, state) {
+    final userAutheticated = auth.currentUser != null;
+    if (!userAutheticated && !public_routes.contains(state.fullPath)) {
+      return '/login';
+    }
+    return null;
+  },
   routes: <RouteBase>[
     ShellRoute(
       navigatorKey: _shellNavigatorKey,

@@ -126,13 +126,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                               .map((option) => InkWell(
                                                     onTap: () async {
                                                       if (option.label == 'Manual') {
-                                                        GoRouter.of(context).go('/home/manual');
+                                                        GoRouter.of(context).pushNamed('/home/manual');
                                                       } else if (option.label == 'QR Code') {
-                                                        GoRouter.of(context).go('/home/qr');
+                                                        GoRouter.of(context).pushNamed('/home/qr');
                                                       } else if (option.label == 'Wi-Fi') {
-                                                        GoRouter.of(context).go('/home/wifi');
+                                                        GoRouter.of(context).pushNamed('/home/wifi');
                                                       } else if (option.label == 'Bluetooth') {
-                                                        GoRouter.of(context).go('/home/bluetooth');
+                                                        GoRouter.of(context).pushNamed('/home/bluetooth');
                                                       }
                                                       Navigator.of(context).pop();
                                                     },

@@ -85,7 +85,7 @@ class BottomNavigationContainer extends StatefulWidget {
     _BottomNavigationContainerState? state =
         context.findAncestorStateOfType<_BottomNavigationContainerState>();
     state?.changeIndex(index);
-    router.go(location);
+    router.pushNamed(location);
   }
 
   @override

@@ -501,14 +501,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.2"
-  qr_code_scanner:
-    dependency: "direct main"
-    description:
-      name: qr_code_scanner
-      sha256: "24250bf4874679b60abf7cb4b92cd62dbdc08a3081773bed234b4fbc31baa81c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.0"
   simple_fontellico_progress_dialog:
     dependency: "direct main"
     description:
