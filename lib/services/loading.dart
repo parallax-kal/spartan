@@ -15,7 +15,7 @@ class LoadingService {
   void show({
     SimpleFontelicoProgressDialogType type =
         SimpleFontelicoProgressDialogType.phoenix,
-    String message = '😊 Please wait ...',
+    String message = 'Loading ...',
   }) {
     pd.show(
       type: type,

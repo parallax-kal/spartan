@@ -29,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         child: Padding(
           padding:
-              const EdgeInsets.only(top: 40, left: 25, right: 25, bottom: 5),
+              const EdgeInsets.only(top: 50, left: 25, right: 25, bottom: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -54,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 25,
                   ),
                   TextFormField(
                     keyboardType: TextInputType.emailAddress,
@@ -121,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   ElevatedButton(
                     onPressed: () {},
@@ -130,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      minimumSize: const Size(double.infinity, 36),
+                      minimumSize: const Size(double.infinity, 40),
                     ),
                     child: const Text(
                       'Sign In',
@@ -228,7 +228,32 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ],
                     ),
-                    onPressed: () {},
+                    onPressed: () async {
+                      try {
+                        UserCredential userCredential =
+                            await authService.signInWithFacebook();
+                        loadingService.show();
+                        final user = await firestore
+                            .collection('users')
+                            .doc(userCredential.user!.uid)
+                            .get();
+                        final user_data = user.data();
+                        if (!user.exists && user_data?['country'] == null) {
+                          context.push('/location');
+                        } else {
+                          context.go('/');
+                        }
+                        toastService.showSuccessToast(
+                          'You have successfully signed in with Facebook.',
+                        );
+                      } catch (error) {
+                        toastService.showErrorToast(
+                          'Failed to sign in with Facebook. Try again',
+                        );
+                      } finally {
+                        loadingService.hide();
+                      }
+                    },
                   ),
                   const SizedBox(
                     height: 10,

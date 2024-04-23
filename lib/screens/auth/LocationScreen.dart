@@ -45,28 +45,10 @@ class _LocationScreenState extends State<LocationScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFF908E8E),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 18.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              const Text(
-                'Select a region',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 17,
-                ),
-              ),
-              Image.asset('assets/images/map.png')
-            ],
-          ),
-        ),
-      ),
+      body: Container(),
       bottomNavigationBar: DraggableScrollableSheet(
         minChildSize: .80,
-        maxChildSize: 1,
+        maxChildSize: .80,
         initialChildSize: .80,
         expand: false,
         builder: (context, scrollController) {

@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDC6zbl4WpKBGYkh51JGHzO59zZyXITT28',
-    appId: '1:756938937223:android:7c8aca2790f92bc674f922',
+    appId: '1:756938937223:android:bee210966e3d1d8e74f922',
     messagingSenderId: '756938937223',
     projectId: 'spartan-3b328',
     storageBucket: 'spartan-3b328.appspot.com',
@@ -59,10 +59,13 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBAEFJQEMDS7SuP_v8HaGPdfNM2L4RXRyk',
-    appId: '1:756938937223:ios:1aaab8ad28b8d0be74f922',
+    appId: '1:756938937223:ios:2548cdc97569abed74f922',
     messagingSenderId: '756938937223',
     projectId: 'spartan-3b328',
     storageBucket: 'spartan-3b328.appspot.com',
-    iosBundleId: 'com.example.spartan',
+    androidClientId: '756938937223-i8t4rbveoq65d17am1qeps7lm3cctal7.apps.googleusercontent.com',
+    iosClientId: '756938937223-6qnuq3kogmff6hk92173tlddqrjm8nsq.apps.googleusercontent.com',
+    iosBundleId: 'com.spartan.app',
   );
+
 }

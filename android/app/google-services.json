@@ -7,12 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:756938937223:android:7c8aca2790f92bc674f922",
+        "mobilesdk_app_id": "1:756938937223:android:bee210966e3d1d8e74f922",
         "android_client_info": {
-          "package_name": "com.example.spartan"
+          "package_name": "com.spartan.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "756938937223-cjcqopurfk3vju59et4vebd5kr4de506.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDC6zbl4WpKBGYkh51JGHzO59zZyXITT28"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "756938937223-cjcqopurfk3vju59et4vebd5kr4de506.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "756938937223-6qnuq3kogmff6hk92173tlddqrjm8nsq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.spartan.app"
+              }
+            }
+          ]
         }
       }
     }
