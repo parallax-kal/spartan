@@ -174,9 +174,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               return;
                             }
                             loadingService.hide();
-                            await toastService.showSuccessToast(
-                                'Successfully signed in with email and password');
-                            // context.go('/');
+                            toastService.showSuccessToast(
+                              'Successfully signed in with email and password',
+                            );
+                            context.go('/');
                           } catch (error) {
                             String errorMessage =
                                 displayErrorMessage(error as Exception);

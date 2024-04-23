@@ -55,13 +55,13 @@ List<MyCustomBottomNavBarItem> tabs = [
   MyCustomBottomNavBarItem(
     initialLocation: Location.profile,
     child: SvgPicture.asset(
-      'assets/icons/profile.svg',
+      'assets/icons/profile/profile_outlined.svg',
       theme: const SvgTheme(
         currentColor: Color(0XFF002E58),
       ),
     ),
     activeChild: SvgPicture.asset(
-      'assets/icons/chat.svg',
+      'assets/icons/profile/profile_filled.svg',
       theme: const SvgTheme(
         currentColor: Colors.white,
       ),
@@ -70,7 +70,7 @@ List<MyCustomBottomNavBarItem> tabs = [
   ),
 ];
 
-List<String> noAppbarScreens = ['/home/qr', '/home/qrcode-success'];
+List<String> noAppbarScreens = ['/home/qr', '/home/qrcode-success', '/profile'];
 
 class BottomNavigationContainer extends StatefulWidget {
   final String location;

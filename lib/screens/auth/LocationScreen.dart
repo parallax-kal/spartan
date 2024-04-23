@@ -79,105 +79,100 @@ class _LocationScreenState extends State<LocationScreen> {
             ),
             child: Stack(
               children: [
-                Positioned(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(top: 30, left: 20, right: 20),
-                        child: TextFormField(
-                          onChanged: (value) {
-                            setState(() {
-                              search = value;
-                            });
-                          },
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 18,
-                            ),
-                            hintText: 'Search',
-                            prefixIcon: Icon(Icons.search),
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(6)),
-                              borderSide: BorderSide(color: Color(0xFFDDDDDD)),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(6)),
-                              borderSide: BorderSide(color: Color(0xFF0C3D6B)),
-                            ),
+                Column(
+                  children: [
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(top: 30, left: 20, right: 20),
+                      child: TextFormField(
+                        onChanged: (value) {
+                          setState(() {
+                            search = value;
+                          });
+                        },
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 18,
+                          ),
+                          hintText: 'Search',
+                          prefixIcon: Icon(Icons.search),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                            borderSide: BorderSide(color: Color(0xFFDDDDDD)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                            borderSide: BorderSide(color: Color(0xFF0C3D6B)),
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: ListView.builder(
-                          controller: scrollController,
-                          itemCount: sortCountries(countries).length,
-                          itemBuilder: (context, index) {
-                            String key =
-                                sortCountries(countries)[index].keys.first;
-                            List<String> value =
-                                sortCountries(countries)[index][key]!;
-                            List<String> filteredValue = value
-                                .where((country) => country
-                                    .toLowerCase()
-                                    .contains(search.toLowerCase()))
-                                .toList();
-                            if (filteredValue.isEmpty) {
-                              return const SizedBox();
-                            }
-                            return Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 16.0,
-                                      top: 8.0,
-                                      right: 8.0,
-                                      bottom: 8.0),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      key,
-                                      style: const TextStyle(
-                                        color: Color(0XFF908E8E),
-                                        fontSize: 15,
-                                      ),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        controller: scrollController,
+                        itemCount: sortCountries(countries).length,
+                        itemBuilder: (context, index) {
+                          String key =
+                              sortCountries(countries)[index].keys.first;
+                          List<String> value =
+                              sortCountries(countries)[index][key]!;
+                          List<String> filteredValue = value
+                              .where((country) => country
+                                  .toLowerCase()
+                                  .contains(search.toLowerCase()))
+                              .toList();
+                          if (filteredValue.isEmpty) {
+                            return const SizedBox();
+                          }
+                          return Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 16.0,
+                                    top: 8.0,
+                                    right: 8.0,
+                                    bottom: 8.0),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    key,
+                                    style: const TextStyle(
+                                      color: Color(0XFF908E8E),
+                                      fontSize: 15,
                                     ),
                                   ),
                                 ),
-                                ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: filteredValue.length,
-                                  itemBuilder: (context, index) {
-                                    return ListTile(
-                                      onTap: () {
+                              ),
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: filteredValue.length,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    onTap: () {
+                                      setState(() {
+                                        selectedCountry = filteredValue[index];
+                                      });
+                                    },
+                                    title: Text(filteredValue[index]),
+                                    leading: Radio(
+                                      value: filteredValue[index],
+                                      groupValue: selectedCountry,
+                                      onChanged: (value) {
                                         setState(() {
-                                          selectedCountry =
-                                              filteredValue[index];
+                                          selectedCountry = value.toString();
                                         });
                                       },
-                                      title: Text(filteredValue[index]),
-                                      leading: Radio(
-                                        value: filteredValue[index],
-                                        groupValue: selectedCountry,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            selectedCountry = value.toString();
-                                          });
-                                        },
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          );
+                        },
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 Positioned(
                   bottom: 0,
