@@ -8,48 +8,38 @@ class AuthService {
   final FacebookAuth facebookauth = FacebookAuth.instance;
 
   // Sign in with Google
-  Future<UserCredential> signInWithGoogle() async {
+  Future<AuthCredential> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleSignInAccount =
           await _googleSignIn.signIn();
       final GoogleSignInAuthentication googleSignInAuthentication =
           await googleSignInAccount!.authentication;
-
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleSignInAuthentication.accessToken,
         idToken: googleSignInAuthentication.idToken,
       );
-
-      UserCredential userCredential =
-          await auth.signInWithCredential(credential);
-      if (userCredential.user == null) {
-        throw Exception('Failed to sign in with Google');
-      }
-      return userCredential;
+      return credential;
     } catch (e) {
       throw Exception('Failed to sign in with Google: $e');
     }
   }
 
   // Sign in with Facebook
-  Future<UserCredential> signInWithFacebook() async {
+  Future<OAuthCredential> signInWithFacebook() async {
     final LoginResult loginResult = await facebookauth.login();
-
     if (loginResult.status != LoginStatus.success) {
       throw Exception('Failed to sign in with Facebook');
     }
-
     final OAuthCredential facebookAuthCredential =
         FacebookAuthProvider.credential(loginResult.accessToken!.token);
-
-    return auth.signInWithCredential(facebookAuthCredential);
+    return facebookAuthCredential;
   }
 
   // Sign in with Email and Password
   Future<UserCredential> signInWithEmailAndPassword(
       String email, String password) async {
-    UserCredential userCredential = await auth.signInWithEmailAndPassword(
-        email: email, password: password);
+    UserCredential userCredential =
+        await auth.signInWithEmailAndPassword(email: email, password: password);
     if (userCredential.user == null) {
       throw Exception('Failed to sign in with Email and Password');
     }

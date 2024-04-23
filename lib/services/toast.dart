@@ -8,20 +8,19 @@ class ToastService {
 
   ToastService(this.context);
 
-  void showToast(
+  Future<void> showToast(
       ContentType contentType, POSITION position, String title, String message,
-      {Duration duration = const Duration(seconds: 3)}) {
+      {Duration duration = const Duration(seconds: 3)}) async {
     final snackBar = SnackBar(
       /// need to set following properties for best effect of awesome_snackbar_content
       elevation: 0,
       behavior: SnackBarBehavior.floating,
       backgroundColor: Colors.transparent,
       margin: EdgeInsets.only(
-        bottom: position == POSITION.top
-            ? MediaQuery.of(context).size.height - 175
-            : 0,
-        right: 20,
-        left: 20,
+        // bottom: 0,
+        // top: 0,
+        // right: 20,
+        // left: 20,
       ),
       duration: duration,
       content: AwesomeSnackbarContent(
@@ -33,10 +32,12 @@ class ToastService {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(snackBar);
+    // wait for duration
+    await Future.delayed(duration);
   }
 
-  void showSuccessToast(String message) {
-    showToast(
+  Future<void> showSuccessToast(String message) {
+    return showToast(
       ContentType.success,
       POSITION.top,
       '🎉 Congulaturations!',
@@ -44,8 +45,8 @@ class ToastService {
     );
   }
 
-  void showErrorToast(String message) {
-    showToast(
+  Future<void> showErrorToast(String message) {
+    return showToast(
       ContentType.failure,
       POSITION.top,
       '😢 Oops!',

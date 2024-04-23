@@ -29,7 +29,7 @@ class _StreamScreenState extends State<StreamScreen>
             padding: const EdgeInsets.only(top: 20),
             width: double.infinity,
             child: Center(
-              child: GestureDetector(
+              child: InkWell(
                 onTap: () {
                   context.push('/stream/C1CC574231748');
                 },

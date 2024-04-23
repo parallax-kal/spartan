@@ -17,6 +17,10 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool _isPasswordVisible = false;
 
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final currentYear = DateTime.now().year;
@@ -34,141 +38,192 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Welcome back',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                      color: Color(0xFF1E1E1E),
-                    ),
-                  ),
-                  const Text(
-                    'Sign in with email',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                      color: Color(0xFF7A7A7A),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 25,
-                  ),
-                  TextFormField(
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 18,
-                      ),
-                      hintText: 'Enter your email',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(6)),
-                        borderSide: BorderSide(color: Color(0xFFDDDDDD)),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(6)),
-                        borderSide: BorderSide(color: Color(0xFF0C3D6B)),
+              Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Welcome back',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                        color: Color(0xFF1E1E1E),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  TextFormField(
-                    obscureText: !_isPasswordVisible,
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 18,
+                    const Text(
+                      'Sign in with email',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12,
+                        color: Color(0xFF7A7A7A),
                       ),
-                      hintText: 'Password',
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(6)),
-                        borderSide: BorderSide(color: Color(0xFFDDDDDD)),
+                    ),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    TextFormField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 18,
+                        ),
+                        hintText: 'Enter your email',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                          borderSide: BorderSide(color: Color(0xFFDDDDDD)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                          borderSide: BorderSide(color: Color(0xFF0C3D6B)),
+                        ),
                       ),
-                      focusedBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(6)),
-                        borderSide: BorderSide(color: Color(0xFF0C3D6B)),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your email';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    TextFormField(
+                      controller: _passwordController,
+                      obscureText: !_isPasswordVisible,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 18,
+                        ),
+                        hintText: 'Password',
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                          borderSide: BorderSide(color: Color(0xFFDDDDDD)),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                          borderSide: BorderSide(color: Color(0xFF0C3D6B)),
+                        ),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _isPasswordVisible = !_isPasswordVisible;
+                            });
+                          },
+                          icon: Icon(
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                        ),
                       ),
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _isPasswordVisible = !_isPasswordVisible;
-                          });
-                        },
-                        icon: Icon(
-                          _isPasswordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        RegExp regex = RegExp(
+                            r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&_])[A-Za-z\d$@$!%*?&_]{8,}$');
+                        if (!regex.hasMatch(value)) {
+                          return 'Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    const SizedBox(
+                      width: double.infinity,
+                      child: Text(
+                        'Forgot Password ?',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                          color: Colors.black,
+                        ),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          String email = _emailController.text;
+                          String password = _passwordController.text;
+
+                          try {
+                            loadingService.show();
+                            UserCredential userCredential = await authService
+                                .signInWithEmailAndPassword(email, password);
+                            if (!userCredential.user!.emailVerified) {
+                              await userCredential.user!.sendEmailVerification(
+                                ActionCodeSettings(
+                                  url: 'https://spartan.ai',
+                                  handleCodeInApp: true,
+                                  iOSBundleId: 'com.spartan.app',
+                                  androidPackageName: 'com.spartan.app',
+                                  androidInstallApp: true,
+                                  androidMinimumVersion: '16',
+                                  dynamicLinkDomain: 'spartancorp.page.link',
+                                ),
+                              );
+
+                              return;
+                            }
+                            loadingService.hide();
+                            await toastService.showSuccessToast(
+                                'Successfully signed in with email and password');
+                            // context.go('/');
+                          } catch (error) {
+                            String errorMessage =
+                                displayErrorMessage(error as Exception);
+                            toastService.showErrorToast(errorMessage);
+                            loadingService.hide();
+                          }
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF0C3D6B),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        minimumSize: const Size(double.infinity, 40),
+                      ),
+                      child: const Text(
+                        'Sign In',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14.5,
+                          color: Colors.white,
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  const SizedBox(
-                    width: double.infinity,
-                    child: Text(
-                      'Forgot Password ?',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13,
-                        color: Colors.black,
-                      ),
-                      textAlign: TextAlign.right,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF0C3D6B),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      minimumSize: const Size(double.infinity, 40),
-                    ),
-                    child: const Text(
-                      'Sign In',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14.5,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               Column(
                 children: [
                   OutlinedButton(
                     onPressed: () async {
                       try {
-                        UserCredential usercredential =
+                        AuthCredential authCredential =
                             await authService.signInWithGoogle();
                         loadingService.show();
-                        final user = await firestore
-                            .collection('users')
-                            .doc(usercredential.user!.uid)
-                            .get();
-                        final user_data = user.data();
-                        if (!user.exists && user_data?['country'] == null) {
-                          context.push('/location');
-                        } else {
-                          context.go('/');
-                        }
+
+                        await auth.signInWithCredential(authCredential);
+
                         toastService.showSuccessToast(
                           'You have successfully signed in with Google.',
                         );
+                        context.go('/');
                         return;
-                      } catch (e) {
-                        toastService.showErrorToast(
-                          'Failed to sign in with Google. Try again',
-                        );
+                      } catch (error) {
+                        String errorMessage =
+                            displayErrorMessage(error as Exception);
+                        toastService.showErrorToast(errorMessage);
                       } finally {
                         loadingService.hide();
                       }
@@ -230,26 +285,20 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     onPressed: () async {
                       try {
-                        UserCredential userCredential =
+                        OAuthCredential oAuthCredential =
                             await authService.signInWithFacebook();
                         loadingService.show();
-                        final user = await firestore
-                            .collection('users')
-                            .doc(userCredential.user!.uid)
-                            .get();
-                        final user_data = user.data();
-                        if (!user.exists && user_data?['country'] == null) {
-                          context.push('/location');
-                        } else {
-                          context.go('/');
-                        }
+
+                        auth.signInWithCredential(oAuthCredential);
+
                         toastService.showSuccessToast(
                           'You have successfully signed in with Facebook.',
                         );
+                        context.go('/');
                       } catch (error) {
-                        toastService.showErrorToast(
-                          'Failed to sign in with Facebook. Try again',
-                        );
+                        String errorMessage =
+                            displayErrorMessage(error as Exception);
+                        toastService.showErrorToast(errorMessage);
                       } finally {
                         loadingService.hide();
                       }

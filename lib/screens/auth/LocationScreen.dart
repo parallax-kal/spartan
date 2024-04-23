@@ -40,12 +40,29 @@ class _LocationScreenState extends State<LocationScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     UserModel usermodel = Provider.of<UserModel>(context, listen: false);
 
     return Scaffold(
       backgroundColor: const Color(0xFF908E8E),
-      body: Container(),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 18.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              const Text(
+                'Select a region',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 17,
+                ),
+              ),
+              Image.asset('assets/images/map.png')
+            ],
+          ),
+        ),
+      ),
       bottomNavigationBar: DraggableScrollableSheet(
         minChildSize: .80,
         maxChildSize: .80,
@@ -62,100 +79,105 @@ class _LocationScreenState extends State<LocationScreen> {
             ),
             child: Stack(
               children: [
-                Column(
-                  children: [
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(top: 30, left: 20, right: 20),
-                      child: TextFormField(
-                        onChanged: (value) {
-                          setState(() {
-                            search = value;
-                          });
-                        },
-                        decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 18,
-                          ),
-                          hintText: 'Search',
-                          prefixIcon: Icon(Icons.search),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(6)),
-                            borderSide: BorderSide(color: Color(0xFFDDDDDD)),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(6)),
-                            borderSide: BorderSide(color: Color(0xFF0C3D6B)),
+                Positioned(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(top: 30, left: 20, right: 20),
+                        child: TextFormField(
+                          onChanged: (value) {
+                            setState(() {
+                              search = value;
+                            });
+                          },
+                          decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 18,
+                            ),
+                            hintText: 'Search',
+                            prefixIcon: Icon(Icons.search),
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(6)),
+                              borderSide: BorderSide(color: Color(0xFFDDDDDD)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(6)),
+                              borderSide: BorderSide(color: Color(0xFF0C3D6B)),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        controller: scrollController,
-                        itemCount: sortCountries(countries).length,
-                        itemBuilder: (context, index) {
-                          String key =
-                              sortCountries(countries)[index].keys.first;
-                          List<String> value =
-                              sortCountries(countries)[index][key]!;
-                          List<String> filteredValue = value
-                              .where((country) => country
-                                  .toLowerCase()
-                                  .contains(search.toLowerCase()))
-                              .toList();
-                          if (filteredValue.isEmpty) {
-                            return const SizedBox();
-                          }
-                          return Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 16.0,
-                                    top: 8.0,
-                                    right: 8.0,
-                                    bottom: 8.0),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    key,
-                                    style: const TextStyle(
-                                      color: Color(0XFF908E8E),
-                                      fontSize: 15,
+                      Expanded(
+                        child: ListView.builder(
+                          controller: scrollController,
+                          itemCount: sortCountries(countries).length,
+                          itemBuilder: (context, index) {
+                            String key =
+                                sortCountries(countries)[index].keys.first;
+                            List<String> value =
+                                sortCountries(countries)[index][key]!;
+                            List<String> filteredValue = value
+                                .where((country) => country
+                                    .toLowerCase()
+                                    .contains(search.toLowerCase()))
+                                .toList();
+                            if (filteredValue.isEmpty) {
+                              return const SizedBox();
+                            }
+                            return Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 16.0,
+                                      top: 8.0,
+                                      right: 8.0,
+                                      bottom: 8.0),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      key,
+                                      style: const TextStyle(
+                                        color: Color(0XFF908E8E),
+                                        fontSize: 15,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: filteredValue.length,
-                                itemBuilder: (context, index) {
-                                  return ListTile(
-                                    onTap: () {
-                                      setState(() {
-                                        selectedCountry = filteredValue[index];
-                                      });
-                                    },
-                                    title: Text(filteredValue[index]),
-                                    leading: Radio(
-                                      value: filteredValue[index],
-                                      groupValue: selectedCountry,
-                                      onChanged: (value) {
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: filteredValue.length,
+                                  itemBuilder: (context, index) {
+                                    return ListTile(
+                                      onTap: () {
                                         setState(() {
-                                          selectedCountry = value.toString();
+                                          selectedCountry =
+                                              filteredValue[index];
                                         });
                                       },
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          );
-                        },
+                                      title: Text(filteredValue[index]),
+                                      leading: Radio(
+                                        value: filteredValue[index],
+                                        groupValue: selectedCountry,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selectedCountry = value.toString();
+                                          });
+                                        },
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 Positioned(
                   bottom: 0,

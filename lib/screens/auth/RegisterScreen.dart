@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:spartan/services/auth.dart';
 import 'package:spartan/services/loading.dart';
 import 'package:spartan/services/toast.dart';
+import 'package:spartan/constants/firebase.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -34,8 +35,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
-          padding:
-              const EdgeInsets.only(top: 40, left: 25, right: 25, bottom: 5),
+          padding: const EdgeInsets.only(
+            top: 40,
+            left: 25,
+            right: 25,
+            bottom: 10,
+          ),
           child: Form(
             key: _formKey,
             child: Column(
@@ -124,6 +129,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         if (value!.isEmpty) {
                           return 'Please enter your password';
                         }
+                        RegExp regex = RegExp(
+                            r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&_])[A-Za-z\d$@$!%*?&_]{8,}$');
+                        if (!regex.hasMatch(value)) {
+                          return 'Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character';
+                        }
                         return null;
                       },
                     ),
@@ -180,15 +190,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           String password = _passwordController.text;
                           try {
                             loadingService.show();
-                            await authService.signUpWithEmailAndPassword(
-                                email, password);
+                            UserCredential userCredential = await authService
+                                .signUpWithEmailAndPassword(email, password);
+
+                            await userCredential.user!.sendEmailVerification(
+                              ActionCodeSettings(
+                                url: 'https://spartan.ai',
+                                handleCodeInApp: true,
+                                iOSBundleId: 'com.spartan.app',
+                                androidPackageName: 'com.spartan.app',
+                                androidInstallApp: true,
+                                androidMinimumVersion: '16',
+                                dynamicLinkDomain: 'spartancorp.page.link',
+                              ),
+                            );
+                            await authService.signOut();
+                            _emailController.clear();
+                            _passwordController.clear();
+                            _confirmPasswordController.clear();
                             toastService.showSuccessToast(
-                              'Account created successfully',
+                              'Email has been sent to your email please verify it and login.',
                             );
                           } catch (error) {
-                            toastService.showErrorToast(
-                              'Failed to create account. Try again',
-                            );
+                            String errorMessage =
+                                displayErrorMessage(error as Exception);
+                            toastService.showErrorToast(errorMessage);
                           } finally {
                             loadingService.hide();
                           }
@@ -217,20 +243,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     OutlinedButton(
                       onPressed: () async {
                         try {
-                          UserCredential userCredential =
+                          AuthCredential authCredential =
                               await authService.signInWithGoogle();
-                          if (userCredential.additionalUserInfo!.isNewUser) {
-                            context.push('/location');
-                          } else {
-                            context.go('/');
-                          }
+                          loadingService.show();
+
+                          await auth.signInWithCredential(authCredential);
+
+
                           toastService.showSuccessToast(
                               'You have successfully signed in with Google.');
+                          context.go('/location');
                           return;
-                        } catch (e) {
-                          toastService.showErrorToast(
-                            'Failed to sign in with Google. Try again',
-                          );
+                        } catch (error) {
+                          String errorMessage =
+                              displayErrorMessage(error as Exception);
+                          toastService.showErrorToast(errorMessage);
+                        } finally {
+                          loadingService.hide();
                         }
                       },
                       style: OutlinedButton.styleFrom(
@@ -307,7 +336,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const SizedBox(
                           width: 5,
                         ),
-                        GestureDetector(
+                        InkWell(
                           onTap: () {
                             context.push('/login');
                           },
