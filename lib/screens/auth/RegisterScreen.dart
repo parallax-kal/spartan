@@ -22,6 +22,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _fullnameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
@@ -67,6 +68,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         fontSize: 12,
                         color: Color(0xFF7A7A7A),
                       ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    TextFormField(
+                      controller: _fullnameController,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 18,
+                        ),
+                        hintText: 'Enter your full name',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                          borderSide: BorderSide(color: Color(0xFFDDDDDD)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                          borderSide: BorderSide(color: Color(0xFF0C3D6B)),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your full name';
+                        }
+                        if (value.length < 3) {
+                          return 'Full name must be at least 3 characters';
+                        }
+                        return null;
+                      },
                     ),
                     const SizedBox(
                       height: 20,
@@ -188,12 +218,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ElevatedButton(
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          String email = _emailController.text;
-                          String password = _passwordController.text;
                           try {
                             loadingService.show();
-                            UserCredential userCredential = await authService
-                                .signUpWithEmailAndPassword(email, password);
+                            UserCredential userCredential =
+                                await authService.signUpWithEmailAndPassword(
+                                    _emailController.text,
+                                    _passwordController.text);
+                            await userCredential.user!
+                                .updateDisplayName(_fullnameController.text);
 
                             await userCredential.user!.sendEmailVerification(
                               ActionCodeSettings(
@@ -272,7 +304,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           }
 
                           context.push('/');
-                          
                         } catch (error) {
                           String errorMessage =
                               displayErrorMessage(error as Exception);

@@ -151,13 +151,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     ElevatedButton(
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          String email = _emailController.text;
-                          String password = _passwordController.text;
-
                           try {
                             loadingService.show();
-                            UserCredential userCredential = await authService
-                                .signInWithEmailAndPassword(email, password);
+                            UserCredential userCredential =
+                                await authService.signInWithEmailAndPassword(
+                                    _emailController.text,
+                                    _passwordController.text);
                             if (!userCredential.user!.emailVerified) {
                               await userCredential.user!.sendEmailVerification(
                                 ActionCodeSettings(
