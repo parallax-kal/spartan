@@ -12,7 +12,6 @@ class ToastService {
     String message,
   ) async {
     final materialBanner = MaterialBanner(
-      /// need to set following properties for best effect of awesome_snackbar_content
       elevation: 0,
       forceActionsBelow: true,
       backgroundColor: Colors.transparent,

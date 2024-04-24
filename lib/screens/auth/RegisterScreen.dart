@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spartan/models/User.dart';
 import 'package:spartan/services/auth.dart';
 import 'package:spartan/services/loading.dart';
 import 'package:spartan/services/toast.dart';
@@ -247,13 +249,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               await authService.signInWithGoogle();
                           loadingService.show();
 
-                          await auth.signInWithCredential(authCredential);
+                          UserCredential userCredential =
+                              await auth.signInWithCredential(authCredential);
 
-
+                          UserModel userModel = UserModel();
                           toastService.showSuccessToast(
-                              'You have successfully signed in with Google.');
-                          context.go('/location');
-                          return;
+                            'You have successfully signed in with Google.',
+                          );
+
+                          DocumentSnapshot<Map<String, dynamic>> user_data =
+                              await userModel
+                                  .getUserData(userCredential.user!.uid);
+
+                          if (!userModel.countrySet(user_data)) {
+                            context.push('/location');
+                            return;
+                          }
+
+                          if (!userModel.termsSet(user_data)) {
+                            context.push('/terms');
+                            return;
+                          }
+
+                          context.push('/');
+                          
                         } catch (error) {
                           String errorMessage =
                               displayErrorMessage(error as Exception);
@@ -317,7 +336,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ],
                       ),
-                      onPressed: () {},
+                      onPressed: () async {
+                        try {
+                          loadingService.show();
+                          OAuthCredential oAuthCredential =
+                              await authService.signInWithFacebook();
+
+                          await auth.signInWithCredential(oAuthCredential);
+
+                          toastService.showSuccessToast(
+                            'You have successfully signed in with Facebook.',
+                          );
+                          context.go('/');
+                        } catch (error) {
+                          String errorMessage =
+                              displayErrorMessage(error as Exception);
+                          toastService.showErrorToast(errorMessage);
+                        } finally {
+                          loadingService.hide();
+                        }
+                      },
                     ),
                     const SizedBox(
                       height: 10,

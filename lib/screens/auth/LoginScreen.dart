@@ -286,11 +286,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     onPressed: () async {
                       try {
+                        loadingService.show();
                         OAuthCredential oAuthCredential =
                             await authService.signInWithFacebook();
-                        loadingService.show();
 
-                        auth.signInWithCredential(oAuthCredential);
+                        await auth.signInWithCredential(oAuthCredential);
 
                         toastService.showSuccessToast(
                           'You have successfully signed in with Facebook.',
