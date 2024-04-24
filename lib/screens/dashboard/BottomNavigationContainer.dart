@@ -69,7 +69,12 @@ List<MyCustomBottomNavBarItem> tabs = [
   ),
 ];
 
-List<String> noAppbarScreens = ['/home/qr', '/home/qrcode-success', '/profile'];
+List<String> noAppbarScreens = [
+  '/home/qr',
+  '/home/qrcode-success',
+  '/profile',
+  '/stream/:id',
+];
 
 class BottomNavigationContainer extends StatefulWidget {
   final String location;
@@ -114,6 +119,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: !noAppbarScreens.contains(widget.location)
           ? AppBar(

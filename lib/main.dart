@@ -137,9 +137,19 @@ final GoRouter _router = GoRouter(
           path: '/chat/all',
           parentNavigatorKey: _shellNavigatorKey,
           pageBuilder: (context, state) {
-            return NoTransitionPage(
+            return CustomTransitionPage(
               key: state.pageKey,
               child: const ChatAllScreen(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(1, 0),
+                    end: Offset.zero,
+                  ).animate(animation),
+                  child: child,
+                );
+              },
             );
           },
         ),
@@ -157,9 +167,19 @@ final GoRouter _router = GoRouter(
           path: '/stream/:id',
           parentNavigatorKey: _shellNavigatorKey,
           pageBuilder: (context, state) {
-            return NoTransitionPage(
+            return CustomTransitionPage(
               key: state.pageKey,
               child: const UniqueStreamScreen(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(1, 0),
+                    end: Offset.zero,
+                  ).animate(animation),
+                  child: child,
+                );
+              },
             );
           },
         ),
@@ -178,35 +198,17 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/login',
       parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) => CustomTransitionPage(
+      pageBuilder: (context, state) => NoTransitionPage(
         key: state.pageKey,
         child: const LoginScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(0, 1),
-              end: Offset.zero,
-            ).animate(animation),
-            child: child,
-          );
-        },
       ),
     ),
     GoRoute(
       path: '/register',
       parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) => CustomTransitionPage(
+      pageBuilder: (context, state) => NoTransitionPage(
         key: state.pageKey,
         child: const RegisterScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(0, 1),
-              end: Offset.zero,
-            ).animate(animation),
-            child: child,
-          );
-        },
       ),
     ),
     GoRoute(
