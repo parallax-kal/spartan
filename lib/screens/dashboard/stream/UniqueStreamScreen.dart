@@ -13,10 +13,10 @@ class _UniqueStreamScreenState extends State<UniqueStreamScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(children: [
-          
-        ],),
-      )
+        child: Column(
+          children: [],
+        ),
+      ),
     );
   }
 }

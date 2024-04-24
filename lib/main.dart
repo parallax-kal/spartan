@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:spartan/models/Stream.dart';
 import 'package:spartan/models/User.dart';
 import 'package:spartan/screens/auth/LoginScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,6 +12,7 @@ import 'package:spartan/screens/dashboard/ProfileScreen.dart';
 import 'package:spartan/screens/dashboard/StreamScreen.dart';
 import 'package:spartan/screens/dashboard/home/QrcodeScreen.dart';
 import 'package:spartan/screens/dashboard/home/SuccessQRcodeScreen.dart';
+import 'package:spartan/screens/dashboard/stream/UniqueStreamScreen.dart';
 import 'firebase_options.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:go_router/go_router.dart';
@@ -32,14 +34,17 @@ void main() async {
     persistenceEnabled: true,
     cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
   );
-  initializeDateFormatting().then((_) => runApp(
-        MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (context) => UserModel()),
-          ],
-          child: const MyApp(),
-        ),
-      ));
+  initializeDateFormatting().then(
+    (_) => runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (context) => UserModel()),
+          ChangeNotifierProvider(create: (context) => StreamModel())
+        ],
+        child: const MyApp(),
+      ),
+    ),
+  );
   FlutterNativeSplash.remove();
 }
 
@@ -154,7 +159,7 @@ final GoRouter _router = GoRouter(
           pageBuilder: (context, state) {
             return NoTransitionPage(
               key: state.pageKey,
-              child: const StreamScreen(),
+              child: const UniqueStreamScreen(),
             );
           },
         ),

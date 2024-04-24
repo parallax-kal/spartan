@@ -26,6 +26,7 @@ dependencies:
   curved_labeled_navigation_bar: ^2.0.2
   flutter_facebook_auth: ^6.0.4
   cached_network_image: ^3.3.1
+  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:

@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 
 List<MyCustomBottomNavBarItem> tabs = [
   MyCustomBottomNavBarItem(
-    initialLocation: Location.home,
+    initialLocation: Location.HOME,
     label: 'Home',
     child: SvgPicture.asset(
       'assets/icons/home/home_outlined.svg',
@@ -20,7 +20,7 @@ List<MyCustomBottomNavBarItem> tabs = [
     ),
   ),
   MyCustomBottomNavBarItem(
-    initialLocation: Location.chat,
+    initialLocation: Location.CHAT,
     label: 'Chat',
     child: SvgPicture.asset(
       'assets/icons/chat.svg',
@@ -36,7 +36,7 @@ List<MyCustomBottomNavBarItem> tabs = [
     ),
   ),
   MyCustomBottomNavBarItem(
-    initialLocation: Location.stream,
+    initialLocation: Location.STREAM,
     child: SvgPicture.asset(
       'assets/icons/stream.svg',
       theme: const SvgTheme(
@@ -44,7 +44,7 @@ List<MyCustomBottomNavBarItem> tabs = [
       ),
     ),
     activeChild: SvgPicture.asset(
-      'assets/icons/chat.svg',
+      'assets/icons/stream.svg',
       theme: const SvgTheme(
         currentColor: Colors.white,
       ),
@@ -52,7 +52,7 @@ List<MyCustomBottomNavBarItem> tabs = [
     label: 'Stream',
   ),
   MyCustomBottomNavBarItem(
-    initialLocation: Location.profile,
+    initialLocation: Location.PROFILE,
     child: SvgPicture.asset(
       'assets/icons/profile/profile_outlined.svg',
       theme: const SvgTheme(
@@ -163,10 +163,10 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
 }
 
 enum Location {
-  home(['/', '/home/qr']),
-  chat(['/chat']),
-  stream(['/stream']),
-  profile(['/profile']);
+  HOME(['/', '/home/qr']),
+  CHAT(['/chat']),
+  STREAM(['/stream']),
+  PROFILE(['/profile']);
 
   final List<String> paths;
 
