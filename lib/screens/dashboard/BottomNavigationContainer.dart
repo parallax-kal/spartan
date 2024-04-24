@@ -3,7 +3,6 @@ import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:spartan/services/auth.dart';
 
 List<MyCustomBottomNavBarItem> tabs = [
   MyCustomBottomNavBarItem(
@@ -115,7 +114,6 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
 
   @override
   Widget build(BuildContext context) {
-    AuthService authService = AuthService();
     return Scaffold(
       appBar: !noAppbarScreens.contains(widget.location)
           ? AppBar(
@@ -123,14 +121,8 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
               leading: Image.asset('assets/images/logo.png'),
               leadingWidth: 160,
               actions: [
-                InkWell(
-                  child: Badge(
-                    child: SvgPicture.asset('assets/icons/notifications.svg'),
-                  ),
-                  onTap: () async {
-                    await authService.signOut();
-                    GoRouter.of(context).go('/login');
-                  },
+                Badge(
+                  child: SvgPicture.asset('assets/icons/notifications.svg'),
                 ),
                 const SizedBox(
                   width: 15,
