@@ -74,6 +74,11 @@ List<String> noAppbarScreens = [
   '/home/qrcode-success',
   '/profile',
   '/stream/:id',
+  '/chat/rooms/:room',
+];
+
+List noBottomNavScreens = [
+  '/chat/rooms/:room',
 ];
 
 class BottomNavigationContainer extends StatefulWidget {
@@ -119,7 +124,6 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: !noAppbarScreens.contains(widget.location)
           ? AppBar(
@@ -143,7 +147,10 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
       body: SafeArea(
         child: widget.child,
       ),
-      bottomNavigationBar: CurvedNavigationBar(
+      bottomNavigationBar:
+        !noBottomNavScreens.contains(widget.location)
+        ?
+       CurvedNavigationBar(
         key: _bottomNavigationKey,
         index: _currentIndex,
         items: tabs.map((tab) {
@@ -163,7 +170,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
           _changeTab(context, index);
         },
         letIndexChange: (index) => true,
-      ),
+      ): null,
     );
   }
 }

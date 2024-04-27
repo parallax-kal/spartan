@@ -1,6 +1,3 @@
-import 'dart:async';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spartan/constants/firebase.dart';
@@ -30,12 +27,11 @@ class _TermsState extends State<Terms> {
           return;
         }
         loadingService.show();
-        await firestore.collection('users').doc(auth.currentUser!.uid).set(
+        await firestore.collection('users').doc(auth.currentUser!.uid).update(
           {
             'country': usermodel.country,
             'terms': usermodel.acceptedTerms,
           },
-          SetOptions(merge: true),
         );
         toastService
             .showSuccessToast('Successfully saved your decition and country.');

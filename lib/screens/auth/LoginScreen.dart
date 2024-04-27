@@ -172,6 +172,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
                               return;
                             }
+                            String? token = await messaging.getToken();
+                            await firestore
+                                .collection('users')
+                                .doc(userCredential.user!.uid)
+                                .update({
+                              'token': [token]
+                            });
                             toastService.showSuccessToast(
                               'Successfully signed in with email and password',
                             );
@@ -213,12 +220,36 @@ class _LoginScreenState extends State<LoginScreen> {
                             await authService.signInWithGoogle();
                         loadingService.show();
 
-                        await auth.signInWithCredential(authCredential);
-
+                        UserCredential userCredential =
+                            await auth.signInWithCredential(authCredential);
+                        final user = await firestore
+                            .collection('users')
+                            .doc(userCredential.user!.uid)
+                            .get();
+                        String? token = await messaging.getToken();
+                        if (!user.exists) {
+                          await firestore
+                              .collection('users')
+                              .doc(userCredential.user!.uid)
+                              .set({
+                            'email': userCredential.user!.email,
+                            'name': userCredential.user!.displayName,
+                            'photoUrl': userCredential.user!.photoURL,
+                            'token': [token],
+                          });
+                          context.push('/location');
+                        } else {
+                          await firestore
+                              .collection('users')
+                              .doc(userCredential.user!.uid)
+                              .update({
+                            'token': [token]
+                          });
+                          context.go('/');
+                        }
                         toastService.showSuccessToast(
                           'You have successfully signed in with Google.',
                         );
-                        context.go('/');
                         return;
                       } catch (error) {
                         String errorMessage =
@@ -289,12 +320,37 @@ class _LoginScreenState extends State<LoginScreen> {
                         OAuthCredential oAuthCredential =
                             await authService.signInWithFacebook();
 
-                        await auth.signInWithCredential(oAuthCredential);
+                        UserCredential userCredential =
+                            await auth.signInWithCredential(oAuthCredential);
 
+                        final user = await firestore
+                            .collection('users')
+                            .doc(userCredential.user!.uid)
+                            .get();
+                        String? token = await messaging.getToken();
+                        if (!user.exists) {
+                          await firestore
+                              .collection('users')
+                              .doc(userCredential.user!.uid)
+                              .set({
+                            'email': userCredential.user!.email,
+                            'name': userCredential.user!.displayName,
+                            'photoUrl': userCredential.user!.photoURL,
+                            'token': [token],
+                          });
+                          context.push('/location');
+                        } else {
+                          await firestore
+                              .collection('users')
+                              .doc(userCredential.user!.uid)
+                              .update({
+                            'token': [token]
+                          });
+                          context.go('/');
+                        }
                         toastService.showSuccessToast(
                           'You have successfully signed in with Facebook.',
                         );
-                        context.go('/');
                       } catch (error) {
                         String errorMessage =
                             displayErrorMessage(error as Exception);

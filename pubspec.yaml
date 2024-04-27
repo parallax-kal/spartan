@@ -27,7 +27,13 @@ dependencies:
   flutter_facebook_auth: ^6.0.4
   cached_network_image: ^3.3.1
   shared_preferences: ^2.2.3
-
+  firebase_messaging: ^14.9.1
+  firebase_storage: ^11.7.4
+  dio: ^5.4.3+1
+  awesome_notifications: ^0.8.2
+  chatview3: ^0.0.6
+  intl: ^0.18.1
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

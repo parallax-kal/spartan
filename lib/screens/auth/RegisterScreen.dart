@@ -1,9 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:spartan/models/User.dart';
 import 'package:spartan/services/auth.dart';
 import 'package:spartan/services/loading.dart';
 import 'package:spartan/services/toast.dart';
@@ -224,8 +222,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 await authService.signUpWithEmailAndPassword(
                                     _emailController.text,
                                     _passwordController.text);
+
                             await userCredential.user!
                                 .updateDisplayName(_fullnameController.text);
+                            String? token = await messaging.getToken();
+
+                            await firestore
+                                .collection('users')
+                                .doc(userCredential.user!.uid)
+                                .set({
+                              'email': _emailController.text,
+                              'fullname': _fullnameController.text,
+                              'token': [token],
+                            });
 
                             await userCredential.user!.sendEmailVerification(
                               ActionCodeSettings(
@@ -284,26 +293,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           UserCredential userCredential =
                               await auth.signInWithCredential(authCredential);
 
-                          UserModel userModel = UserModel();
+                          final user = await firestore
+                              .collection('users')
+                              .doc(userCredential.user!.uid)
+                              .get();
+                          String? token = await messaging.getToken();
+                          if (!user.exists) {
+                            await firestore
+                                .collection('users')
+                                .doc(userCredential.user!.uid)
+                                .set({
+                              'email': userCredential.user!.email,
+                              'fullname': userCredential.user!.displayName,
+                              'profile': userCredential.user!.photoURL,
+                              'token': [token],
+                            });
+                            context.push('/location');
+                          } else {
+                            await firestore
+                                .collection('users')
+                                .doc(userCredential.user!.uid)
+                                .update({
+                              'token': [token]
+                            });
+                            context.push('/');
+                          }
+
                           toastService.showSuccessToast(
                             'You have successfully signed in with Google.',
                           );
-
-                          DocumentSnapshot<Map<String, dynamic>> user_data =
-                              await userModel
-                                  .getUserData(userCredential.user!.uid);
-
-                          if (!userModel.countrySet(user_data)) {
-                            context.push('/location');
-                            return;
-                          }
-
-                          if (!userModel.termsSet(user_data)) {
-                            context.push('/terms');
-                            return;
-                          }
-
-                          context.push('/');
                         } catch (error) {
                           String errorMessage =
                               displayErrorMessage(error as Exception);
@@ -373,12 +391,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           OAuthCredential oAuthCredential =
                               await authService.signInWithFacebook();
 
-                          await auth.signInWithCredential(oAuthCredential);
+                          UserCredential userCredential =
+                              await auth.signInWithCredential(oAuthCredential);
+
+                          final user = await firestore
+                              .collection('users')
+                              .doc(userCredential.user!.uid)
+                              .get();
+                          String? token = await messaging.getToken();
+                          if (!user.exists) {
+                            await firestore
+                                .collection('users')
+                                .doc(userCredential.user!.uid)
+                                .set({
+                              'email': userCredential.user!.email,
+                              'fullname': userCredential.user!.displayName,
+                              'profile': userCredential.user!.photoURL,
+                              'token': [token],
+                            });
+                            context.push('/location');
+                            return;
+                          } else {
+                            await firestore
+                                .collection('users')
+                                .doc(userCredential.user!.uid)
+                                .update({
+                              'token': [token],
+                            });
+                            context.push('/');
+                          }
 
                           toastService.showSuccessToast(
                             'You have successfully signed in with Facebook.',
                           );
-                          context.go('/');
                         } catch (error) {
                           String errorMessage =
                               displayErrorMessage(error as Exception);

@@ -21,8 +21,9 @@ import 'package:spartan/screens/auth/LocationScreen.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:provider/provider.dart';
 import 'package:spartan/constants/global.dart';
-import 'package:spartan/screens/dashboard/chat/ChallAllScreen.dart';
+import 'package:spartan/screens/dashboard/chat/MessagesScreen.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -43,6 +44,14 @@ void main() async {
         ],
         child: const MyApp(),
       ),
+    ),
+  );
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.white,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.white,
+      systemNavigationBarIconBrightness: Brightness.dark,
     ),
   );
   FlutterNativeSplash.remove();
@@ -134,12 +143,14 @@ final GoRouter _router = GoRouter(
           },
         ),
         GoRoute(
-          path: '/chat/all',
+          path: '/chat/rooms/:room',
           parentNavigatorKey: _shellNavigatorKey,
           pageBuilder: (context, state) {
             return CustomTransitionPage(
               key: state.pageKey,
-              child: const ChatAllScreen(),
+              child: MessagesScreen(
+                room: state.pathParameters['room']!,
+              ),
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
                 return SlideTransition(

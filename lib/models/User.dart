@@ -1,6 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:spartan/constants/firebase.dart';
 
 class UserModel extends ChangeNotifier {
   String? _country;
@@ -19,16 +17,5 @@ class UserModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<DocumentSnapshot<Map<String, dynamic>>> getUserData(
-      String uid) async {
-    return await firestore.collection('users').doc(uid).get();
-  }
-
-  bool countrySet(DocumentSnapshot<Map<String, dynamic>> user) {
-    return user.exists && user.data()!['country'] != null;
-  }
-
-  bool termsSet(DocumentSnapshot<Map<String, dynamic>> user) {
-    return user.exists && user.data()!['terms'] != null;
-  }
+ 
 }

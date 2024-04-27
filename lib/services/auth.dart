@@ -63,4 +63,13 @@ class AuthService {
     await _googleSignIn.signOut();
     await facebookauth.logOut();
   }
+
+  Future<List<Map<String, dynamic>>> getUsers() async {
+    try {
+      final users = await firestore.collection('users').get();
+      return users.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      throw Exception('Failed to get users: $e');
+    }
+  }
 }

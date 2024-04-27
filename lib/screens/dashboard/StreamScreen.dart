@@ -47,16 +47,16 @@ class _StreamScreenState extends State<StreamScreen>
                   },
                   child: Stack(
                     children: [
-                        Positioned(
-                          child: ClipRRect(
+                      Positioned(
+                        child: ClipRRect(
                           borderRadius: BorderRadius.circular(6),
                           child: Image.asset(
                             'assets/images/sample_stream.png',
                             fit: BoxFit.cover,
                             width: double.infinity,
                           ),
-                          ),
                         ),
+                      ),
                       const Positioned(
                         top: 7,
                         left: 13,
