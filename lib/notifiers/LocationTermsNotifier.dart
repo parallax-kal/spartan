@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-class UserModel extends ChangeNotifier {
+class LocationAndTermsNotifier extends ChangeNotifier {
   String? _country;
   bool _acceptedTerms = false;
+
 
   String? get country => _country;
   bool get acceptedTerms => _acceptedTerms;
@@ -16,6 +17,4 @@ class UserModel extends ChangeNotifier {
     _acceptedTerms = value;
     notifyListeners();
   }
-
- 
 }

@@ -11,7 +11,7 @@ const locales = [
   // Locale('ja', 'JP'), // Japanese
 ];
 
-const public_routes = ['/login', '/register', '/location'];
+const public_routes = ['/login', '/register', '/forgot-password'];
 
 const countries = [
   "Afghanistan",

@@ -233,7 +233,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 .set({
                               'email': _emailController.text,
                               'fullname': _fullnameController.text,
-                              'token': [token],
+                              'tokens': [token],
                             });
 
                             await userCredential.user!.sendEmailVerification(
@@ -306,7 +306,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               'email': userCredential.user!.email,
                               'fullname': userCredential.user!.displayName,
                               'profile': userCredential.user!.photoURL,
-                              'token': [token],
+                              'tokens': [token],
                             });
                             context.push('/location');
                           } else {
@@ -314,7 +314,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 .collection('users')
                                 .doc(userCredential.user!.uid)
                                 .update({
-                              'token': [token]
+                              'tokens': [token]
                             });
                             context.push('/');
                           }
@@ -407,7 +407,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               'email': userCredential.user!.email,
                               'fullname': userCredential.user!.displayName,
                               'profile': userCredential.user!.photoURL,
-                              'token': [token],
+                              'tokens': [token],
                             });
                             context.push('/location');
                             return;
@@ -416,7 +416,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 .collection('users')
                                 .doc(userCredential.user!.uid)
                                 .update({
-                              'token': [token],
+                              'tokens': [token],
                             });
                             context.push('/');
                           }

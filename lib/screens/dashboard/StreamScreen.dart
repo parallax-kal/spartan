@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:spartan/models/Stream.dart';
+import 'package:spartan/notifiers/StreamLayoutNotifier.dart';
 
 class StreamScreen extends StatefulWidget {
   const StreamScreen({Key? key}) : super(key: key);

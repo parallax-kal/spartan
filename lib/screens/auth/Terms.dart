@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spartan/constants/firebase.dart';
-import 'package:spartan/models/User.dart';
+import 'package:spartan/notifiers/LocationTermsNotifier.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spartan/services/loading.dart';
 import 'package:spartan/services/toast.dart';
@@ -16,7 +16,7 @@ class Terms extends StatefulWidget {
 class _TermsState extends State<Terms> {
   @override
   Widget build(BuildContext context) {
-    UserModel usermodel = Provider.of<UserModel>(context, listen: false);
+    LocationAndTermsNotifier usermodel = Provider.of<LocationAndTermsNotifier>(context, listen: false);
     LoadingService loadingService = LoadingService(context);
     ToastService toastService = ToastService(context);
 

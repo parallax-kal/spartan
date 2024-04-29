@@ -177,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 .collection('users')
                                 .doc(userCredential.user!.uid)
                                 .update({
-                              'token': [token]
+                              'tokens': [token]
                             });
                             toastService.showSuccessToast(
                               'Successfully signed in with email and password',
@@ -234,8 +234,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               .set({
                             'email': userCredential.user!.email,
                             'name': userCredential.user!.displayName,
-                            'photoUrl': userCredential.user!.photoURL,
-                            'token': [token],
+                            'profile': userCredential.user!.photoURL,
+                            'tokens': [token],
                           });
                           context.push('/location');
                         } else {
@@ -243,10 +243,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               .collection('users')
                               .doc(userCredential.user!.uid)
                               .update({
-                            'token': [token]
+                            'tokens': [token]
                           });
                           context.go('/');
                         }
+
                         toastService.showSuccessToast(
                           'You have successfully signed in with Google.',
                         );
@@ -335,8 +336,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               .set({
                             'email': userCredential.user!.email,
                             'name': userCredential.user!.displayName,
-                            'photoUrl': userCredential.user!.photoURL,
-                            'token': [token],
+                            'profile': userCredential.user!.photoURL,
+                            'tokens': [token],
                           });
                           context.push('/location');
                         } else {
@@ -344,10 +345,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               .collection('users')
                               .doc(userCredential.user!.uid)
                               .update({
-                            'token': [token]
+                            'tokens': [token]
                           });
                           context.go('/');
                         }
+
                         toastService.showSuccessToast(
                           'You have successfully signed in with Facebook.',
                         );

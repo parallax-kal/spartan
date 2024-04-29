@@ -38,9 +38,8 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                context.push('/chat/messages/spartan_global', 
-            
-
+                context.push(
+                  '/chat/rooms/spartan_global',
                 );
               },
               style: ElevatedButton.styleFrom(

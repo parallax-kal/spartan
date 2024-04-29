@@ -1,27 +1,22 @@
-import 'package:chatview3/chatview3.dart';
 import 'package:spartan/constants/firebase.dart';
+import 'package:spartan/models/Message.dart';
+import 'package:spartan/models/Room.dart';
 
 class ChatService {
-  String getChatRoomId(String userId) {
-    List<String> ids = [auth.currentUser!.uid, userId];
-    ids.sort();
-    return ids.join('-');
-  }
-
-  Future<void> sendChatMessage(Message message) async {
-    await firestore
-        .collection('rooms')
-        .doc(message.id)
-        .collection('messages')
-        .add({
-      'message': message.message,
-      'sendBy': message.sendBy,
-      'reply': message.replyMessage,
-      'reaction': message.reaction,
-      'voiceDuration': message.voiceMessageDuration,
-      'messageType': message.messageType.toString(),
-      'status': MessageStatus.delivered.toString(),
-      'timestamp': message.createdAt,
+  Future createRoom(Room room) {
+    return firestore.collection('rooms').add({
+      'name': room.name,
+      'profile': room.profile,
+      'users_ids': room.invitedIds,
+      'private': room.private,
     });
   }
+
+  Future<void> sendMessage(String roomId, Message message) {
+    return firestore.collection('rooms').doc(roomId).collection('messages').add(
+          message.toJson(),
+        );
+  }
+
+
 }

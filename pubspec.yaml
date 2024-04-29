@@ -31,8 +31,12 @@ dependencies:
   firebase_storage: ^11.7.4
   dio: ^5.4.3+1
   awesome_notifications: ^0.8.2
-  chatview3: ^0.0.6
   intl: ^0.18.1
+  chat_composer: ^1.0.3
+  voice_message_package: ^2.2.1
+  reaction_askany: ^0.1.2
+  swipe_to: ^1.0.6
+  chat_bubbles: ^1.5.0
   
 dev_dependencies:
   flutter_test:

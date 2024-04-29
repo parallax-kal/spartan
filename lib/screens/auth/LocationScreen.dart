@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/constants/global.dart';
 import 'package:go_router/go_router.dart';
-import 'package:spartan/models/User.dart';
+import 'package:spartan/notifiers/LocationTermsNotifier.dart';
 
 class LocationScreen extends StatefulWidget {
   const LocationScreen({Key? key}) : super(key: key);
@@ -40,7 +40,7 @@ class _LocationScreenState extends State<LocationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    UserModel usermodel = Provider.of<UserModel>(context, listen: false);
+    LocationAndTermsNotifier usermodel = Provider.of<LocationAndTermsNotifier>(context, listen: false);
 
     return Scaffold(
       backgroundColor: const Color(0xFF908E8E),
