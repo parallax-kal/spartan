@@ -16,7 +16,7 @@ class _StreamScreenState extends State<StreamScreen>
     with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    StreamModel streamModel = Provider.of<StreamModel>(context, listen: false);
+    StreamLayoutNotifier streamModel = Provider.of<StreamLayoutNotifier>(context, listen: false);
 
     return Scaffold(
       backgroundColor: Colors.white,

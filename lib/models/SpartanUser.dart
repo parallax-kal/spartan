@@ -1,47 +1,56 @@
 class SpartanUser {
+  String id;
   String fullname;
   String email;
   String profile;
   List<String> tokens;
-  String id;
-  bool isOnline;
-  String lastActive;
-  List<UnReadMessage> unReadMessages;
+  bool terms;
+  String country;
+  List<UnReadMessage>? unReadMessages;
+  bool? community;
+  bool? isOnline;
+
 
   SpartanUser({
+    required this.id,
     required this.fullname,
     required this.email,
     required this.profile,
     required this.tokens,
-    required this.id,
-    required this.isOnline,
-    required this.lastActive,
-    this.unReadMessages = const [], // Fix: Corrected the field name to 'unReadMessages'.
+    required this.country,
+    required this.terms,
+    this.isOnline = false,
+    this.community = false,
+    this.unReadMessages = const [],
   });
 
   factory SpartanUser.fromJson(Map<String, dynamic> json) {
     return SpartanUser(
+      id: json['id'],
       fullname: json['fullname'],
       email: json['email'],
       profile: json['profile'],
+      terms: json['terms'],
+      country: json['country'],
       tokens: List<String>.from(json['tokens']),
-      id: json['id'],
       isOnline: json['isOnline'],
-      lastActive: json['lastActive'],
-      unReadMessages: List<UnReadMessage>.from(json['unReadMessages'].map((x) => UnReadMessage.fromJson(x))),
+      community: json['community'],
+      unReadMessages: List<UnReadMessage>.from(json['unReadMessages']?.map((x) => UnReadMessage.fromJson(x))),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'fullname': fullname,
       'email': email,
       'profile': profile,
+      'country': country,
+      'terms': terms,
       'tokens': tokens,
-      'id': id,
       'isOnline': isOnline,
-      'lastActive': lastActive,
-      'unReadMessages': unReadMessages.map((x) => x.toJson()).toList(),
+      'community': community,
+      'unReadMessages': unReadMessages?.map((x) => x.toJson()).toList(),
     };
   }
 }

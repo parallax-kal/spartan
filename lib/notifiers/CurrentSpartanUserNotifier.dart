@@ -6,12 +6,12 @@ class CurrentSpartanUserNotifier extends ChangeNotifier {
 
   SpartanUser? get user => _currentSpartanUser;
 
-  void setUser(SpartanUser user) {
+  void setCurrentSpartanUser(SpartanUser user) {
     _currentSpartanUser = user;
     notifyListeners();
   }
 
-  void clearUser() {
+  void clearSpartanUser() {
     _currentSpartanUser = null;
     notifyListeners();
   }

@@ -3,16 +3,16 @@ import 'package:provider/provider.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/constants/global.dart';
 import 'package:go_router/go_router.dart';
-import 'package:spartan/notifiers/LocationTermsNotifier.dart';
+import 'package:spartan/notifiers/CountryTermsNotifier.dart';
 
-class LocationScreen extends StatefulWidget {
-  const LocationScreen({Key? key}) : super(key: key);
+class CountryScreen extends StatefulWidget {
+  const CountryScreen({Key? key}) : super(key: key);
 
   @override
-  State<LocationScreen> createState() => _LocationScreenState();
+  State<CountryScreen> createState() => _CountryScreenState();
 }
 
-class _LocationScreenState extends State<LocationScreen> {
+class _CountryScreenState extends State<CountryScreen> {
   List<Map<String, List<String>>> sortCountries(List<String> countries) {
     List<Map<String, List<String>>> sortedCountries = [];
     List<String> sorted = [];
@@ -40,7 +40,7 @@ class _LocationScreenState extends State<LocationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    LocationAndTermsNotifier usermodel = Provider.of<LocationAndTermsNotifier>(context, listen: false);
+    CountryAndTermsNotifier usermodel = Provider.of<CountryAndTermsNotifier>(context, listen: false);
 
     return Scaffold(
       backgroundColor: const Color(0xFF908E8E),

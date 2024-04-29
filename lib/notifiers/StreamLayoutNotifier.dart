@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class StreamModel extends ChangeNotifier {
+class StreamLayoutNotifier extends ChangeNotifier {
   Layout _layout = Layout(deviceView: DeviceView.EXPANDED, sortBy: SortBy.DEVICE_TYPE);
 
   Layout get layout => _layout;

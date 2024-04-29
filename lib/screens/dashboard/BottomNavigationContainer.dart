@@ -74,17 +74,17 @@ List<String> noAppbarScreens = [
   '/home/qrcode-success',
   '/profile',
   '/stream/:id',
-  '/chat/rooms/:room',
+  '/chat/messages',
 ];
 
 List noBottomNavScreens = [
-  '/chat/rooms/:room',
+  '/chat/messages',
 ];
 
 class BottomNavigationContainer extends StatefulWidget {
-  final String location;
+  final String path;
   const BottomNavigationContainer(
-      {super.key, required this.child, required this.location});
+      {super.key, required this.child, required this.path});
 
   final Widget child;
   static void changeTab(BuildContext context, String location) {
@@ -125,7 +125,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: !noAppbarScreens.contains(widget.location)
+      appBar: !noAppbarScreens.contains(widget.path)
           ? AppBar(
               backgroundColor: Colors.white,
               leading: Image.asset('assets/images/logo.png'),
@@ -147,37 +147,36 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
       body: SafeArea(
         child: widget.child,
       ),
-      bottomNavigationBar:
-        !noBottomNavScreens.contains(widget.location)
-        ?
-       CurvedNavigationBar(
-        key: _bottomNavigationKey,
-        index: _currentIndex,
-        items: tabs.map((tab) {
-          return CurvedNavigationBarItem(
-            child: tab.initialLocation.paths.contains(widget.location)
-                ? tab.activeChild
-                : tab.child,
-            label: tab.label,
-          );
-        }).toList(),
-        color: Colors.white,
-        buttonBackgroundColor: const Color(0xFF002E58),
-        backgroundColor: Colors.white,
-        animationCurve: Curves.easeInOut,
-        animationDuration: const Duration(milliseconds: 600),
-        onTap: (index) {
-          _changeTab(context, index);
-        },
-        letIndexChange: (index) => true,
-      ): null,
+      bottomNavigationBar: !noBottomNavScreens.contains(widget.path)
+          ? CurvedNavigationBar(
+              key: _bottomNavigationKey,
+              index: _currentIndex,
+              items: tabs.map((tab) {
+                return CurvedNavigationBarItem(
+                  child: tab.initialLocation.paths.contains(widget.path)
+                      ? tab.activeChild
+                      : tab.child,
+                  label: tab.label,
+                );
+              }).toList(),
+              color: Colors.white,
+              buttonBackgroundColor: const Color(0xFF002E58),
+              backgroundColor: Colors.white,
+              animationCurve: Curves.easeInOut,
+              animationDuration: const Duration(milliseconds: 600),
+              onTap: (index) {
+                _changeTab(context, index);
+              },
+              letIndexChange: (index) => true,
+            )
+          : null,
     );
   }
 }
 
 enum Location {
   HOME(['/', '/home/qr']),
-  CHAT(['/chat']),
+  CHAT(['/chat', '/chat/rooms', '/chat/messages', '/chat/join-community']),
   STREAM(['/stream']),
   PROFILE(['/profile']);
 

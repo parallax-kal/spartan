@@ -233,6 +233,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 .set({
                               'email': _emailController.text,
                               'fullname': _fullnameController.text,
+                              'unReadMessages': [],
                               'tokens': [token],
                             });
 
@@ -306,6 +307,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               'email': userCredential.user!.email,
                               'fullname': userCredential.user!.displayName,
                               'profile': userCredential.user!.photoURL,
+                              'unReadMessages': [],
                               'tokens': [token],
                             });
                             context.push('/location');
@@ -407,6 +409,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               'email': userCredential.user!.email,
                               'fullname': userCredential.user!.displayName,
                               'profile': userCredential.user!.photoURL,
+                              'unReadMessages': [],
                               'tokens': [token],
                             });
                             context.push('/location');

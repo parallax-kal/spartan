@@ -1,15 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:spartan/models/SpartanUser.dart';
+import 'package:spartan/notifiers/CurrentRoomNotifier.dart';
+import 'package:spartan/notifiers/CurrentSpartanUserNotifier.dart';
 import 'package:spartan/notifiers/StreamLayoutNotifier.dart';
-import 'package:spartan/notifiers/LocationTermsNotifier.dart';
+import 'package:spartan/notifiers/CountryTermsNotifier.dart';
 import 'package:spartan/screens/auth/LoginScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:spartan/screens/auth/RegisterScreen.dart';
 import 'package:spartan/screens/auth/Terms.dart';
-import 'package:spartan/screens/dashboard/ChatScreen.dart';
+import 'package:spartan/screens/dashboard/chat/JoinCommunityScreen.dart';
 import 'package:spartan/screens/dashboard/HomeScreen.dart';
 import 'package:spartan/screens/dashboard/ProfileScreen.dart';
 import 'package:spartan/screens/dashboard/StreamScreen.dart';
+import 'package:spartan/screens/dashboard/chat/RoomsScreen.dart';
 import 'package:spartan/screens/dashboard/home/QrcodeScreen.dart';
 import 'package:spartan/screens/dashboard/home/SuccessQRcodeScreen.dart';
 import 'package:spartan/screens/dashboard/stream/UniqueStreamScreen.dart';
@@ -17,7 +21,7 @@ import 'firebase_options.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spartan/screens/dashboard/BottomNavigationContainer.dart';
-import 'package:spartan/screens/auth/LocationScreen.dart';
+import 'package:spartan/screens/auth/CountryScreen.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:provider/provider.dart';
 import 'package:spartan/constants/global.dart';
@@ -48,10 +52,19 @@ void main() async {
       MultiProvider(
         providers: [
           ChangeNotifierProvider(
-              create: (context) => LocationAndTermsNotifier()),
-          ChangeNotifierProvider(create: (context) => StreamModel())
+            create: (context) => CountryAndTermsNotifier(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => StreamLayoutNotifier(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => CurrentSpartanUserNotifier(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => CurrentRoomNotifier(),
+          ),
         ],
-        child: const MyApp(),
+        child: const SpartanApp(),
       ),
     ),
   );
@@ -153,7 +166,7 @@ class NotificationController {
 
   static Future<void> onActionReceivedImplementationMethod(
       ReceivedAction receivedAction) async {
-    MyApp.rootNavigatorKey.currentState?.pushNamedAndRemoveUntil(
+    SpartanApp.rootNavigatorKey.currentState?.pushNamedAndRemoveUntil(
         '/notifications',
         (route) => (route.settings.name != '/notifications') || route.isFirst,
         arguments: receivedAction);
@@ -165,7 +178,7 @@ class NotificationController {
   ///
   static Future<bool> displayNotificationRationale() async {
     bool userAuthorized = false;
-    BuildContext context = MyApp.rootNavigatorKey.currentContext!;
+    BuildContext context = SpartanApp.rootNavigatorKey.currentContext!;
     await showDialog(
         context: context,
         builder: (BuildContext ctx) {
@@ -340,8 +353,8 @@ Future<void> myNotifyScheduleInHours({
   );
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class SpartanApp extends StatefulWidget {
+  const SpartanApp({super.key});
 
   static final rootNavigatorKey = GlobalKey<NavigatorState>();
   static final shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -349,11 +362,39 @@ class MyApp extends StatefulWidget {
   static final GoRouter router = GoRouter(
     initialLocation: '/',
     navigatorKey: rootNavigatorKey,
-    redirect: (context, state) {
+    redirect: (context, state) async {
+      if (public_routes.contains(state.fullPath)) {
+        return null;
+      }
+
       final userAutheticated = auth.currentUser != null;
       if (!userAutheticated && !public_routes.contains(state.fullPath)) {
         return '/login';
       }
+
+      CurrentSpartanUserNotifier currentSpartanUserNotifier =
+          Provider.of<CurrentSpartanUserNotifier>(
+        context,
+        listen: false,
+      );
+
+      if (currentSpartanUserNotifier.user == null) {
+        final user = await firestore
+            .collection('users')
+            .doc(auth.currentUser!.uid)
+            .get();
+
+        if (!user.exists) {
+          currentSpartanUserNotifier.clearSpartanUser();
+          return '/login';
+        }
+
+        final spartanUser =
+            SpartanUser.fromJson({'id': user.id, ...user.data()!});
+
+        currentSpartanUserNotifier.setCurrentSpartanUser(spartanUser);
+      }
+
       return null;
     },
     routes: <RouteBase>[
@@ -362,7 +403,7 @@ class MyApp extends StatefulWidget {
         pageBuilder: (context, state, child) {
           return NoTransitionPage(
             child: BottomNavigationContainer(
-              location: state.fullPath ?? '/',
+              path: state.fullPath ?? '/',
               child: child,
             ),
           );
@@ -379,8 +420,8 @@ class MyApp extends StatefulWidget {
             },
           ),
           GoRoute(
-            path: '/home/qrcode',
             parentNavigatorKey: shellNavigatorKey,
+            path: '/home/qrcode',
             pageBuilder: (context, state) {
               return CustomTransitionPage(
                 key: state.pageKey,
@@ -400,7 +441,6 @@ class MyApp extends StatefulWidget {
           ),
           GoRoute(
             path: '/home/qrcode-success',
-            parentNavigatorKey: shellNavigatorKey,
             pageBuilder: (context, state) {
               return CustomTransitionPage(
                 key: state.pageKey,
@@ -419,36 +459,69 @@ class MyApp extends StatefulWidget {
             },
           ),
           GoRoute(
-            path: '/chat',
+            path: '/chat', // Remove the trailing slash
             parentNavigatorKey: shellNavigatorKey,
-            pageBuilder: (context, state) {
-              return NoTransitionPage(
-                key: state.pageKey,
-                child: const ChatScreen(),
+            redirect: (context, state) async {
+              CurrentSpartanUserNotifier currentSpartanUserNotifier =
+                  Provider.of<CurrentSpartanUserNotifier>(
+                context,
+                listen: false,
               );
+
+              if (currentSpartanUserNotifier.user == null) {
+                return '/login';
+              }
+
+              if (state.fullPath == '/chat') {
+                if (currentSpartanUserNotifier.user!.community == true) {
+                  return '/chat/rooms';
+                } else {
+                  return '/chat/join-community';
+                }
+              }
+
+              return null;
             },
-          ),
-          GoRoute(
-            path: '/chat/rooms/:room',
-            parentNavigatorKey: shellNavigatorKey,
-            pageBuilder: (context, state) {
-              return CustomTransitionPage(
-                key: state.pageKey,
-                child: MessagesScreen(
-                  room: state.pathParameters['room']!,
-                ),
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) {
-                  return SlideTransition(
-                    position: Tween<Offset>(
-                      begin: const Offset(1, 0),
-                      end: Offset.zero,
-                    ).animate(animation),
-                    child: child,
+            routes: [
+              GoRoute(
+                path: 'join-community',
+                pageBuilder: (context, state) {
+                  return NoTransitionPage(
+                    key: state.pageKey,
+                    child: const JoinCommunityScreen(),
                   );
                 },
-              );
-            },
+              ),
+              GoRoute(
+                path: 'rooms',
+                pageBuilder: (context, state) {
+                  return NoTransitionPage(
+                    key: state.pageKey,
+                    child: const RoomsScreen(),
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'messages',
+                parentNavigatorKey: shellNavigatorKey,
+                pageBuilder: (context, state) {
+                  return CustomTransitionPage(
+                    key: state.pageKey,
+                    child: const MessagesScreen(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(1, 0),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
           ),
           GoRoute(
             path: '/stream',
@@ -513,7 +586,7 @@ class MyApp extends StatefulWidget {
         parentNavigatorKey: rootNavigatorKey,
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
-          child: const LocationScreen(),
+          child: const CountryScreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return SlideTransition(
               position: Tween<Offset>(
@@ -546,10 +619,10 @@ class MyApp extends StatefulWidget {
   );
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<SpartanApp> createState() => _SpartanAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _SpartanAppState extends State<SpartanApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
@@ -562,7 +635,7 @@ class _MyAppState extends State<MyApp> {
           surfaceTintColor: Colors.white,
         ),
       ),
-      routerConfig: MyApp.router,
+      routerConfig: SpartanApp.router,
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class LocationAndTermsNotifier extends ChangeNotifier {
+class CountryAndTermsNotifier extends ChangeNotifier {
   String? _country;
   bool _acceptedTerms = false;
 

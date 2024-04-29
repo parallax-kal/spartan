@@ -233,8 +233,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               .doc(userCredential.user!.uid)
                               .set({
                             'email': userCredential.user!.email,
-                            'name': userCredential.user!.displayName,
+                            'fullname': userCredential.user!.displayName,
                             'profile': userCredential.user!.photoURL,
+                            'unReadMessages': [],
                             'tokens': [token],
                           });
                           context.push('/location');
@@ -335,8 +336,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               .doc(userCredential.user!.uid)
                               .set({
                             'email': userCredential.user!.email,
-                            'name': userCredential.user!.displayName,
+                            'fullname': userCredential.user!.displayName,
                             'profile': userCredential.user!.photoURL,
+                            'unReadMessages': [],
                             'tokens': [token],
                           });
                           context.push('/location');

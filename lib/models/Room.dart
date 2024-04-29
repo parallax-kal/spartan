@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:spartan/models/Message.dart';
 import 'package:spartan/models/SpartanUser.dart';
 
@@ -8,8 +9,8 @@ class Room {
   List<String> invitedIds;
   bool private;
   List<String> acceptedIds = [];
-  DateTime lastMessageAt = DateTime.now();
-  DateTime createdAt = DateTime.now();
+  Timestamp lastMessageAt = Timestamp.now();
+  Timestamp createdAt = Timestamp.now();
 
   Room({
     required this.id,
@@ -27,11 +28,11 @@ class Room {
       id: json['id'],
       name: json['name'],
       profile: json['profile'],
-      invitedIds: List<String>.from(json['invitedIds']),
-      acceptedIds: List<String>.from(json['acceptedIds']),
+      invitedIds: List<String>.from(json['invitedIds'] ?? []),
+      acceptedIds: List<String>.from(json['acceptedIds'] ?? []),
       private: json['private'],
-      lastMessageAt: DateTime.parse(json['lastMessageAt']),
-      createdAt: DateTime.parse(json['createdAt']),
+      lastMessageAt: json['lastMessageAt'],
+      createdAt: json['createdAt'],
     );
   }
 
@@ -43,8 +44,8 @@ class Room {
       'invitedIds': invitedIds,
       'acceptedIds': acceptedIds,
       'private': private,
-      'lastMessageAt': lastMessageAt.toIso8601String(),
-      'createdAt': createdAt.toIso8601String(),
+      'lastMessageAt': lastMessageAt,
+      'createdAt': createdAt,
     };
   }
 }
@@ -97,7 +98,7 @@ class DisplayableRoom {
       }
     } else {
       return LastMessage(
-        unreadCount: user.unReadMessages
+        unreadCount: user.unReadMessages!
             .firstWhere((element) => element.roomId == room.id)
             .count,
         message: message.message,
