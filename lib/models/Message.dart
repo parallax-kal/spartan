@@ -1,6 +1,5 @@
 import 'package:reaction_askany/models/emotions.dart';
 
-
 class Message {
   String message;
   String sendBy;
@@ -10,9 +9,9 @@ class Message {
   String? audioUrl;
   String? fileUrl;
   String? location;
-  DateTime timestamp;
+  DateTime createdAt;
   String? replyMessage;
-  List<Emotions> emotions;
+  List<EmotionReply> emotionReplies;
   MessageStatus status;
 
   Message({
@@ -25,11 +24,10 @@ class Message {
     this.fileUrl,
     this.location,
     this.replyMessage,
-    this.emotions = const [],
+    this.emotionReplies = const [],
     this.status = MessageStatus.SENDING,
-    required this.timestamp,
+    required this.createdAt,
   });
-
 
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(
@@ -42,9 +40,12 @@ class Message {
       fileUrl: json['fileUrl'],
       location: json['location'],
       replyMessage: json['replyMessage'],
-      emotions: (json['emotions'] as List<dynamic>).map((x) => Emotions.values.firstWhere((e) => e.toString() == x)).toList(),
-      status: MessageStatus.values.firstWhere((e) => e.toString() == json['status']),
-      timestamp: json['timestamp'].toDate(),
+      emotionReplies: (json['emotionReplies'] as List<dynamic>)
+          .map((e) => EmotionReply.fromJson(e))
+          .toList(),
+      status: MessageStatus.values
+          .firstWhere((e) => e.toString() == json['status']),
+      createdAt: json['createdAt'].toDate(),
     );
   }
 
@@ -59,9 +60,34 @@ class Message {
       'fileUrl': fileUrl,
       'location': location,
       'replyMessage': replyMessage,
-      'emotions': emotions.map((e) => e.toString()).toList(),
+      'emotionReplies': emotionReplies.map((e) => e.toJson()).toList(),
       'status': status.toString(),
-      'timestamp': timestamp,
+      'createdAt': createdAt,
+    };
+  }
+}
+
+class EmotionReply {
+  final String userId;
+  final Emotions emotion;
+
+  EmotionReply({
+    required this.userId,
+    required this.emotion,
+  });
+
+  factory EmotionReply.fromJson(Map<String, dynamic> json) {
+    return EmotionReply(
+      userId: json['userId'],
+      emotion:
+          Emotions.values.firstWhere((e) => e.toString() == json['emotion']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'userId': userId,
+      'emotion': emotion.toString(),
     };
   }
 }

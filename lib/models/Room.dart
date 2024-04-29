@@ -1,4 +1,3 @@
-import 'package:reaction_askany/models/emotions.dart';
 import 'package:spartan/models/Message.dart';
 import 'package:spartan/models/SpartanUser.dart';
 
@@ -9,14 +8,18 @@ class Room {
   List<String> invitedIds;
   bool private;
   List<String> acceptedIds = [];
+  DateTime lastMessageAt = DateTime.now();
+  DateTime createdAt = DateTime.now();
 
   Room({
     required this.id,
     required this.name,
     required this.profile,
+    required this.private,
     this.invitedIds = const [],
     this.acceptedIds = const [],
-    required this.private,
+    required this.lastMessageAt,
+    required this.createdAt,
   });
 
   factory Room.fromJson(Map<String, dynamic> json) {
@@ -27,6 +30,8 @@ class Room {
       invitedIds: List<String>.from(json['invitedIds']),
       acceptedIds: List<String>.from(json['acceptedIds']),
       private: json['private'],
+      lastMessageAt: DateTime.parse(json['lastMessageAt']),
+      createdAt: DateTime.parse(json['createdAt']),
     );
   }
 
@@ -38,6 +43,8 @@ class Room {
       'invitedIds': invitedIds,
       'acceptedIds': acceptedIds,
       'private': private,
+      'lastMessageAt': lastMessageAt.toIso8601String(),
+      'createdAt': createdAt.toIso8601String(),
     };
   }
 }
@@ -61,14 +68,14 @@ class DisplayableRoom {
           message: message.message,
           sendBy: message.sendBy,
           type: message.type,
-          timestamp: message.timestamp,
+          createdAt: message.createdAt,
           imageUrl: message.imageUrl,
           videoUrl: message.videoUrl,
           audioUrl: message.audioUrl,
           fileUrl: message.fileUrl,
           location: message.location,
           replyMessage: message.replyMessage,
-          emotions: message.emotions,
+          emotionReplies: message.emotionReplies,
           status: message.status,
         );
       } else {
@@ -77,14 +84,14 @@ class DisplayableRoom {
           message: message.message,
           sendBy: message.sendBy,
           type: message.type,
-          timestamp: message.timestamp,
+          createdAt: message.createdAt,
           imageUrl: message.imageUrl,
           videoUrl: message.videoUrl,
           audioUrl: message.audioUrl,
           fileUrl: message.fileUrl,
           location: message.location,
           replyMessage: message.replyMessage,
-          emotions: message.emotions,
+          emotionReplies: message.emotionReplies,
           status: MessageStatus.SENT,
         );
       }
@@ -96,14 +103,14 @@ class DisplayableRoom {
         message: message.message,
         sendBy: message.sendBy,
         type: message.type,
-        timestamp: message.timestamp,
+        createdAt: message.createdAt,
         imageUrl: message.imageUrl,
         videoUrl: message.videoUrl,
         audioUrl: message.audioUrl,
         fileUrl: message.fileUrl,
         location: message.location,
         replyMessage: message.replyMessage,
-        emotions: message.emotions,
+        emotionReplies: message.emotionReplies,
         status: message.status,
       );
     }
@@ -118,14 +125,14 @@ class LastMessage extends Message {
     required super.message,
     required super.sendBy,
     required super.type,
-    required super.timestamp,
+    required super.createdAt,
     super.imageUrl,
     super.videoUrl,
     super.audioUrl,
     super.fileUrl,
     super.location,
     super.replyMessage,
-    super.emotions,
+    super.emotionReplies,
     required super.status,
   });
 }
