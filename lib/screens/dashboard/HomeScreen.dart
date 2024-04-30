@@ -116,14 +116,14 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ],
                           ),
-                          contentPadding: EdgeInsets.all(15),
+                          contentPadding: const EdgeInsets.all(15),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
                           backgroundColor: Colors.white,
                           surfaceTintColor: Colors.white,
                           elevation: 7.3,
-                          shadowColor: Color(0xFF000000).withOpacity(0.4),
+                          shadowColor: const Color(0xFF000000).withOpacity(0.4),
                           children: [
                             const SizedBox(
                               height: 10,

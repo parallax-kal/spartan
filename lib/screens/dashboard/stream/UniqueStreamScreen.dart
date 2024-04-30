@@ -94,7 +94,7 @@ class _UniqueStreamScreenState extends State<UniqueStreamScreen> {
                         SvgPicture.asset('assets/icons/filter.svg'),
                       ],
                     ),
-                    Text(
+                    const Text(
                       'Event viewer',
                       style: TextStyle(
                         color: Color(0xFF004A87),

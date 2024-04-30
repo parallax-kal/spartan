@@ -53,6 +53,32 @@ class SpartanUser {
       'unReadMessages': unReadMessages?.map((x) => x.toJson()).toList(),
     };
   }
+
+  SpartanUser copyWith({
+    String? id,
+    String? fullname,
+    String? email,
+    String? profile,
+    List<String>? tokens,
+    bool? terms,
+    String? country,
+    List<UnReadMessage>? unReadMessages,
+    bool? community,
+    bool? isOnline,
+  }) {
+    return SpartanUser(
+      id: id ?? this.id,
+      fullname: fullname ?? this.fullname,
+      email: email ?? this.email,
+      profile: profile ?? this.profile,
+      tokens: tokens ?? this.tokens,
+      terms: terms ?? this.terms,
+      country: country ?? this.country,
+      unReadMessages: unReadMessages ?? this.unReadMessages,
+      community: community ?? this.community,
+      isOnline: isOnline ?? this.isOnline,
+    );
+  }
 }
 
 class UnReadMessage {

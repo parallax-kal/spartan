@@ -378,7 +378,7 @@ class SpartanApp extends StatefulWidget {
         listen: false,
       );
 
-      if (currentSpartanUserNotifier.user == null) {
+      if (currentSpartanUserNotifier.currentSpartanUser == null) {
         final user = await firestore
             .collection('users')
             .doc(auth.currentUser!.uid)
@@ -468,12 +468,12 @@ class SpartanApp extends StatefulWidget {
                 listen: false,
               );
 
-              if (currentSpartanUserNotifier.user == null) {
+              if (currentSpartanUserNotifier.currentSpartanUser == null) {
                 return '/login';
               }
 
               if (state.fullPath == '/chat') {
-                if (currentSpartanUserNotifier.user!.community == true) {
+                if (currentSpartanUserNotifier.currentSpartanUser!.community == true) {
                   return '/chat/rooms';
                 } else {
                   return '/chat/join-community';

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/models/Message.dart';
 import 'package:spartan/models/SpartanUser.dart';
 
@@ -11,6 +12,7 @@ class Room {
   List<String> acceptedIds = [];
   Timestamp lastMessageAt = Timestamp.now();
   Timestamp createdAt = Timestamp.now();
+  int totalMembers = 0;
 
   Room({
     required this.id,
@@ -47,6 +49,20 @@ class Room {
       'lastMessageAt': lastMessageAt,
       'createdAt': createdAt,
     };
+  }
+
+  Future getTotalMembers() async {
+    if (id == 'spartan_global') {
+      await firestore
+          .collection('users')
+          .where('community', isEqualTo: true)
+          .get()
+          .then((value) {
+        totalMembers = value.docs.length;
+      });
+    } else {
+      totalMembers = acceptedIds.length;
+    }
   }
 }
 

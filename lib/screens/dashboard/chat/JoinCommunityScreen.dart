@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/models/Room.dart';
 import 'package:spartan/notifiers/CurrentRoomNotifier.dart';
+import 'package:spartan/notifiers/CurrentSpartanUserNotifier.dart';
 import 'package:spartan/services/loading.dart';
 import 'package:spartan/services/toast.dart';
 
@@ -22,7 +23,8 @@ class _JoinCommunityScreenState extends State<JoinCommunityScreen> {
   Widget build(BuildContext context) {
     CurrentRoomNotifier currentRoomNotifier =
         Provider.of<CurrentRoomNotifier>(context);
-    LoadingService loadingService = LoadingService(context);
+    CurrentSpartanUserNotifier currentSpartanUserNotifier =
+        Provider.of<CurrentSpartanUserNotifier>(context);
     ToastService toastService = ToastService(context);
 
     return Scaffold(
@@ -54,6 +56,7 @@ class _JoinCommunityScreenState extends State<JoinCommunityScreen> {
                 showDialog(
                   context: context,
                   builder: (context) {
+                    LoadingService loadingService = LoadingService(context);
                     return SimpleDialog(
                       titlePadding:
                           const EdgeInsets.only(left: 30, right: 30, top: 30),
@@ -116,33 +119,39 @@ class _JoinCommunityScreenState extends State<JoinCommunityScreen> {
                               child: GestureDetector(
                                 onTap: () async {
                                   try {
-                                    // loadingService.show();
-                                    final room = await firestore
+                                    loadingService.show();
+                                    final room_fire = await firestore
                                         .collection('rooms')
                                         .doc('spartan_global')
                                         .get();
+
                                     await firestore
                                         .collection('users')
                                         .doc(auth.currentUser!.uid)
-                                        .update({
-                                      'community': true,
-                                    });
-                                    currentRoomNotifier
-                                        .setCurrentRoom(Room.fromJson({
-                                      'id': 'spartan_global',
-                                      ...room.data()!,
-                                    }));
+                                        .update({'community': true});
 
-                                    // loadingService.hide();
+                                    Room room =
+                                        Room.fromJson(room_fire.data()!);
+                                    await room.getTotalMembers();
+                                    currentSpartanUserNotifier
+                                        .setCurrentSpartanUser(
+                                      currentSpartanUserNotifier
+                                          .currentSpartanUser!
+                                          .copyWith(community: true),
+                                    );
+
+                                    currentRoomNotifier.setCurrentRoom(room);
                                     toastService.showSuccessToast(
                                         'Joined Spartan Global Communty');
-                                     GoRouter.of(context).push('/chat/messages');
+                                    GoRouter.of(context).push('/chat/messages');
                                   } catch (error) {
                                     print(error);
                                     String message =
                                         displayErrorMessage(error as Exception);
-                                    loadingService.hide();
                                     toastService.showErrorToast(message);
+                                  } finally {
+                                    loadingService.hide();
+                                    Navigator.of(context).pop();
                                   }
                                 },
                                 child: Container(
