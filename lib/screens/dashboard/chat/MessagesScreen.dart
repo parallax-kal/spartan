@@ -89,7 +89,9 @@ class _MessagesScreenState extends State<MessagesScreen> {
             onRecordEnd: (path) {
               print('AUDIO PATH : ' + path!);
             },
-           
+           actions: [
+            
+           ],
           ),
         ],
       ),
