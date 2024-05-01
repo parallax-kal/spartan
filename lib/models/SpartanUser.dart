@@ -4,8 +4,8 @@ class SpartanUser {
   String email;
   String profile;
   List<String> tokens;
-  bool terms;
-  String country;
+  bool? terms;
+  String? country;
   List<UnReadMessage>? unReadMessages;
   bool? community;
   bool? isOnline;
@@ -17,8 +17,8 @@ class SpartanUser {
     required this.email,
     required this.profile,
     required this.tokens,
-    required this.country,
-    required this.terms,
+     this.country,
+     this.terms,
     this.isOnline = false,
     this.community = false,
     this.unReadMessages = const [],

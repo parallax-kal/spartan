@@ -33,6 +33,7 @@ import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -369,7 +370,14 @@ class SpartanApp extends StatefulWidget {
 
       final userAutheticated = auth.currentUser != null;
       if (!userAutheticated && !public_routes.contains(state.fullPath)) {
-        return '/login';
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
+        if (isFirstTime) {
+          await prefs.setBool('isFirstTime', false);
+          return '/register';
+        } else {
+          return '/login';
+        }
       }
 
       CurrentSpartanUserNotifier currentSpartanUserNotifier =
@@ -473,7 +481,8 @@ class SpartanApp extends StatefulWidget {
               }
 
               if (state.fullPath == '/chat') {
-                if (currentSpartanUserNotifier.currentSpartanUser!.community == true) {
+                if (currentSpartanUserNotifier.currentSpartanUser!.community ==
+                    true) {
                   return '/chat/rooms';
                 } else {
                   return '/chat/join-community';
