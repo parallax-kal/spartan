@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spartan/constants/global.dart';
 import 'package:spartan/services/auth.dart';
 import 'package:spartan/services/loading.dart';
 import 'package:spartan/services/toast.dart';
@@ -28,7 +29,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currentYear = DateTime.now().year;
     AuthService authService = AuthService();
     ToastService toastService = ToastService(context);
     LoadingService loadingService = LoadingService(context);
@@ -501,7 +501,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         height: 30,
                       ),
                       Text(
-                        'Copyright \u00a9$currentYear Spartans Inc. All rights reserved.',
+                        copyrightText,
                         style: const TextStyle(
                           color: Color(0xFF3A3A3A),
                           fontSize: 12,

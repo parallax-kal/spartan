@@ -11,7 +11,12 @@ const locales = [
   // Locale('ja', 'JP'), // Japanese
 ];
 
-const public_routes = ['/login', '/register', '/forgot-password'];
+const publicRoutes = ['/login', '/register', '/forgot-password'];
+
+String copyrightText =
+    'Copyright \u00a9${DateTime.now().year} Spartans Inc. All rights reserved.';
+
+const termsandconditonstext = '''We are Spartan ('Company', 'we', 'us', or 'our'), a company registered in Rwanda at kigali, kigali 00000. Our VAT number is GB999 9999 99, SE999999999901.We operate the mobile application Spartan (the 'App'), as well as any other related products and services that refer or link to these legal terms (the 'Legal Terms') (collectively, the 'Services').Provide parents with a reliable, technologically advanced solution that addresses multiple risk factors associated with SIDS, offers peace of mind, and supports better sleep for both children and parents.You can contact us by phone at +250 792 390 788, email at spartan@gmail.com, or by mail to kigali, kigali 00000, Rwanda.These Legal Terms constitute a legally binding agreement made between you, whether personally or on behalf of an entity ('you'), and Spartan, concerning your access to and use of the Services. You agree that by accessing the Services, you have read, understood, and agreed to be bound by all of these Legal Terms. IF YOU DO NOT AGREE WITH ALL OF THESE LEGAL TERMS, THEN YOU ARE EXPRESSLY PROHIBITED FROM USING THE SERVICES AND YOU MUST DISCONTINUE USE IMMEDIATELY.We will provide you with prior notice of any scheduled changes to the Services you are using. The modified Legal Terms will become effective upon posting or notifying you by spartan@gmail.com, as stated in the email message. By continuing to use the Services after the effective date of any changes, you agree to be bound by the modified terms.The Services are intended for users who are at least 13 years of age. All users who are minors in the jurisdiction in which they reside (generally under the age of 18) must have the permission of, and be directly supervised by, their parent or guardian to use the Services. If you are a minor, you must have your parent or guardian read and agree to these Legal Terms prior to you using the Services.We recommend that you print a copy of these Legal Terms for your records.''';
 
 const countries = [
   "Afghanistan",
@@ -20,7 +25,7 @@ const countries = [
   "Andorra",
   "Angola",
   "Anguilla",
-  "Antigua &amp; Barbuda",
+  "Antigua & Barbuda",
   "Argentina",
   "Armenia",
   "Aruba",
@@ -38,7 +43,7 @@ const countries = [
   "Bermuda",
   "Bhutan",
   "Bolivia",
-  "Bosnia &amp; Herzegovina",
+  "Bosnia & Herzegovina",
   "Botswana",
   "Brazil",
   "British Virgin Islands",
@@ -169,7 +174,7 @@ const countries = [
   "Romania",
   "Russia",
   "Rwanda",
-  "Saint Pierre &amp; Miquelon",
+  "Saint Pierre & Miquelon",
   "Samoa",
   "San Marino",
   "Satellite",
@@ -185,7 +190,7 @@ const countries = [
   "South Korea",
   "Spain",
   "Sri Lanka",
-  "St Kitts &amp; Nevis",
+  "St Kitts & Nevis",
   "St Lucia",
   "St Vincent",
   "St. Lucia",
@@ -202,11 +207,11 @@ const countries = [
   "Timor L'Este",
   "Togo",
   "Tonga",
-  "Trinidad &amp; Tobago",
+  "Trinidad & Tobago",
   "Tunisia",
   "Turkey",
   "Turkmenistan",
-  "Turks &amp; Caicos",
+  "Turks & Caicos",
   "Uganda",
   "Ukraine",
   "United Arab Emirates",

@@ -8,7 +8,8 @@ import 'package:spartan/notifiers/CountryTermsNotifier.dart';
 import 'package:spartan/screens/auth/LoginScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:spartan/screens/auth/RegisterScreen.dart';
-import 'package:spartan/screens/auth/Terms.dart';
+import 'package:spartan/screens/auth/TermsAndConditions.dart';
+import 'package:spartan/screens/auth/TermsOfService.dart';
 import 'package:spartan/screens/dashboard/chat/JoinCommunityScreen.dart';
 import 'package:spartan/screens/dashboard/HomeScreen.dart';
 import 'package:spartan/screens/dashboard/ProfileScreen.dart';
@@ -364,12 +365,12 @@ class SpartanApp extends StatefulWidget {
     initialLocation: '/',
     navigatorKey: rootNavigatorKey,
     redirect: (context, state) async {
-      if (public_routes.contains(state.fullPath)) {
+      if (publicRoutes.contains(state.fullPath)) {
         return null;
       }
 
       final userAutheticated = auth.currentUser != null;
-      if (!userAutheticated && !public_routes.contains(state.fullPath)) {
+      if (!userAutheticated && !publicRoutes.contains(state.fullPath)) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
         if (isFirstTime) {
@@ -599,7 +600,7 @@ class SpartanApp extends StatefulWidget {
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return SlideTransition(
               position: Tween<Offset>(
-                begin: const Offset(0, 1),
+                begin: const Offset(1, 0),
                 end: Offset.zero,
               ).animate(animation),
               child: child,
@@ -608,15 +609,32 @@ class SpartanApp extends StatefulWidget {
         ),
       ),
       GoRoute(
-        path: '/terms',
+        path: '/terms-of-service',
         parentNavigatorKey: rootNavigatorKey,
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
-          child: const Terms(),
+          child: const TermsOfService(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return SlideTransition(
               position: Tween<Offset>(
-                begin: const Offset(0, 1),
+                begin: const Offset(1, 0),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            );
+          },
+        ),
+      ),
+      GoRoute(
+        path: '/terms-and-conditions',
+        parentNavigatorKey: rootNavigatorKey,
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const TermsAndConditions(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(1, 0),
                 end: Offset.zero,
               ).animate(animation),
               child: child,

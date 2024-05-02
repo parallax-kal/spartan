@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/constants/global.dart';
@@ -22,15 +23,19 @@ class _CountryScreenState extends State<CountryScreen> {
       if (countries[i][0] == firstLetter) {
         temp.add(countries[i]);
       } else {
-        sorted.add(firstLetter);
-        sortedCountries.add({firstLetter: temp});
+        if (temp.isNotEmpty) {
+          sorted.add(firstLetter);
+          sortedCountries.add({firstLetter: temp});
+        }
         temp = [];
         firstLetter = countries[i][0];
         temp.add(countries[i]);
       }
     }
-    sorted.add(firstLetter);
-    sortedCountries.add({firstLetter: temp});
+    if (temp.isNotEmpty) {
+      sorted.add(firstLetter);
+      sortedCountries.add({firstLetter: temp});
+    }
     return sortedCountries;
   }
 
@@ -40,7 +45,8 @@ class _CountryScreenState extends State<CountryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    CountryAndTermsNotifier usermodel = Provider.of<CountryAndTermsNotifier>(context, listen: false);
+    CountryAndTermsNotifier usermodel =
+        Provider.of<CountryAndTermsNotifier>(context, listen: false);
 
     return Scaffold(
       backgroundColor: const Color(0xFF908E8E),
@@ -79,11 +85,20 @@ class _CountryScreenState extends State<CountryScreen> {
             ),
             child: Stack(
               children: [
+                Positioned(
+                  right: 20,
+                  top: 45,
+                  child: SvgPicture.asset(
+                    'assets/icons/location.svg',
+                    width: 15,
+                    height: 15,
+                  ),
+                ),
                 Column(
                   children: [
                     Padding(
                       padding:
-                          const EdgeInsets.only(top: 30, left: 20, right: 20),
+                          const EdgeInsets.only(top: 30, left: 30, right: 40),
                       child: TextFormField(
                         onChanged: (value) {
                           setState(() {
@@ -91,18 +106,22 @@ class _CountryScreenState extends State<CountryScreen> {
                           });
                         },
                         decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 18,
+                          contentPadding: EdgeInsets.only(
+                            right: 18,
+                            left: 25,
                           ),
                           hintText: 'Search',
-                          prefixIcon: Icon(Icons.search),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(6)),
-                            borderSide: BorderSide(color: Color(0xFFDDDDDD)),
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide:
+                                BorderSide(color: Color(0xFFDDDDDD), width: 1),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(6)),
-                            borderSide: BorderSide(color: Color(0xFF0C3D6B)),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                            borderSide:
+                                BorderSide(color: Color(0xFF0C3D6B), width: 1),
                           ),
                         ),
                       ),
@@ -111,6 +130,7 @@ class _CountryScreenState extends State<CountryScreen> {
                       child: ListView.builder(
                         controller: scrollController,
                         itemCount: sortCountries(countries).length,
+                        padding: const EdgeInsets.only(bottom: 70),
                         itemBuilder: (context, index) {
                           String key =
                               sortCountries(countries)[index].keys.first;
@@ -128,17 +148,18 @@ class _CountryScreenState extends State<CountryScreen> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(
-                                    left: 16.0,
-                                    top: 8.0,
-                                    right: 8.0,
-                                    bottom: 8.0),
+                                  left: 16.0,
+                                  top: 8.0,
+                                  right: 8.0,
+                                  bottom: 8.0,
+                                ),
                                 child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
                                     key,
                                     style: const TextStyle(
                                       color: Color(0XFF908E8E),
-                                      fontSize: 15,
+                                      fontSize: 12,
                                     ),
                                   ),
                                 ),
@@ -147,23 +168,40 @@ class _CountryScreenState extends State<CountryScreen> {
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
                                 itemCount: filteredValue.length,
+                                padding: const EdgeInsets.only(left: 30),
                                 itemBuilder: (context, index) {
-                                  return ListTile(
-                                    onTap: () {
-                                      setState(() {
-                                        selectedCountry = filteredValue[index];
-                                      });
-                                    },
-                                    title: Text(filteredValue[index]),
-                                    leading: Radio(
-                                      value: filteredValue[index],
-                                      groupValue: selectedCountry,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          selectedCountry = value.toString();
-                                        });
-                                      },
-                                    ),
+                                  return Column(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            selectedCountry =
+                                                filteredValue[index];
+                                          });
+                                        },
+                                        child: Row(
+                                          children: [
+                                            SvgPicture.asset(
+                                              selectedCountry == filteredValue[index] ?
+                                              'assets/icons/checked.svg' :
+                                                'assets/icons/circle.svg'),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              filteredValue[index],
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
                                   );
                                 },
                               ),
@@ -201,7 +239,7 @@ class _CountryScreenState extends State<CountryScreen> {
                           return;
                         }
                         usermodel.setCountry(selectedCountry!);
-                        context.push('/terms');
+                        context.push('/terms-of-service');
                       },
                       child: const Text(
                         'Save',
