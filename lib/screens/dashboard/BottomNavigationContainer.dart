@@ -129,8 +129,14 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
       appBar: !noAppbarScreens.contains(widget.path)
           ? AppBar(
               backgroundColor: Colors.white,
-              leading: Image.asset('assets/images/logo.png'),
-              leadingWidth: 160,
+              surfaceTintColor: Colors.white,
+              leading: Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: Image.asset(
+                  'assets/images/logo.png',
+                ),
+              ),
+              leadingWidth: 110,
               actions: [
                 Badge(
                   child: SvgPicture.asset('assets/icons/notifications.svg'),
