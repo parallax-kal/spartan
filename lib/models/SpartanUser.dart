@@ -97,6 +97,9 @@ class UnReadMessage {
     );
   }
 
+  static int getRoomUnReadMessages(String roomId, List<UnReadMessage>? unReadMessages) {
+    return unReadMessages?.firstWhere((element) => element.roomId == roomId).count ?? 0;
+  }
   Map<String, dynamic> toJson() {
     return {
       'roomId': roomId,

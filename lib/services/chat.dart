@@ -28,7 +28,7 @@ class ChatService {
         .snapshots();
   }
 
-   Stream<QuerySnapshot<Map<String, dynamic>>> getRooms() {
+  Stream<QuerySnapshot<Map<String, dynamic>>> getRooms() {
     // use auth.currentUser.uid to get the rooms of the current user
     return firestore
         .collection('rooms')
@@ -39,8 +39,6 @@ class ChatService {
         .orderBy('lastMessageAt', descending: true)
         .snapshots();
   }
-
-
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getMessages(
       String roomId) {
@@ -59,5 +57,10 @@ class ChatService {
         .orderBy('createdAt', descending: true)
         .limit(1)
         .snapshots();
+  }
+
+  static Stream<DocumentSnapshot<Map<String, dynamic>>>
+      getUnreadRoomMessages() {
+    return firestore.collection('users').doc(auth.currentUser!.uid).snapshots();
   }
 }

@@ -14,28 +14,27 @@ class UniqueStreamScreen extends StatefulWidget {
 }
 
 class _UniqueStreamScreenState extends State<UniqueStreamScreen> {
+  Future _changeStatus() async {
+    await CribService.updateCrib('spartan_crib_12343234232', {
+      'status': false,
+    });
+  }
+
   @override
   void initState() {
     super.initState();
 
-    Timer.periodic(const Duration(seconds: 10), (timer) async {
-      // if (!mounted) {
-      //   timer.cancel();
-      //   return;
-      // }
+    Timer.run(() async {
+      if (!mounted) {
+        return;
+      }
+
+      print('checking');
 
       try {
-        final value =
-            await http.get(Uri.parse('http://192.168.43.68:8000/check'));
-        if (value.body != 'checked') {
-          await CribService.updateCrib(
-              'spartan_crib_12343234232', {'status': false});
-          if (!mounted) return;
-          Navigator.pop(context);
-        }
+        await http.get(Uri.parse('http://192.168.43.68:8000/check'));
       } catch (error) {
-        await CribService.updateCrib(
-            'spartan_crib_12343234232', {'status': false});
+        await _changeStatus();
         if (!mounted) return;
         Navigator.pop(context);
       }
@@ -47,11 +46,9 @@ class _UniqueStreamScreenState extends State<UniqueStreamScreen> {
     final spartancamera = WebViewController()
       ..setNavigationDelegate(
           NavigationDelegate(onPageFinished: (String url) async {
-        await CribService.updateCrib('spartan_crib_12343234232', {
-          'status': false,
-        });
+        await _changeStatus();
+        if (!mounted) return;
         Navigator.pop(context);
-        print(url);
       }))
       ..loadRequest(
         Uri.parse('http://192.168.43.68:8000/stream.mjpg'),

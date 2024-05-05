@@ -155,26 +155,48 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
         child: widget.child,
       ),
       bottomNavigationBar: !noBottomNavScreens.contains(widget.path)
-          ? CurvedNavigationBar(
-              key: _bottomNavigationKey,
-              index: _currentIndex,
-              items: tabs.map((tab) {
-                return CurvedNavigationBarItem(
-                  child: tab.initialLocation.paths.contains(widget.path)
-                      ? tab.activeChild
-                      : tab.child,
-                  label: tab.label,
-                );
-              }).toList(),
-              color: Colors.white,
-              buttonBackgroundColor: const Color(0xFF002E58),
-              backgroundColor: Colors.white,
-              animationCurve: Curves.easeInOut,
-              animationDuration: const Duration(milliseconds: 600),
-              onTap: (index) {
-                _changeTab(context, index);
-              },
-              letIndexChange: (index) => true,
+          ?
+           Container(
+            height: 72,
+              padding: const EdgeInsets.only(top: 15, left: 5, right: 5),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(34),
+                  topRight: Radius.circular(34),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    spreadRadius: 1,
+                    blurRadius: 11,
+                    offset: const Offset(0, 0),
+                  )
+                ],
+              ),
+              child:
+               CurvedNavigationBar(
+                key: _bottomNavigationKey,
+                height: 74,
+                color: Colors.transparent,
+                index: _currentIndex,
+                items: tabs.map((tab) {
+                  return CurvedNavigationBarItem(
+                    child: tab.initialLocation.paths.contains(widget.path)
+                        ? tab.activeChild
+                        : tab.child,
+                    label: tab.label,
+                  );
+                }).toList(),
+                buttonBackgroundColor: const Color(0xFF002E58),
+                backgroundColor: Colors.white,
+                animationCurve: Curves.easeInOut,
+                animationDuration: const Duration(milliseconds: 600),
+                onTap: (index) {
+                  _changeTab(context, index);
+                },
+                letIndexChange: (index) => true,
+              )
             )
           : null,
     );

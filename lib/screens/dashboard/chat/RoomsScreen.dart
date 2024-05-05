@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:spartan/models/Message.dart';
 import 'package:spartan/models/Room.dart';
+import 'package:spartan/models/SpartanUser.dart';
+import 'package:spartan/notifiers/CurrentSpartanUserNotifier.dart';
 import 'package:spartan/services/chat.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -16,6 +20,8 @@ class RoomsScreen extends StatefulWidget {
 class _RoomsScreenState extends State<RoomsScreen> {
   @override
   Widget build(BuildContext context) {
+    CurrentSpartanUserNotifier currentSpartanUserNotifier =
+        Provider.of<CurrentSpartanUserNotifier>(context, listen: true);
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -147,11 +153,76 @@ class _RoomsScreenState extends State<RoomsScreen> {
                               leading: CircleAvatar(
                                 backgroundImage: NetworkImage(room.profile),
                               ),
-                              subtitle: Text(room.profile),
-                              trailing: Text(
-                                DateFormat('hh:mm a').format(
-                                  room.lastMessageAt.toDate(),
-                                ),
+                              subtitle: StreamBuilder(
+                                stream: ChatService.getLastMessage(room.id),
+                                builder: (context, snapshot) {
+                                  switch (snapshot.connectionState) {
+                                    case ConnectionState.waiting:
+                                    case ConnectionState.none:
+                                      return const Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    case ConnectionState.active:
+                                    case ConnectionState.done:
+                                      final lastMessage =
+                                          snapshot.data?.docs.first;
+                                      if (lastMessage == null) {
+                                        return const Text('No messages yet');
+                                      }
+                                      Message message = Message.fromJson({
+                                        'id': lastMessage.id,
+                                        ...lastMessage.data(),
+                                      });
+
+                                      return Text(
+                                        message.message,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        style: const TextStyle(
+                                          color: Colors.grey,
+                                        ),
+                                      );
+                                  }
+                                },
+                              ),
+                              trailing: Column(
+                                children: [
+                                  Text(
+                                    DateFormat('hh:mm a').format(
+                                      room.lastMessageAt.toDate(),
+                                    ),
+                                  ),
+                                  StreamBuilder(
+                                      stream:
+                                          ChatService.getUnreadRoomMessages(),
+                                      builder: (context, snapshot) {
+                                        switch (snapshot.connectionState) {
+                                          case ConnectionState.waiting:
+                                          case ConnectionState.none:
+                                            return const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          case ConnectionState.active:
+                                          case ConnectionState.done:
+                                            if (snapshot.data == null) {
+                                              return Container();
+                                            }
+                                            SpartanUser spartanUser =
+                                                SpartanUser.fromJson({
+                                              'id': snapshot.data!.id,
+                                              ...?snapshot.data!.data(),
+                                            });
+                                            int count = UnReadMessage
+                                                .getRoomUnReadMessages(room.id,
+                                                    spartanUser.unReadMessages);
+                                            if (count == 0) {
+                                              return Container();
+                                            }
+                                            return Text(count.toString());
+                                        }
+                                      })
+                                ],
                               ),
                               onTap: () {
                                 // GoRouter.of(context).push('/chat/${room.id}');
