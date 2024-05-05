@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:spartan/constants/firebase.dart';
-import 'package:spartan/models/Message.dart';
-import 'package:spartan/models/SpartanUser.dart';
 
 class Room {
   String id;
@@ -64,92 +62,4 @@ class Room {
       totalMembers = acceptedIds.length;
     }
   }
-}
-
-class DisplayableRoom {
-  final Room room;
-  final SpartanUser user;
-  final Message message;
-
-  DisplayableRoom({
-    required this.room,
-    required this.user,
-    required this.message,
-  });
-
-  LastMessage lastMessage() {
-    if (message.sendBy == user.id) {
-      if (room.id.contains(user.id)) {
-        return LastMessage(
-          unreadCount: 0,
-          message: message.message,
-          sendBy: message.sendBy,
-          type: message.type,
-          createdAt: message.createdAt,
-          imageUrl: message.imageUrl,
-          videoUrl: message.videoUrl,
-          audioUrl: message.audioUrl,
-          fileUrl: message.fileUrl,
-          location: message.location,
-          replyMessage: message.replyMessage,
-          emotionReplies: message.emotionReplies,
-          status: message.status,
-        );
-      } else {
-        return LastMessage(
-          unreadCount: 0,
-          message: message.message,
-          sendBy: message.sendBy,
-          type: message.type,
-          createdAt: message.createdAt,
-          imageUrl: message.imageUrl,
-          videoUrl: message.videoUrl,
-          audioUrl: message.audioUrl,
-          fileUrl: message.fileUrl,
-          location: message.location,
-          replyMessage: message.replyMessage,
-          emotionReplies: message.emotionReplies,
-          status: MessageStatus.SENT,
-        );
-      }
-    } else {
-      return LastMessage(
-        unreadCount: user.unReadMessages!
-            .firstWhere((element) => element.roomId == room.id)
-            .count,
-        message: message.message,
-        sendBy: message.sendBy,
-        type: message.type,
-        createdAt: message.createdAt,
-        imageUrl: message.imageUrl,
-        videoUrl: message.videoUrl,
-        audioUrl: message.audioUrl,
-        fileUrl: message.fileUrl,
-        location: message.location,
-        replyMessage: message.replyMessage,
-        emotionReplies: message.emotionReplies,
-        status: message.status,
-      );
-    }
-  }
-}
-
-class LastMessage extends Message {
-  final int unreadCount;
-
-  LastMessage({
-    required this.unreadCount,
-    required super.message,
-    required super.sendBy,
-    required super.type,
-    required super.createdAt,
-    super.imageUrl,
-    super.videoUrl,
-    super.audioUrl,
-    super.fileUrl,
-    super.location,
-    super.replyMessage,
-    super.emotionReplies,
-    required super.status,
-  });
 }

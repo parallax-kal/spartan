@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spartan/screens/dashboard/BottomNavigationContainer.dart';
+import 'package:spartan/notifiers/CurrentSpartanUserNotifier.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -50,6 +52,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    CurrentSpartanUserNotifier currentSpartanUser =
+        Provider.of<CurrentSpartanUserNotifier>(context, listen: false);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -60,9 +64,12 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                constraints: BoxConstraints(
-                  minHeight: MediaQuery.of(context).size.height - 335,
-                ),
+                constraints:
+                    currentSpartanUser.currentSpartanUser?.community == true
+                        ? null
+                        : BoxConstraints(
+                            minHeight: MediaQuery.of(context).size.height - 335,
+                          ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -97,168 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       onPressed: () {
-                        showDialog(
-                          barrierColor: Colors.black.withOpacity(0.3),
-                          context: context,
-                          builder: (BuildContext context) {
-                            return SimpleDialog(
-                              title: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    'Device onboarding options',
-                                    style: TextStyle(
-                                        color: Color(0xFF002E58),
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 14),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: SvgPicture.asset(
-                                      'assets/icons/dialog_close.svg',
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              contentPadding: const EdgeInsets.all(15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              backgroundColor: Colors.white,
-                              surfaceTintColor: Colors.white,
-                              elevation: 7.3,
-                              shadowColor:
-                                  const Color(0xFF000000).withOpacity(0.4),
-                              children: [
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Column(
-                                  children: deviceAddingOptions
-                                      .map(
-                                        (e) => Column(
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
-                                              children: e
-                                                  .map((option) => InkWell(
-                                                        onTap: () async {
-                                                          if (option.label ==
-                                                              'Manual') {
-                                                            GoRouter.of(context)
-                                                                .push(
-                                                                    '/home/manual');
-                                                          } else if (option
-                                                                  .label ==
-                                                              'QR Code') {
-                                                            GoRouter.of(context)
-                                                                .push(
-                                                                    '/home/qrcode');
-                                                          } else if (option
-                                                                  .label ==
-                                                              'Wi-Fi') {
-                                                            GoRouter.of(context)
-                                                                .push(
-                                                                    '/home/wifi');
-                                                          } else if (option
-                                                                  .label ==
-                                                              'Bluetooth') {
-                                                            GoRouter.of(context)
-                                                                .push(
-                                                                    '/home/bluetooth');
-                                                          }
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        },
-                                                        child: Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(15),
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.26,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: Colors.white,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10),
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                color: const Color(
-                                                                        0xFF000000)
-                                                                    .withOpacity(
-                                                                        0.1),
-                                                                offset:
-                                                                    const Offset(
-                                                                        0, 4),
-                                                                blurRadius: 7.3,
-                                                                spreadRadius: 0,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Container(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .all(
-                                                                        10),
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  color: const Color(
-                                                                      0XFFBFD1F4),
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              500),
-                                                                ),
-                                                                child:
-                                                                    option.icon,
-                                                              ),
-                                                              const SizedBox(
-                                                                height: 8,
-                                                              ),
-                                                              Text(
-                                                                option.label,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  color: Color(
-                                                                      0XFF06345F),
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ))
-                                                  .toList(),
-                                            ),
-                                            const SizedBox(
-                                                height:
-                                                    12), // Add a SizedBox with height 10 between rows
-                                          ],
-                                        ),
-                                      )
-                                      .toList(),
-                                ),
-                              ],
-                            );
-                          },
-                        );
+                        GoRouter.of(context).push('/home/qrcode');
                       },
                       child: const Text(
                         '+ Add new device',
@@ -271,86 +117,88 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.only(
-                    top: 30, left: 10, right: 10, bottom: 15),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF84AFEF).withOpacity(0.3),
-                      offset: const Offset(0, 4),
-                      blurRadius: 24,
-                      spreadRadius: 0,
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      children: [
-                        SvgPicture.asset('assets/svg/ask_customer.svg'),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        const Text(
-                          'Join chat room for parenting',
-                          style: TextStyle(
-                            color: Color(0xFF747373),
-                            fontSize: 10,
-                            fontWeight: FontWeight.w400,
+              currentSpartanUser.currentSpartanUser?.community == true
+                  ? Container()
+                  : Container(
+                      padding: const EdgeInsets.only(
+                          top: 30, left: 10, right: 10, bottom: 15),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF84AFEF).withOpacity(0.3),
+                            offset: const Offset(0, 4),
+                            blurRadius: 24,
+                            spreadRadius: 0,
                           ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        const Text(
-                          'Ask other parents and baby\ncare through our chat room',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            BottomNavigationContainer.changeTab(
-                                context, '/chat');
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF002E58),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                          ),
-                          child: const Row(
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
                             children: [
-                              Text(
-                                'Join Chat room',
+                              SvgPicture.asset('assets/svg/ask_customer.svg'),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              const Text(
+                                'Join chat room for parenting',
                                 style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 11,
+                                  color: Color(0xFF747373),
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w400,
                                 ),
                               ),
-                              Icon(
-                                Icons.keyboard_arrow_right,
-                                color: Colors.white,
-                              )
                             ],
                           ),
-                        )
-                      ],
+                          Column(
+                            children: [
+                              const Text(
+                                'Ask other parents and baby\ncare through our chat room',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  BottomNavigationContainer.changeTab(
+                                      context, '/chat');
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF002E58),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                ),
+                                child: const Row(
+                                  children: [
+                                    Text(
+                                      'Join Chat room',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.keyboard_arrow_right,
+                                      color: Colors.white,
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
                     )
-                  ],
-                ),
-              )
             ],
           ),
         ),

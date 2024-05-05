@@ -129,9 +129,8 @@ class _JoinCommunityScreenState extends State<JoinCommunityScreen> {
                                         .collection('users')
                                         .doc(auth.currentUser!.uid)
                                         .update({'community': true});
-
                                     Room room =
-                                        Room.fromJson(room_fire.data()!);
+                                        Room.fromJson({'id': 'spartan_global', ...room_fire.data()!});
                                     await room.getTotalMembers();
                                     currentSpartanUserNotifier
                                         .setCurrentSpartanUser(
@@ -145,7 +144,6 @@ class _JoinCommunityScreenState extends State<JoinCommunityScreen> {
                                         'Joined Spartan Global Communty');
                                     GoRouter.of(context).push('/chat/messages');
                                   } catch (error) {
-                                    print(error);
                                     String message =
                                         displayErrorMessage(error as Exception);
                                     toastService.showErrorToast(message);

@@ -4,7 +4,7 @@ import 'package:spartan/models/Message.dart';
 import 'package:spartan/models/Room.dart';
 
 class ChatService {
-  Future createRoom(Room room) {
+  static Future createRoom(Room room) {
     return firestore.collection('rooms').add({
       'name': room.name,
       'profile': room.profile,
@@ -13,7 +13,7 @@ class ChatService {
     });
   }
 
-  Future<void> sendMessage(String roomId, Message message) async {
+  static Future<void> sendMessage(String roomId, Message message) async {
     await firestore
         .collection('rooms')
         .doc(roomId)
@@ -21,24 +21,43 @@ class ChatService {
         .add(message.toJson());
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getRooms() {
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getGlobalRoom() {
+    return firestore
+        .collection('rooms')
+        .where('name', isEqualTo: 'Spartan_Global')
+        .snapshots();
+  }
+
+   Stream<QuerySnapshot<Map<String, dynamic>>> getRooms() {
     // use auth.currentUser.uid to get the rooms of the current user
     return firestore
         .collection('rooms')
         .where(
-          'acceptedIds',
+          'invitedIds',
           arrayContains: auth.currentUser!.uid,
         )
         .orderBy('lastMessageAt', descending: true)
         .snapshots();
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getMessages(String roomId) {
+
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getMessages(
+      String roomId) {
     return firestore
         .collection('rooms')
         .doc(roomId)
         .collection('messages')
         .orderBy('createdAt', descending: true)
+        .snapshots();
+  }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getLastMessage(
+      String roomId) {
+    return firestore
+        .collection('chats/$roomId/messages/')
+        .orderBy('createdAt', descending: true)
+        .limit(1)
         .snapshots();
   }
 }

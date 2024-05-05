@@ -28,7 +28,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
             IconButton(
               icon: const Icon(Icons.keyboard_backspace),
               onPressed: () {
-                Navigator.pop(context);
+                GoRouter.of(context).push('/chat');
               },
             ),
           ],
@@ -89,9 +89,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
             onRecordEnd: (path) {
               print('AUDIO PATH : ' + path!);
             },
-           actions: [
-            
-           ],
+            actions: [],
           ),
         ],
       ),

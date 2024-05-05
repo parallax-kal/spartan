@@ -1,5 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:spartan/services/crib.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:http/http.dart' as http;
 
 class UniqueStreamScreen extends StatefulWidget {
   const UniqueStreamScreen({Key? key}) : super(key: key);
@@ -10,7 +15,47 @@ class UniqueStreamScreen extends StatefulWidget {
 
 class _UniqueStreamScreenState extends State<UniqueStreamScreen> {
   @override
+  void initState() {
+    super.initState();
+
+    Timer.periodic(const Duration(seconds: 10), (timer) async {
+      // if (!mounted) {
+      //   timer.cancel();
+      //   return;
+      // }
+
+      try {
+        final value =
+            await http.get(Uri.parse('http://192.168.43.68:8000/check'));
+        if (value.body != 'checked') {
+          await CribService.updateCrib(
+              'spartan_crib_12343234232', {'status': false});
+          if (!mounted) return;
+          Navigator.pop(context);
+        }
+      } catch (error) {
+        await CribService.updateCrib(
+            'spartan_crib_12343234232', {'status': false});
+        if (!mounted) return;
+        Navigator.pop(context);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final spartancamera = WebViewController()
+      ..setNavigationDelegate(
+          NavigationDelegate(onPageFinished: (String url) async {
+        await CribService.updateCrib('spartan_crib_12343234232', {
+          'status': false,
+        });
+        Navigator.pop(context);
+        print(url);
+      }))
+      ..loadRequest(
+        Uri.parse('http://192.168.43.68:8000/stream.mjpg'),
+      );
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -18,10 +63,10 @@ class _UniqueStreamScreenState extends State<UniqueStreamScreen> {
           children: [
             Stack(
               children: [
-                Image.asset(
-                  'assets/images/sample_stream.png',
+                SizedBox(
                   width: MediaQuery.of(context).size.width,
-                  fit: BoxFit.cover,
+                  height: 300,
+                  child: WebViewWidget(controller: spartancamera),
                 ),
                 Positioned(
                   top: 20,
@@ -78,7 +123,14 @@ class _UniqueStreamScreenState extends State<UniqueStreamScreen> {
                 Positioned(
                   bottom: 20,
                   right: 20,
-                  child: SvgPicture.asset('assets/icons/full_screen.svg'),
+                  child: InkWell(
+                    child: SvgPicture.asset('assets/icons/full_screen.svg'),
+                    onTap: () async {
+                      await spartancamera.loadRequest(
+                        Uri.parse('http://youtube.com'),
+                      );
+                    },
+                  ),
                 )
               ],
             ),
