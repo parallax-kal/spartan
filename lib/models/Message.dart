@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:reaction_askany/models/emotions.dart';
 
 class Message {
@@ -9,7 +10,7 @@ class Message {
   String? audioUrl;
   String? fileUrl;
   String? location;
-  DateTime createdAt;
+  Timestamp createdAt;
   String? replyMessage;
   List<EmotionReply> emotionReplies;
   MessageStatus status;

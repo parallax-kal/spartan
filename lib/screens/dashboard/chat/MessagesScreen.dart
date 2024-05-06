@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:spartan/notifiers/CurrentRoomNotifier.dart';
 import 'package:chat_composer/chat_composer.dart';
+import 'package:flutter/foundation.dart' as foundation;
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:spartan/services/chat.dart';
 
 class MessagesScreen extends StatefulWidget {
   const MessagesScreen({Key? key}) : super(key: key);
@@ -12,31 +14,36 @@ class MessagesScreen extends StatefulWidget {
 }
 
 class _MessagesScreenState extends State<MessagesScreen> {
+  TextEditingController chatTextController = TextEditingController();
+  bool _emojiShowing = false;
+  final _controller = TextEditingController();
+  final _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     CurrentRoomNotifier currentRoomNotifier =
         Provider.of<CurrentRoomNotifier>(context, listen: true);
 
     return Scaffold(
+      backgroundColor: const Color(0XFFF2F2F2),
       appBar: AppBar(
-        leadingWidth: 70,
-        leading: Row(
-          children: [
-            const SizedBox(
-              width: 20,
-            ),
-            IconButton(
-              icon: const Icon(Icons.keyboard_backspace),
-              onPressed: () {
-                GoRouter.of(context).push('/chat');
-              },
-            ),
-          ],
+        leadingWidth: 30,
+        leading: IconButton(
+          icon: const Icon(Icons.keyboard_backspace),
+          onPressed: () {
+            Navigator.pop(context);
+            currentRoomNotifier.clearRoom();
+          },
         ),
         title: Row(
           children: [
             CircleAvatar(
-              radius: 25,
               backgroundImage:
                   NetworkImage(currentRoomNotifier.currentRoom!.profile),
             ),
@@ -51,15 +58,15 @@ class _MessagesScreenState extends State<MessagesScreen> {
                   style: const TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
-                    fontSize: 20,
+                    fontSize: 13,
                   ),
                 ),
                 Text(
-                  '${currentRoomNotifier.currentRoom!.totalMembers} Members',
+                  '${currentRoomNotifier.currentRoom!.totalMembers} ${currentRoomNotifier.currentRoom!.private.toString()}',
                   style: const TextStyle(
                     color: Color(0XFF707070),
                     fontWeight: FontWeight.w500,
-                    fontSize: 16,
+                    fontSize: 12,
                   ),
                 ),
               ],
@@ -83,13 +90,33 @@ class _MessagesScreenState extends State<MessagesScreen> {
             children: [],
           ),
           ChatComposer(
+            controller: chatTextController,
+            leading: IconButton(
+              icon: const Icon(Icons.attach_file),
+              onPressed: () {},
+            ),
             onReceiveText: (str) {
               print('TEXT : ' + str!);
             },
             onRecordEnd: (path) {
               print('AUDIO PATH : ' + path!);
             },
-            actions: [],
+            actions: [
+              Material(
+                color: Colors.transparent,
+                child: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _emojiShowing = !_emojiShowing;
+                    });
+                  },
+                  icon: const Icon(
+                    Icons.emoji_emotions,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

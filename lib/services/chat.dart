@@ -63,4 +63,5 @@ class ChatService {
       getUnreadRoomMessages() {
     return firestore.collection('users').doc(auth.currentUser!.uid).snapshots();
   }
+
 }

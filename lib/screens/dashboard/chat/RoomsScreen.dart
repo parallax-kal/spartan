@@ -1,12 +1,13 @@
+// ignore_for_file: depend_on_referenced_packages
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:spartan/models/Message.dart';
 import 'package:spartan/models/Room.dart';
-import 'package:spartan/models/SpartanUser.dart';
-import 'package:spartan/notifiers/CurrentSpartanUserNotifier.dart';
+import 'package:spartan/notifiers/CurrentRoomNotifier.dart';
 import 'package:spartan/services/chat.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -20,8 +21,8 @@ class RoomsScreen extends StatefulWidget {
 class _RoomsScreenState extends State<RoomsScreen> {
   @override
   Widget build(BuildContext context) {
-    CurrentSpartanUserNotifier currentSpartanUserNotifier =
-        Provider.of<CurrentSpartanUserNotifier>(context, listen: true);
+    CurrentRoomNotifier currentRoomNotifier =
+        Provider.of<CurrentRoomNotifier>(context, listen: true);
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -58,14 +59,10 @@ class _RoomsScreenState extends State<RoomsScreen> {
                   Container(
                     width: 200,
                     height: 40,
-                    padding: const EdgeInsets.all(7),
+                    padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: Colors.white,
-                      // border: Border.all(
-                      //   color: const Color(0XFF002E58),
-                      //   width: 1,
-                      // ),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.4),
@@ -114,119 +111,149 @@ class _RoomsScreenState extends State<RoomsScreen> {
                   ),
                 ],
               ),
+              const SizedBox(
+                height: 20,
+              ),
               SingleChildScrollView(
                 child: StreamBuilder(
                   stream: CombineLatestStream.list([
                     ChatService.getGlobalRoom(),
                     ChatService().getRooms(),
-                  ]),
+                  ]).map((event) {
+                    final data = [
+                      ...event[0].docs,
+                      ...event[1].docs,
+                    ];
+
+                    return data;
+                  }),
                   builder: (context, snapshot) {
                     switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
                       case ConnectionState.none:
-                        return const Center(
-                          child: CircularProgressIndicator(),
+                      case ConnectionState.waiting:
+                        return SizedBox(
+                          height: MediaQuery.of(context).size.height - 227,
+                          child: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
                         );
                       case ConnectionState.active:
                       case ConnectionState.done:
-                        final globalRoom = snapshot.data?[0].docs;
-                        final otherRooms = snapshot.data?[1].docs;
-                        if (globalRoom == null || globalRoom.isEmpty) {
-                          return SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.7,
-                            child: const Center(
-                              child: Text('No rooms found'),
-                            ),
+                        if (snapshot.data?.isEmpty ?? true) {
+                          return const Center(
+                            child: Text('No rooms found'),
                           );
                         }
-                        List data = [...globalRoom, ...otherRooms ?? []];
 
                         return ListView.builder(
                           shrinkWrap: true,
-                          itemCount: data.length,
+                          itemCount: snapshot.data?.length,
                           itemBuilder: (context, index) {
                             final room = Room.fromJson(
-                                {'id': data[index].id, ...data[index].data()});
+                              {
+                                'id': snapshot.data?[index].id,
+                                ...?snapshot.data?[index].data()
+                              },
+                            );
 
-                            return ListTile(
-                              title: Text(room.name),
-                              leading: CircleAvatar(
-                                backgroundImage: NetworkImage(room.profile),
-                              ),
-                              subtitle: StreamBuilder(
-                                stream: ChatService.getLastMessage(room.id),
-                                builder: (context, snapshot) {
-                                  switch (snapshot.connectionState) {
-                                    case ConnectionState.waiting:
-                                    case ConnectionState.none:
-                                      return const Center(
-                                        child: CircularProgressIndicator(),
-                                      );
-                                    case ConnectionState.active:
-                                    case ConnectionState.done:
-                                      final lastMessage =
-                                          snapshot.data?.docs.first;
-                                      if (lastMessage == null) {
-                                        return const Text('No messages yet');
-                                      }
-                                      Message message = Message.fromJson({
-                                        'id': lastMessage.id,
-                                        ...lastMessage.data(),
-                                      });
+                            return StreamBuilder(
+                              stream: CombineLatestStream.list([
+                                ChatService.getLastMessage(room.id),
+                                ChatService.getUnreadRoomMessages(),
+                              ]),
+                              builder: ((context, snapshot) {
+                                QuerySnapshot<Map<String, dynamic>>?
+                                    lastMessage = snapshot.data?[0]
+                                        as QuerySnapshot<Map<String, dynamic>>?;
+                                DocumentSnapshot<Map<String, dynamic>>? user =
+                                    snapshot.data?[1] as DocumentSnapshot<
+                                        Map<String, dynamic>>?;
 
-                                      return Text(
-                                        message.message,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        style: const TextStyle(
-                                          color: Colors.grey,
-                                        ),
-                                      );
-                                  }
-                                },
-                              ),
-                              trailing: Column(
-                                children: [
-                                  Text(
-                                    DateFormat('hh:mm a').format(
-                                      room.lastMessageAt.toDate(),
+                                return ListTile(
+                                  title: Text(
+                                    room.name,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 13,
                                     ),
                                   ),
-                                  StreamBuilder(
-                                      stream:
-                                          ChatService.getUnreadRoomMessages(),
-                                      builder: (context, snapshot) {
-                                        switch (snapshot.connectionState) {
-                                          case ConnectionState.waiting:
-                                          case ConnectionState.none:
-                                            return const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            );
-                                          case ConnectionState.active:
-                                          case ConnectionState.done:
-                                            if (snapshot.data == null) {
-                                              return Container();
-                                            }
-                                            SpartanUser spartanUser =
-                                                SpartanUser.fromJson({
-                                              'id': snapshot.data!.id,
-                                              ...?snapshot.data!.data(),
-                                            });
-                                            int count = UnReadMessage
-                                                .getRoomUnReadMessages(room.id,
-                                                    spartanUser.unReadMessages);
-                                            if (count == 0) {
-                                              return Container();
-                                            }
-                                            return Text(count.toString());
-                                        }
-                                      })
-                                ],
-                              ),
-                              onTap: () {
-                                // GoRouter.of(context).push('/chat/${room.id}');
-                              },
+                                  leading: CircleAvatar(
+                                    backgroundImage: NetworkImage(room.profile),
+                                  ),
+                                  subtitle: (snapshot.connectionState ==
+                                              ConnectionState.waiting ||
+                                          snapshot.connectionState ==
+                                              ConnectionState.none)
+                                      ? const Text('Loading...')
+                                      : lastMessage?.docs.isEmpty ?? true
+                                          ? null
+                                          : const Text(
+                                              'Is the baby sleeping well ?',
+                                              style: TextStyle(
+                                                color: Color(0XFF707070),
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                  trailing: (snapshot.connectionState ==
+                                              ConnectionState.waiting ||
+                                          snapshot.connectionState ==
+                                              ConnectionState.none)
+                                      ? null
+                                      : lastMessage?.docs.isEmpty ?? true
+                                          ? null
+                                          : Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                                Text(
+                                                  DateFormat('hh:mm a')
+                                                      .format(Message.fromJson({
+                                                    'id':
+                                                        lastMessage!.docs[0].id,
+                                                    ...lastMessage.docs[0]
+                                                        .data(),
+                                                  }).createdAt.toDate()),
+                                                  style: const TextStyle(
+                                                    color: Color(0XFF707070),
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    color:
+                                                        const Color(0XFFED6400),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            500),
+                                                  ),
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                    left: 4,
+                                                    right: 4,
+                                                  ),
+                                                  child: const Text(
+                                                    '0',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontSize: 10,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                  onTap: () {
+                                    currentRoomNotifier.setCurrentRoom(room);
+                                    GoRouter.of(context).push('/chat/messages');
+                                  },
+                                );
+                              }),
                             );
                           },
                         );

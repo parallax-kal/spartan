@@ -8,7 +8,6 @@ class Room {
   List<String> invitedIds;
   bool private;
   List<String> acceptedIds = [];
-  Timestamp lastMessageAt = Timestamp.now();
   Timestamp createdAt = Timestamp.now();
   int totalMembers = 0;
 
@@ -19,7 +18,6 @@ class Room {
     required this.private,
     this.invitedIds = const [],
     this.acceptedIds = const [],
-    required this.lastMessageAt,
     required this.createdAt,
   });
 
@@ -31,7 +29,6 @@ class Room {
       invitedIds: List<String>.from(json['invitedIds'] ?? []),
       acceptedIds: List<String>.from(json['acceptedIds'] ?? []),
       private: json['private'],
-      lastMessageAt: json['lastMessageAt'],
       createdAt: json['createdAt'],
     );
   }
@@ -44,7 +41,6 @@ class Room {
       'invitedIds': invitedIds,
       'acceptedIds': acceptedIds,
       'private': private,
-      'lastMessageAt': lastMessageAt,
       'createdAt': createdAt,
     };
   }
