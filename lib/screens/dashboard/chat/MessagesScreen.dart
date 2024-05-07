@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:spartan/constants/firebase.dart';
+import 'package:spartan/models/Message.dart';
 import 'package:spartan/notifiers/CurrentRoomNotifier.dart';
 import 'package:chat_composer/chat_composer.dart';
 import 'package:flutter/foundation.dart' as foundation;
@@ -16,13 +19,36 @@ class MessagesScreen extends StatefulWidget {
 class _MessagesScreenState extends State<MessagesScreen> {
   TextEditingController chatTextController = TextEditingController();
   bool _emojiShowing = false;
-  final _controller = TextEditingController();
   final _scrollController = ScrollController();
 
   @override
   void dispose() {
-    _controller.dispose();
+    chatTextController.dispose();
     super.dispose();
+  }
+
+  List<Map<DateTime, List<Message>>> sortMessages(List<Message> messages) {
+    Map<DateTime, List<Message>> sortedMessages = {};
+
+    for (Message message in messages) {
+      DateTime messageDate = message.createdAt;
+      DateTime messageDay =
+          DateTime(messageDate.year, messageDate.month, messageDate.day);
+
+      if (sortedMessages.containsKey(messageDay)) {
+        sortedMessages[messageDay]!.add(message);
+      } else {
+        sortedMessages[messageDay] = [message];
+      }
+    }
+
+    List<Map<DateTime, List<Message>>> sortedList = [];
+
+    sortedMessages.forEach((key, value) {
+      sortedList.add({key: value});
+    });
+
+    return sortedList;
   }
 
   @override
@@ -38,7 +64,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
           icon: const Icon(Icons.keyboard_backspace),
           onPressed: () {
             Navigator.pop(context);
-            currentRoomNotifier.clearRoom();
           },
         ),
         title: Row(
@@ -62,7 +87,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                   ),
                 ),
                 Text(
-                  '${currentRoomNotifier.currentRoom!.totalMembers} ${currentRoomNotifier.currentRoom!.private.toString()}',
+                  '${currentRoomNotifier.currentRoom!.totalMembers} Members',
                   style: const TextStyle(
                     color: Color(0XFF707070),
                     fontWeight: FontWeight.w500,
@@ -86,40 +111,247 @@ class _MessagesScreenState extends State<MessagesScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            children: [],
-          ),
-          ChatComposer(
-            controller: chatTextController,
-            leading: IconButton(
-              icon: const Icon(Icons.attach_file),
-              onPressed: () {},
+          Expanded(
+            child: StreamBuilder(
+              stream:
+                  ChatService.getMessages(currentRoomNotifier.currentRoom!.id),
+              builder: ((context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  case ConnectionState.active:
+                  case ConnectionState.done:
+                    List<Message>? messages = snapshot.data?.docs
+                        .map((e) => Message.fromJson({
+                              'id': e.id,
+                              ...e.data(),
+                            }))
+                        .toList();
+                    if (messages == null || messages.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          'Say Hii! 👋',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      );
+                    }
+                    List<Map<DateTime, List<Message>>> sortedMessages =
+                        sortMessages(messages);
+
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: sortedMessages.map((sortedMessage) {
+                        DateTime wholeday = sortedMessage.keys.first;
+                        List<Message> messages = sortedMessage.values.first;
+
+                        return Column(
+                          children: [
+                            Row(
+                              children: [
+                                const Expanded(child: Divider()),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text(DateFormat('d MMM').format(wholeday)),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                const Expanded(child: Divider()),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Column(
+                              children: messages.map((message) {
+                                return Column(
+                                  children: [
+                                    ChatBubble(
+                                      text: message.message!,
+                                      isSender: message.sender.uid ==
+                                          auth.currentUser!.uid,
+                                      createdAt: message.createdAt,
+                                      profile: message.sender.profile,
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                  ],
+                                );
+                              }).toList(),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    );
+                }
+              }),
             ),
-            onReceiveText: (str) {
-              print('TEXT : ' + str!);
-            },
-            onRecordEnd: (path) {
-              print('AUDIO PATH : ' + path!);
-            },
-            actions: [
-              Material(
-                color: Colors.transparent,
-                child: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _emojiShowing = !_emojiShowing;
-                    });
-                  },
-                  icon: const Icon(
-                    Icons.emoji_emotions,
-                    color: Colors.white,
+          ),
+          Column(
+            children: [
+              ChatComposer(
+                controller: chatTextController,
+                leading: Material(
+                  color: Colors.transparent,
+                  child: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _emojiShowing = !_emojiShowing;
+                      });
+                    },
+                    icon: const Icon(
+                      Icons.emoji_emotions_outlined,
+                      color: Color(0xFF7B7B7B),
+                    ),
+                  ),
+                ),
+                onReceiveText: (str) async {
+                  setState(() {
+                    _emojiShowing = false;
+                  });
+                  Message message = Message(
+                    message: str!,
+                    sender: Sender(
+                      uid: auth.currentUser!.uid,
+                      profile: auth.currentUser!.photoURL!,
+                    ),
+                    type: MessageType.TEXT,
+                    createdAt: DateTime.now(),
+                  );
+                  await ChatService.sendMessage(
+                    currentRoomNotifier.currentRoom!.id,
+                    message,
+                  );
+                  chatTextController.text = '';
+                },
+                onRecordEnd: (path) {
+                  print('AUDIO PATH : ' + path!);
+                },
+                actions: [
+                  IconButton(
+                    icon: const Icon(
+                      Icons.attach_file,
+                      color: Color(0xFF7B7B7B),
+                    ),
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+              Offstage(
+                offstage: !_emojiShowing,
+                child: EmojiPicker(
+                  textEditingController: chatTextController,
+                  scrollController: _scrollController,
+                  config: Config(
+                    height: 256,
+                    checkPlatformCompatibility: true,
+                    emojiViewConfig: EmojiViewConfig(
+                      // Issue: https://github.com/flutter/flutter/issues/28894
+                      emojiSizeMax: 28 *
+                          (foundation.defaultTargetPlatform ==
+                                  TargetPlatform.iOS
+                              ? 1.2
+                              : 1.0),
+                    ),
+                    swapCategoryAndBottomBar: false,
+                    skinToneConfig: const SkinToneConfig(),
+                    categoryViewConfig: const CategoryViewConfig(),
+                    bottomActionBarConfig: const BottomActionBarConfig(),
+                    searchViewConfig: const SearchViewConfig(),
                   ),
                 ),
               ),
             ],
-          ),
+          )
         ],
       ),
+    );
+  }
+}
+
+class ChatBubble extends StatelessWidget {
+  final bool isSender;
+  final String text;
+  final String? profile;
+  final DateTime createdAt;
+  const ChatBubble({
+    required this.isSender,
+    required this.text,
+    required this.createdAt,
+    this.profile,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment:
+          isSender ? MainAxisAlignment.end : MainAxisAlignment.start,
+      children: [
+        if (!isSender)
+          const SizedBox(
+            width: 20,
+          ),
+        if (isSender)
+          Text(
+            DateFormat('h:mm a').format(createdAt),
+            style: const TextStyle(
+              color: Color(0XFF444444),
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        if (!isSender && profile != null)
+          CircleAvatar(
+            backgroundImage: NetworkImage(profile!),
+          ),
+        if (isSender) const SizedBox(width: 10),
+        Container(
+          padding: EdgeInsets.only(
+            top: 12,
+            bottom: isSender ? 12 : 30,
+            left: 15,
+            right: isSender ? 30 : 12,
+          ),
+          decoration: BoxDecoration(
+            color: isSender ? const Color(0xFF235380) : Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: const Radius.circular(12),
+              topRight: const Radius.circular(12),
+              bottomLeft: Radius.circular(isSender ? 12 : 0),
+              bottomRight: Radius.circular(isSender ? 0 : 12),
+            ),
+          ),
+          child: Text(
+            text,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        if (!isSender) const SizedBox(width: 10),
+        if (!isSender)
+          Text(
+            DateFormat('h:mm a').format(createdAt),
+            style: const TextStyle(
+              color: Color(0XFF444444),
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        if (isSender)
+          const SizedBox(
+            width: 30,
+          )
+      ],
     );
   }
 }

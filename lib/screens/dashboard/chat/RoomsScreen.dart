@@ -10,6 +10,8 @@ import 'package:spartan/models/Room.dart';
 import 'package:spartan/notifiers/CurrentRoomNotifier.dart';
 import 'package:spartan/services/chat.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:collection/collection.dart';
+import 'package:spartan/models/SpartanUser.dart';
 
 class RoomsScreen extends StatefulWidget {
   const RoomsScreen({Key? key}) : super(key: key);
@@ -124,18 +126,14 @@ class _RoomsScreenState extends State<RoomsScreen> {
                       ...event[0].docs,
                       ...event[1].docs,
                     ];
-
                     return data;
                   }),
                   builder: (context, snapshot) {
                     switch (snapshot.connectionState) {
                       case ConnectionState.none:
                       case ConnectionState.waiting:
-                        return SizedBox(
-                          height: MediaQuery.of(context).size.height - 227,
-                          child: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
+                        return const Center(
+                          child: CircularProgressIndicator(),
                         );
                       case ConnectionState.active:
                       case ConnectionState.done:
@@ -168,7 +166,42 @@ class _RoomsScreenState extends State<RoomsScreen> {
                                 DocumentSnapshot<Map<String, dynamic>>? user =
                                     snapshot.data?[1] as DocumentSnapshot<
                                         Map<String, dynamic>>?;
+                                int count = 0;
+                                if (user != null) {
+                                  SpartanUser spartanUser =
+                                      SpartanUser.fromJson(
+                                          {'id': user.id, ...?user.data()});
 
+                                  count = spartanUser.unReadMessages
+                                          ?.firstWhereOrNull((element) =>
+                                              element.roomId == room.id)
+                                          ?.count ??
+                                      0;
+                                }
+                                Message? message;
+                                String? formattedDate;
+                                if (lastMessage != null) {
+                                  message = Message.fromJson({
+                                    'id': lastMessage.docs.first.id,
+                                    ...lastMessage.docs.first.data()
+                                  });
+                                  DateFormat format;
+
+                                  if (DateTime.now()
+                                          .difference(message.createdAt)
+                                          .inDays ==
+                                      0) {
+                                    format = DateFormat('hh:mm a');
+                                  } else if (DateTime.now().year ==
+                                      message.createdAt.year) {
+                                    format = DateFormat('dd MMM');
+                                  } else {
+                                    format = DateFormat('dd MMM yyyy');
+                                  }
+
+                                  formattedDate =
+                                      format.format(message.createdAt);
+                                }
                                 return ListTile(
                                   title: Text(
                                     room.name,
@@ -185,70 +218,69 @@ class _RoomsScreenState extends State<RoomsScreen> {
                                           snapshot.connectionState ==
                                               ConnectionState.none)
                                       ? const Text('Loading...')
-                                      : lastMessage?.docs.isEmpty ?? true
+                                      : message == null
                                           ? null
-                                          : const Text(
-                                              'Is the baby sleeping well ?',
-                                              style: TextStyle(
+                                          : Text(
+                                              message.type == MessageType.TEXT
+                                                  ? message.message!
+                                                  : '',
+                                              style: const TextStyle(
                                                 color: Color(0XFF707070),
                                                 fontWeight: FontWeight.w500,
                                                 fontSize: 12,
                                               ),
                                             ),
-                                  trailing: (snapshot.connectionState ==
-                                              ConnectionState.waiting ||
-                                          snapshot.connectionState ==
-                                              ConnectionState.none)
+                                  trailing: message == null
                                       ? null
-                                      : lastMessage?.docs.isEmpty ?? true
-                                          ? null
-                                          : Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                Text(
-                                                  DateFormat('hh:mm a')
-                                                      .format(Message.fromJson({
-                                                    'id':
-                                                        lastMessage!.docs[0].id,
-                                                    ...lastMessage.docs[0]
-                                                        .data(),
-                                                  }).createdAt.toDate()),
-                                                  style: const TextStyle(
-                                                    color: Color(0XFF707070),
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                    color:
-                                                        const Color(0XFFED6400),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            500),
-                                                  ),
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                    left: 4,
-                                                    right: 4,
-                                                  ),
-                                                  child: const Text(
-                                                    '0',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontSize: 10,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
+                                      : Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            if (count == 0)
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                            Text(
+                                              formattedDate!,
+                                              style: const TextStyle(
+                                                color: Color(0XFF707070),
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 12,
+                                              ),
                                             ),
-                                  onTap: () {
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            if (count > 0)
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  color:
+                                                      const Color(0XFFED6400),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          500),
+                                                ),
+                                                padding: const EdgeInsets.only(
+                                                  left: 4,
+                                                  right: 4,
+                                                ),
+                                                child: Text(
+                                                  count.toString(),
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 10,
+                                                  ),
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                  onTap: () async {
+                                    if (room.id == 'spartan_global') {
+                                      if (room.totalMembers == 0) {
+                                        await room.getTotalMembers();
+                                      }
+                                    }
                                     currentRoomNotifier.setCurrentRoom(room);
                                     GoRouter.of(context).push('/chat/messages');
                                   },

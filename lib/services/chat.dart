@@ -46,14 +46,14 @@ class ChatService {
         .collection('rooms')
         .doc(roomId)
         .collection('messages')
-        .orderBy('createdAt', descending: true)
+        .orderBy('createdAt', descending: false)
         .snapshots();
   }
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getLastMessage(
       String roomId) {
     return firestore
-        .collection('chats/$roomId/messages/')
+        .collection('rooms/$roomId/messages/')
         .orderBy('createdAt', descending: true)
         .limit(1)
         .snapshots();

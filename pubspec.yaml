@@ -36,7 +36,6 @@ dependencies:
   voice_message_package: ^2.2.1
   reaction_askany: ^0.1.2
   swipe_to: ^1.0.6
-  chat_bubbles: ^1.5.0
   googleapis_auth: ^1.6.0
   awesome_notifications_core: ^0.9.3
   emoji_picker_flutter: ^2.2.0

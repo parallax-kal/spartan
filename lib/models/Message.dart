@@ -2,22 +2,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:reaction_askany/models/emotions.dart';
 
 class Message {
-  String message;
-  String sendBy;
+  String? message;
+  Sender sender;
   MessageType type;
   String? imageUrl;
   String? videoUrl;
   String? audioUrl;
   String? fileUrl;
   String? location;
-  Timestamp createdAt;
+  DateTime createdAt;
   String? replyMessage;
   List<EmotionReply> emotionReplies;
   MessageStatus status;
 
   Message({
-    required this.message,
-    required this.sendBy,
+    this.message,
+    required this.sender,
     required this.type,
     this.imageUrl,
     this.videoUrl,
@@ -33,7 +33,7 @@ class Message {
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(
       message: json['message'],
-      sendBy: json['sendBy'],
+      sender: Sender.fromJson(json['sender']),
       type: MessageType.values.firstWhere((e) => e.toString() == json['type']),
       imageUrl: json['imageUrl'],
       videoUrl: json['videoUrl'],
@@ -53,7 +53,7 @@ class Message {
   Map<String, dynamic> toJson() {
     return {
       'message': message,
-      'sendBy': sendBy,
+      'sender': sender.tojson(),
       'type': type.toString(),
       'imageUrl': imageUrl,
       'videoUrl': videoUrl,
@@ -64,6 +64,24 @@ class Message {
       'emotionReplies': emotionReplies.map((e) => e.toJson()).toList(),
       'status': status.toString(),
       'createdAt': createdAt,
+    };
+  }
+}
+
+class Sender {
+  final String profile;
+  final String uid;
+
+  const Sender({required this.uid, required this.profile});
+
+  factory Sender.fromJson(Map<String, dynamic> json) {
+    return Sender(uid: json['uid'], profile: json['profile']);
+  }
+
+  Map<String, dynamic> tojson() {
+    return {
+      'uid': uid,
+      'profile': profile,
     };
   }
 }
