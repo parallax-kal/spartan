@@ -2,7 +2,7 @@ class SpartanUser {
   String id;
   String fullname;
   String email;
-  String profile;
+  String? profile;
   List<String> tokens;
   bool? terms;
   String? country;
@@ -15,7 +15,7 @@ class SpartanUser {
     required this.id,
     required this.fullname,
     required this.email,
-    required this.profile,
+    this.profile,
     required this.tokens,
      this.country,
      this.terms,

@@ -158,7 +158,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           const SizedBox(
                             height: 80,
                           ),
-                          Container(
+                          SizedBox(
                             width: double.infinity,
                             child: Column(
                               children: profileOptions
