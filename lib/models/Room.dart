@@ -7,6 +7,7 @@ class Room {
   String profile;
   List<String> invitedIds;
   bool private;
+  bool group;
   List<String> acceptedIds = [];
   Timestamp createdAt = Timestamp.now();
   int totalMembers = 0;
@@ -16,6 +17,7 @@ class Room {
     required this.name,
     required this.profile,
     required this.private,
+    required this.group,
     this.invitedIds = const [],
     this.acceptedIds = const [],
     required this.createdAt,
@@ -29,6 +31,7 @@ class Room {
       invitedIds: List<String>.from(json['invitedIds'] ?? []),
       acceptedIds: List<String>.from(json['acceptedIds'] ?? []),
       private: json['private'],
+      group: json['group'],
       createdAt: json['createdAt'],
     );
   }
@@ -41,6 +44,7 @@ class Room {
       'invitedIds': invitedIds,
       'acceptedIds': acceptedIds,
       'private': private,
+      'group': group,
       'createdAt': createdAt,
     };
   }

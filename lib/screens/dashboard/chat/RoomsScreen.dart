@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/models/Message.dart';
 import 'package:spartan/models/Room.dart';
 import 'package:spartan/notifiers/CurrentRoomNotifier.dart';
@@ -236,7 +237,9 @@ class _RoomsScreenState extends State<RoomsScreen> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.end,
                                           children: [
-                                            if (count == 0)
+                                            if (count == 0 &&
+                                                message.sender.uid ==
+                                                    auth.currentUser!.uid)
                                               const SizedBox(
                                                 height: 10,
                                               ),
@@ -251,7 +254,9 @@ class _RoomsScreenState extends State<RoomsScreen> {
                                             const SizedBox(
                                               height: 10,
                                             ),
-                                            if (count > 0)
+                                            if (count > 0 &&
+                                                message.sender.uid ==
+                                                    auth.currentUser!.uid)
                                               Container(
                                                 decoration: BoxDecoration(
                                                   color:
@@ -273,6 +278,22 @@ class _RoomsScreenState extends State<RoomsScreen> {
                                                   ),
                                                 ),
                                               ),
+                                            if (message.sender.uid ==
+                                                auth.currentUser!.uid)
+                                              SvgPicture.asset(room.group
+                                                  ? 'assets/icons/ticks/single.svg'
+                                                  : message.status ==
+                                                          MessageStatus.SENT
+                                                      ? 'assets/icons/ticks/single.svg'
+                                                      : message.status ==
+                                                              MessageStatus
+                                                                  .RECEIVED
+                                                          ? 'assets/icons/ticks/double.svg'
+                                                          : message.status ==
+                                                                  MessageStatus
+                                                                      .READ
+                                                              ? 'assets/icons/ticks/colored-double.svg'
+                                                              : 'assets/icons/single.svg')
                                           ],
                                         ),
                                   onTap: () async {
