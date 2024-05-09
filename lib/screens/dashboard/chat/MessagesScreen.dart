@@ -1,16 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/models/Message.dart';
 import 'package:spartan/notifiers/CurrentRoomNotifier.dart';
-import 'package:chat_composer/chat_composer.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:spartan/services/chat.dart';
+import 'package:chat_composer/chat_composer.dart';
 
 class MessagesScreen extends StatefulWidget {
-  const MessagesScreen({Key? key}) : super(key: key);
+  const MessagesScreen({super.key});
 
   @override
   State<MessagesScreen> createState() => _MessagesScreenState();
@@ -19,7 +21,8 @@ class MessagesScreen extends StatefulWidget {
 class _MessagesScreenState extends State<MessagesScreen> {
   TextEditingController chatTextController = TextEditingController();
   bool _emojiShowing = false;
-  final _scrollController = ScrollController();
+  final ScrollController _emojiScrollController = ScrollController();
+  final ScrollController _messageScrollController = ScrollController();
 
   List<Map<DateTime, List<Message>>> sortMessages(List<Message> messages) {
     Map<DateTime, List<Message>> sortedMessages = {};
@@ -135,6 +138,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                   ...e.data(),
                                 }))
                             .toList();
+
                         if (messages == null || messages.isEmpty) {
                           return const Center(
                             child: Text(
@@ -143,57 +147,63 @@ class _MessagesScreenState extends State<MessagesScreen> {
                             ),
                           );
                         }
+
                         List<Map<DateTime, List<Message>>> sortedMessages =
                             sortMessages(messages);
 
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: sortedMessages.map((sortedMessage) {
-                            DateTime wholeday = sortedMessage.keys.first;
-                            List<Message> messages = sortedMessage.values.first;
+                        return SingleChildScrollView(
+                          controller: _messageScrollController,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: sortedMessages.map((sortedMessage) {
+                              DateTime wholeday = sortedMessage.keys.first;
+                              List<Message> messages =
+                                  sortedMessage.values.first;
 
-                            return Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    const Expanded(child: Divider()),
-                                    const SizedBox(
-                                      width: 8,
-                                    ),
-                                    Text(DateFormat('d MMM').format(wholeday)),
-                                    const SizedBox(
-                                      width: 8,
-                                    ),
-                                    const Expanded(child: Divider()),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Column(
-                                  children: messages.map((message) {
-                                    return Column(
-                                      children: [
-                                        ChatBubble(
-                                          text: message.message!,
-                                          isSender: message.sender.uid ==
-                                              auth.currentUser!.uid,
-                                          createdAt: message.createdAt,
-                                          profile: message.sender.profile,
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                      ],
-                                    );
-                                  }).toList(),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                              ],
-                            );
-                          }).toList(),
+                              return Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Expanded(child: Divider()),
+                                      const SizedBox(
+                                        width: 8,
+                                      ),
+                                      Text(
+                                          DateFormat('d MMM').format(wholeday)),
+                                      const SizedBox(
+                                        width: 8,
+                                      ),
+                                      const Expanded(child: Divider()),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Column(
+                                    children: messages.map((message) {
+                                      return Column(
+                                        children: [
+                                          ChatBubble(
+                                            text: message.message!,
+                                            isSender: message.sender.uid ==
+                                                auth.currentUser!.uid,
+                                            createdAt: message.createdAt,
+                                            profile: message.sender.profile,
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                        ],
+                                      );
+                                    }).toList(),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                ],
+                              );
+                            }).toList(),
+                          ),
                         );
                     }
                   }),
@@ -254,7 +264,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                     offstage: !_emojiShowing,
                     child: EmojiPicker(
                       textEditingController: chatTextController,
-                      scrollController: _scrollController,
+                      scrollController: _emojiScrollController,
                       config: Config(
                         height: 256,
                         checkPlatformCompatibility: true,
@@ -290,6 +300,7 @@ class ChatBubble extends StatelessWidget {
   final String? profile;
   final DateTime createdAt;
   const ChatBubble({
+    super.key,
     required this.isSender,
     required this.text,
     required this.createdAt,
@@ -315,9 +326,14 @@ class ChatBubble extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
-        if (!isSender && profile != null)
-          CircleAvatar(
-            backgroundImage: NetworkImage(profile!),
+        if (!isSender)
+          if (profile != null)
+            CircleAvatar(
+              backgroundImage: NetworkImage(profile!),
+            ),
+        if (profile == null)
+          const CircleAvatar(
+            child: Icon(Icons.person),
           ),
         if (isSender) const SizedBox(width: 10),
         Container(
@@ -338,8 +354,8 @@ class ChatBubble extends StatelessWidget {
           ),
           child: Text(
             text,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: isSender ? Colors.white : Colors.black,
               fontSize: 12,
               fontWeight: FontWeight.w500,
             ),

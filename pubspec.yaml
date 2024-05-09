@@ -32,7 +32,6 @@ dependencies:
   dio: ^5.4.3+1
   awesome_notifications: ^0.8.2
   intl: ^0.18.1
-  chat_composer: ^1.0.3
   voice_message_package: ^2.2.1
   reaction_askany: ^0.1.2
   swipe_to: ^1.0.6
@@ -43,6 +42,7 @@ dependencies:
   rxdart_ext: ^0.2.9
   webview_flutter: ^4.7.0
   file_picker: ^8.0.3
+  chat_composer: ^1.0.3
 
 dev_dependencies:
   flutter_test:

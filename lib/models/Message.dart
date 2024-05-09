@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:reaction_askany/models/emotions.dart';
 
 class Message {
+  String? id;
   String? message;
   Sender sender;
   MessageType type;
@@ -16,6 +16,7 @@ class Message {
   MessageStatus status;
 
   Message({
+    this.id,
     this.message,
     required this.sender,
     required this.type,
@@ -69,10 +70,10 @@ class Message {
 }
 
 class Sender {
-  final String profile;
+  final String? profile;
   final String uid;
 
-  const Sender({required this.uid, required this.profile});
+  const Sender({required this.uid, this.profile});
 
   factory Sender.fromJson(Map<String, dynamic> json) {
     return Sender(uid: json['uid'], profile: json['profile']);
