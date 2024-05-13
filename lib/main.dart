@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:spartan/models/SpartanUser.dart';
 import 'package:spartan/notifiers/CurrentRoomNotifier.dart';
 import 'package:spartan/notifiers/CurrentSpartanUserNotifier.dart';
-import 'package:spartan/notifiers/StreamLayoutNotifier.dart';
 import 'package:spartan/notifiers/CountryTermsNotifier.dart';
 import 'package:spartan/screens/auth/LoginScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -55,9 +54,6 @@ void main() async {
         providers: [
           ChangeNotifierProvider(
             create: (context) => CountryAndTermsNotifier(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => StreamLayoutNotifier(),
           ),
           ChangeNotifierProvider(
             create: (context) => CurrentSpartanUserNotifier(),

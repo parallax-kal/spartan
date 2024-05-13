@@ -6,5 +6,14 @@ class CribService {
     return firestore.collection('cribs').doc(cribId).update(data);
   }
 
-
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getCribs() {
+    return firestore
+        .collection("cribs")
+        .where("user", isEqualTo: auth.currentUser!.uid)
+        .orderBy(
+          "createdAt",
+          descending: false,
+        )
+        .snapshots();
+  }
 }

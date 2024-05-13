@@ -128,8 +128,6 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
     return Scaffold(
       appBar: !noAppbarScreens.contains(widget.path)
           ? AppBar(
-              backgroundColor: Colors.white,
-              surfaceTintColor: Colors.white,
               leading: Padding(
                 padding: const EdgeInsets.only(left: 20),
                 child: Image.asset(
@@ -142,12 +140,8 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
                   child: SvgPicture.asset('assets/icons/notifications.svg'),
                 ),
                 const SizedBox(
-                  width: 15,
+                  width: 20,
                 ),
-                const Icon(Icons.add),
-                const SizedBox(
-                  width: 30,
-                )
               ],
             )
           : null,
@@ -155,9 +149,8 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
         child: widget.child,
       ),
       bottomNavigationBar: !noBottomNavScreens.contains(widget.path)
-          ?
-           Container(
-            height: 72,
+          ? Container(
+              height: 72,
               padding: const EdgeInsets.only(top: 15, left: 5, right: 5),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -174,8 +167,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
                   )
                 ],
               ),
-              child:
-               CurvedNavigationBar(
+              child: CurvedNavigationBar(
                 key: _bottomNavigationKey,
                 height: 74,
                 color: Colors.transparent,
@@ -196,8 +188,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
                   _changeTab(context, index);
                 },
                 letIndexChange: (index) => true,
-              )
-            )
+              ))
           : null,
     );
   }
