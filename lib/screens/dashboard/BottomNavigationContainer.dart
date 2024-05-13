@@ -70,7 +70,7 @@ List<MyCustomBottomNavBarItem> tabs = [
 ];
 
 List<String> noAppbarScreens = [
-  '/home/qr',
+  '/home/qrcode',
   '/home/qrcode-success',
   '/profile',
   '/stream/:id',

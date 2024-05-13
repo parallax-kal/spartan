@@ -24,14 +24,14 @@ class _StreamScreenState extends State<StreamScreen>
           right: 32,
         ),
         child: SingleChildScrollView(
-          child: Expanded(
+            // child: Expanded(
             child: StreamBuilder(
-              stream: CribService.getCribs(),
-              builder: (context, snapshot) {
-                return Column();
-              })
-          ),
-        ),
+                stream: CribService.getCribs(),
+                builder: (context, snapshot) {
+                  return Column();
+                })
+            // ),
+            ),
       ),
     );
   }

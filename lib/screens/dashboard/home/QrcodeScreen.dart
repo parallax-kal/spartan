@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'dart:io';
 
 class QRcodeScreen extends StatefulWidget {
   @override
@@ -9,13 +11,48 @@ class QRcodeScreen extends StatefulWidget {
 
 class _QRcodeScreenState extends State<QRcodeScreen>
     with TickerProviderStateMixin {
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  Barcode? result;
+  QRViewController? controller;
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    if (Platform.isAndroid) {
+      controller!.pauseCamera();
+    } else if (Platform.isIOS) {
+      controller!.resumeCamera();
+    }
+  }
+
+  void _onQRViewCreated(QRViewController controller) {
+    this.controller = controller;
+    controller.scannedDataStream.listen((scanData) {
+      setState(() {
+        result = scanData;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0XFF083B69),
       body: Stack(
         children: [
-          Container(), //the page under the DraggableScrollableSheet goes here
+          Expanded(
+            flex: 5,
+            child: QRView(
+              key: qrKey,
+              onQRViewCreated: _onQRViewCreated,
+            ),
+          ),
           Container(
             height: MediaQuery.of(context).size.height,
             child: BottomSheet(
@@ -81,7 +118,7 @@ class _QRcodeScreenState extends State<QRcodeScreen>
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        minimumSize: const Size(83    , 32),
+                        minimumSize: const Size(83, 32),
                       ),
                       child: const Text(
                         'Scan',
