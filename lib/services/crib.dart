@@ -3,8 +3,8 @@ import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/models/Crib.dart';
 
 class CribService {
-  static Future updateCrib(String cribId, Map<String, dynamic> data) {
-    return firestore.collection('cribs').doc(cribId).update(data);
+  static Future updateCrib(String cribId, Map<String, dynamic> data) async {
+    await firestore.collection('cribs').doc(cribId).update(data);
   }
 
   static Future createCrib(Crib crib) async {

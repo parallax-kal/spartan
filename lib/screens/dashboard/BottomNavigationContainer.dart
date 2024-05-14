@@ -71,7 +71,7 @@ List<MyCustomBottomNavBarItem> tabs = [
 
 List<String> noAppbarScreens = [
   '/qrcode/initialize',
-  '/qrcode/result',
+  '/device/result',
   '/qrcode/scan',
   '/profile',
   '/stream/:id',

@@ -14,10 +14,12 @@ import 'package:spartan/screens/dashboard/HomeScreen.dart';
 import 'package:spartan/screens/dashboard/ProfileScreen.dart';
 import 'package:spartan/screens/dashboard/StreamScreen.dart';
 import 'package:spartan/screens/dashboard/chat/RoomsScreen.dart';
-import 'package:spartan/screens/dashboard/home/InitializeQrcodeScreen.dart';
-import 'package:spartan/screens/dashboard/home/ScanQrcodeScreen.dart';
-import 'package:spartan/screens/dashboard/home/ResultQrcodeScreen.dart';
+import 'package:spartan/screens/dashboard/device/EditDeviceScreen.dart';
+import 'package:spartan/screens/dashboard/qrcode/InitializeQrcodeScreen.dart';
+import 'package:spartan/screens/dashboard/qrcode/ScanQrcodeScreen.dart';
+import 'package:spartan/screens/dashboard/device/ResultDeviceScreen.dart';
 import 'package:spartan/screens/dashboard/stream/UniqueStreamScreen.dart';
+import 'package:spartan/screens/manual/ManualScreen.dart';
 import 'firebase_options.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:go_router/go_router.dart';
@@ -472,12 +474,43 @@ class SpartanApp extends StatefulWidget {
                   );
                 },
               ),
+            ],
+          ),
+          GoRoute(
+            path: '/device',
+            parentNavigatorKey: shellNavigatorKey,
+            redirect: (context, state) {
+              if (state.fullPath == '/device') {
+                return '/device/edit';
+              }
+              return null;
+            },
+            routes: [
+              GoRoute(
+                path: 'edit',
+                pageBuilder: (context, state) {
+                  return CustomTransitionPage(
+                    key: state.pageKey,
+                    child: const EditDeviceScreen(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(1, 0),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    },
+                  );
+                },
+              ),
               GoRoute(
                 path: 'result',
                 pageBuilder: (context, state) {
                   return CustomTransitionPage(
                     key: state.pageKey,
-                    child: SuccessQRcodeScreen(result: state.extra),
+                    child: ResultDeviceScreen(result: state.extra),
                     transitionsBuilder:
                         (context, animation, secondaryAnimation, child) {
                       return SlideTransition(
@@ -492,6 +525,16 @@ class SpartanApp extends StatefulWidget {
                 },
               ),
             ],
+          ),
+          GoRoute(
+            path: '/manual',
+            parentNavigatorKey: shellNavigatorKey,
+            pageBuilder: (context, state) {
+              return NoTransitionPage(
+                key: state.pageKey,
+                child: const ManualScreen(),
+              );
+            },
           ),
           GoRoute(
             path: '/chat',

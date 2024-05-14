@@ -68,7 +68,7 @@ class Access {
   factory Access.fromJson(Map<String, dynamic> json) {
     return Access(
       status: ACCESSSTATUS.values
-          .firstWhere((element) => element.toString() == json['status']),
+          .firstWhere((element) => element.name == json['status']),
       user: json['user'],
       accepted: json['accepted'],
     );

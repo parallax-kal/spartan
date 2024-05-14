@@ -140,7 +140,7 @@ class _ScanQrcodeScreenState extends State<ScanQrcodeScreen> {
       this.controller = controller;
     });
     controller.scannedDataStream.listen((scanData) {
-      GoRouter.of(context).push('/qrcode/result', extra: {
+      GoRouter.of(context).push('/device/result', extra: {
         'result': scanData,
       });
     });

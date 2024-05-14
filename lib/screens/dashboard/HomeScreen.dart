@@ -258,8 +258,8 @@ class HomeDialog extends StatelessWidget {
                                     GoRouter.of(context).push('/manual');
                                   } else if (option.label == 'QR Code') {
                                     GoRouter.of(context)
-                                        .push('/qrcode/result', extra: {
-                                      'result': 'fuckumean',
+                                        .push('/device/result', extra: {
+                                      'result': 'spartan_crib_1245434',
                                     });
                                   } else if (option.label == 'Bluetooth') {
                                     GoRouter.of(context).push('/bluetooth');

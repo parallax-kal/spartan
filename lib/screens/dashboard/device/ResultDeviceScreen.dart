@@ -6,15 +6,15 @@ import 'package:spartan/models/Crib.dart';
 import 'package:spartan/screens/dashboard/BottomNavigationContainer.dart';
 import 'package:spartan/services/crib.dart';
 
-class SuccessQRcodeScreen extends StatefulWidget {
+class ResultDeviceScreen extends StatefulWidget {
   final dynamic result;
-  const SuccessQRcodeScreen({super.key, required this.result});
+  const ResultDeviceScreen({super.key, required this.result});
 
   @override
-  State<SuccessQRcodeScreen> createState() => _SuccessQRcodeScreenState();
+  State<ResultDeviceScreen> createState() => _ResultDeviceScreenState();
 }
 
-class _SuccessQRcodeScreenState extends State<SuccessQRcodeScreen> {
+class _ResultDeviceScreenState extends State<ResultDeviceScreen> {
   bool isProcessing = true;
   String? error;
   String? errorTitle;
@@ -24,40 +24,84 @@ class _SuccessQRcodeScreenState extends State<SuccessQRcodeScreen> {
     super.initState();
     if (widget.result is Map && widget.result['result'] is String) {
       String qrcodeId = widget.result['result'];
-      _processQRCode(qrcodeId);
+      if (!qrcodeId.startsWith('spartan_crib_')) {
+        _setErrorState("Invalid QR code",
+            "You supplied an invalid QR code. Please try again.");
+      } else {
+        _processQRCode(qrcodeId);
+      }
     } else {
-      setState(() {
-        errorTitle = "Invalid QR code";
-        error = 'You suplied an invalid qr code.\nPlease try again';
-        isProcessing = false;
-      });
+      _setErrorState("Invalid QR code",
+          "You supplied an invalid QR code. Please try again.");
     }
   }
 
   void _processQRCode(String qrcodeId) {
-    CribService.getCrib(qrcodeId).then((value) {
-      if (value == null) {
+    CribService.getCrib(qrcodeId).then((crib) {
+      if (crib == null) {
         _createCrib(qrcodeId);
       } else {
-        setState(() {
-          errorTitle = 'Device already added';
-          error =
-              'This device has been already registered by another one.\nPlease try another device or let us know\nif you are the owner of this device.';
-          isProcessing = false;
-        });
+        bool hasAdmin =
+            crib.access.any((access) => access.status == ACCESSSTATUS.ADMIN);
+        if (!hasAdmin) {
+          _updateCrib(crib);
+        } else {
+          _setErrorState("Device already added",
+              "This device has already been registered by another user. Please try another device or contact support if you are the owner.");
+        }
       }
+    }).catchError((error) {
+      _setErrorState(
+          "Error", "There was an error while processing the crib data.");
+    });
+  }
+
+  void _updateCrib(Crib previous) {
+    Crib crib = Crib.fromJson({
+      ...previous.toJson(),
+      'access': [
+        Access(
+          status: ACCESSSTATUS.ADMIN,
+          user: auth.currentUser!.email!,
+        ),
+        ...previous.access,
+      ],
+    });
+    CribService.updateCrib(crib.id, crib.toJson()).then((value) {
+      _setProcessingState(false);
+    }).catchError((error) {
+      
+      _setErrorState(
+          "Error", "There was an error while updating the crib data.");
     });
   }
 
   void _createCrib(String qrcodeId) {
     Crib crib = Crib(
       id: qrcodeId,
-      access: [Access(status: ACCESSSTATUS.ADMIN, user: auth.currentUser!.uid)],
+      access: [
+        Access(status: ACCESSSTATUS.ADMIN, user: auth.currentUser!.email!)
+      ],
     );
     CribService.createCrib(crib).then((value) {
-      setState(() {
-        isProcessing = false;
-      });
+      _setProcessingState(false);
+    }).catchError((error) {
+      _setErrorState(
+          "Error", "There was an error while creating the crib data.");
+    });
+  }
+
+  void _setErrorState(String title, String errorMessage) {
+    setState(() {
+      errorTitle = title;
+      error = errorMessage;
+      isProcessing = false;
+    });
+  }
+
+  void _setProcessingState(bool processing) {
+    setState(() {
+      isProcessing = processing;
     });
   }
 
@@ -175,7 +219,6 @@ class ErrorResult extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  // minimumSize: const Size(83, 32),
                 ),
                 child: const Text(
                   'Go to Stream',
@@ -239,12 +282,22 @@ class SuccessResult extends StatelessWidget {
                     color: Color(0XFF002E58),
                   ),
                 ),
-                child: const Text(
-                  'Skip for later',
-                  style: TextStyle(
-                    color: Color(0XFF002E58),
-                    fontWeight: FontWeight.w600,
-                  ),
+                child: const Row(
+                  children: [
+                    Text(
+                      'Skip',
+                      style: TextStyle(
+                        color: Color(0XFF002E58),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(width: 3),
+                    Icon(
+                      Icons.keyboard_double_arrow_right,
+                      size: 20,
+                      color: Color(0XFF002E58),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(width: 20),
@@ -257,7 +310,6 @@ class SuccessResult extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  minimumSize: const Size(83, 32),
                 ),
                 child: const Text(
                   'Continue',

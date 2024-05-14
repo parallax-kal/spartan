@@ -3,13 +3,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 class InitializeQrcodeScreen extends StatefulWidget {
+
   const InitializeQrcodeScreen({super.key});
+
   @override
   State<InitializeQrcodeScreen> createState() => _InitializeQrcodeScreenState();
 }
 
 class _InitializeQrcodeScreenState extends State<InitializeQrcodeScreen>
     with TickerProviderStateMixin {
+      
   @override
   Widget build(BuildContext context) {
     return Scaffold(
