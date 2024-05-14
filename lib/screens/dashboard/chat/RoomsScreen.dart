@@ -223,7 +223,7 @@ class _RoomsScreenState extends State<RoomsScreen> {
                                       : message == null
                                           ? null
                                           : Text(
-                                              message.type == MessageType.TEXT
+                                              message.type == MESSAGETYPE.TEXT
                                                   ? message.message!
                                                   : '',
                                               style: const TextStyle(
@@ -284,14 +284,14 @@ class _RoomsScreenState extends State<RoomsScreen> {
                                               SvgPicture.asset(room.group
                                                   ? 'assets/icons/ticks/single.svg'
                                                   : message.status ==
-                                                          MessageStatus.SENT
+                                                          MESSAGESTATUS.SENT
                                                       ? 'assets/icons/ticks/single.svg'
                                                       : message.status ==
-                                                              MessageStatus
+                                                              MESSAGESTATUS
                                                                   .RECEIVED
                                                           ? 'assets/icons/ticks/double.svg'
                                                           : message.status ==
-                                                                  MessageStatus
+                                                                  MESSAGESTATUS
                                                                       .READ
                                                               ? 'assets/icons/ticks/colored-double.svg'
                                                               : 'assets/icons/single.svg')

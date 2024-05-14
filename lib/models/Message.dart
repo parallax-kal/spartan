@@ -4,7 +4,7 @@ class Message {
   String? id;
   String? message;
   Sender sender;
-  MessageType type;
+  MESSAGETYPE type;
   String? imageUrl;
   String? videoUrl;
   String? audioUrl;
@@ -13,7 +13,7 @@ class Message {
   DateTime createdAt;
   String? replyMessage;
   List<EmotionReply> emotionReplies;
-  MessageStatus status;
+  MESSAGESTATUS status;
 
   Message({
     this.id,
@@ -27,7 +27,7 @@ class Message {
     this.location,
     this.replyMessage,
     this.emotionReplies = const [],
-    this.status = MessageStatus.SENDING,
+    this.status = MESSAGESTATUS.SENDING,
     required this.createdAt,
   });
 
@@ -35,7 +35,7 @@ class Message {
     return Message(
       message: json['message'],
       sender: Sender.fromJson(json['sender']),
-      type: MessageType.values.firstWhere((e) => e.toString() == json['type']),
+      type: MESSAGETYPE.values.firstWhere((e) => e.toString() == json['type']),
       imageUrl: json['imageUrl'],
       videoUrl: json['videoUrl'],
       audioUrl: json['audioUrl'],
@@ -45,7 +45,7 @@ class Message {
       emotionReplies: (json['emotionReplies'] as List<dynamic>)
           .map((e) => EmotionReply.fromJson(e))
           .toList(),
-      status: MessageStatus.values
+      status: MESSAGESTATUS.values
           .firstWhere((e) => e.toString() == json['status']),
       createdAt: json['createdAt'].toDate(),
     );
@@ -112,7 +112,7 @@ class EmotionReply {
   }
 }
 
-enum MessageType {
+enum MESSAGETYPE {
   TEXT,
   IMAGE,
   VIDEO,
@@ -121,7 +121,7 @@ enum MessageType {
   LOCATION,
 }
 
-enum MessageStatus {
+enum MESSAGESTATUS {
   SENDING,
   SENT,
   RECEIVED,

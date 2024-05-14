@@ -70,7 +70,7 @@ class _InitializeQrcodeScreenState extends State<InitializeQrcodeScreen>
               ),
               ElevatedButton(
                 onPressed: () {
-                  GoRouter.of(context).push('/home/qr/scan');
+                  GoRouter.of(context).push('/qrcode/scan');
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0XFF002E58),

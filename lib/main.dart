@@ -16,7 +16,7 @@ import 'package:spartan/screens/dashboard/StreamScreen.dart';
 import 'package:spartan/screens/dashboard/chat/RoomsScreen.dart';
 import 'package:spartan/screens/dashboard/home/InitializeQrcodeScreen.dart';
 import 'package:spartan/screens/dashboard/home/ScanQrcodeScreen.dart';
-import 'package:spartan/screens/dashboard/home/SuccessQRcodeScreen.dart';
+import 'package:spartan/screens/dashboard/home/ResultQrcodeScreen.dart';
 import 'package:spartan/screens/dashboard/stream/UniqueStreamScreen.dart';
 import 'firebase_options.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -429,7 +429,6 @@ class SpartanApp extends StatefulWidget {
             path: '/qrcode',
             parentNavigatorKey: shellNavigatorKey,
             redirect: (context, state) {
-              print(state.fullPath);
               if (state.fullPath == '/qrcode') {
                 return '/qrcode/initialize';
               }
@@ -474,11 +473,11 @@ class SpartanApp extends StatefulWidget {
                 },
               ),
               GoRoute(
-                path: 'success',
+                path: 'result',
                 pageBuilder: (context, state) {
                   return CustomTransitionPage(
                     key: state.pageKey,
-                    child: const SuccessQRcodeScreen(),
+                    child: SuccessQRcodeScreen(result: state.extra),
                     transitionsBuilder:
                         (context, animation, secondaryAnimation, child) {
                       return SlideTransition(

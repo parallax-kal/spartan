@@ -236,7 +236,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                           uid: auth.currentUser!.uid,
                           profile: auth.currentUser!.photoURL!,
                         ),
-                        type: MessageType.TEXT,
+                        type: MESSAGETYPE.TEXT,
                         createdAt: DateTime.now(),
                       );
                       await ChatService.sendMessage(
