@@ -40,22 +40,47 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.only(top: 20, bottom: 40),
                       child: Image.asset('assets/images/parent_sitting.png'),
                     ),
-                    const Text(
-                      'No devices yet',
-                      style: TextStyle(
-                        color: Color(0xFF002E58),
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const Text(
-                      'You don\'t have any devices connected yet',
-                      style: TextStyle(
-                        color: Color(0xFF002E58),
-                        fontWeight: FontWeight.w600,
-                        fontSize: 12,
-                      ),
-                    ),
+                    currentSpartanUser.currentSpartanUser?.hasCribs == true
+                        ? const Column(
+                            children: [
+                              Text(
+                                'Devices connected',
+                                style: TextStyle(
+                                  color: Color(0xFF002E58),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              Text(
+                                'You have some devices checkout stream.',
+                                style: TextStyle(
+                                  color: Color(0xFF002E58),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          )
+                        : const Column(
+                            children: [
+                              Text(
+                                'No devices yet',
+                                style: TextStyle(
+                                  color: Color(0xFF002E58),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              Text(
+                                'You don\'t have any devices connected yet.',
+                                style: TextStyle(
+                                  color: Color(0xFF002E58),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
                     const SizedBox(
                       height: 10,
                     ),
@@ -230,12 +255,11 @@ class HomeDialog extends StatelessWidget {
                           .map((option) => InkWell(
                                 onTap: () async {
                                   if (option.label == 'Manual') {
-                                    GoRouter.of(context).push('/home/manual');
+                                    GoRouter.of(context).push('/manual');
                                   } else if (option.label == 'QR Code') {
-                                    GoRouter.of(context).push('/home/qrcode');
+                                    GoRouter.of(context).push('/qrcode/initialize');
                                   } else if (option.label == 'Bluetooth') {
-                                    GoRouter.of(context)
-                                        .push('/home/bluetooth');
+                                    GoRouter.of(context).push('/bluetooth');
                                   }
                                   Navigator.of(context).pop();
                                 },

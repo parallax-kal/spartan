@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class SuccessQRcodeScreen extends StatefulWidget {
+  const SuccessQRcodeScreen({super.key});
+
   @override
-  _SuccessQRcodeScreenState createState() => _SuccessQRcodeScreenState();
+  State<SuccessQRcodeScreen> createState() => _SuccessQRcodeScreenState();
 }
 
 class _SuccessQRcodeScreenState extends State<SuccessQRcodeScreen> {
@@ -38,11 +40,10 @@ class _SuccessQRcodeScreenState extends State<SuccessQRcodeScreen> {
             const Text(
               'You have successfully added a new device. You can\nnow personalize your device by tapping on continue\nor skip for later changes.',
               style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
-                height: 1.4
-              ),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                  height: 1.4),
             ),
             const SizedBox(height: 20),
             Row(

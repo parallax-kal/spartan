@@ -14,7 +14,8 @@ import 'package:spartan/screens/dashboard/HomeScreen.dart';
 import 'package:spartan/screens/dashboard/ProfileScreen.dart';
 import 'package:spartan/screens/dashboard/StreamScreen.dart';
 import 'package:spartan/screens/dashboard/chat/RoomsScreen.dart';
-import 'package:spartan/screens/dashboard/home/QrcodeScreen.dart';
+import 'package:spartan/screens/dashboard/home/InitializeQrcodeScreen.dart';
+import 'package:spartan/screens/dashboard/home/ScanQrcodeScreen.dart';
 import 'package:spartan/screens/dashboard/home/SuccessQRcodeScreen.dart';
 import 'package:spartan/screens/dashboard/stream/UniqueStreamScreen.dart';
 import 'firebase_options.dart';
@@ -425,46 +426,72 @@ class SpartanApp extends StatefulWidget {
             },
           ),
           GoRoute(
+            path: '/qrcode',
             parentNavigatorKey: shellNavigatorKey,
-            path: '/home/qrcode',
-            pageBuilder: (context, state) {
-              return CustomTransitionPage(
-                key: state.pageKey,
-                child: QRcodeScreen(),
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) {
-                  return SlideTransition(
-                    position: Tween<Offset>(
-                      begin: const Offset(0, 1),
-                      end: Offset.zero,
-                    ).animate(animation),
-                    child: child,
+            redirect: (context, state) {
+              if 
+            },
+            routes: [
+              GoRoute(
+                path: 'scan',
+                pageBuilder: (context, state) {
+                  return CustomTransitionPage(
+                    child: const ScanQrcodeScreen(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(0, 1),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    },
                   );
                 },
-              );
-            },
-          ),
-          GoRoute(
-            path: '/home/qrcode-success',
-            pageBuilder: (context, state) {
-              return CustomTransitionPage(
-                key: state.pageKey,
-                child: SuccessQRcodeScreen(),
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) {
-                  return SlideTransition(
-                    position: Tween<Offset>(
-                      begin: const Offset(1, 0),
-                      end: Offset.zero,
-                    ).animate(animation),
-                    child: child,
+              ),
+              GoRoute(
+                path: 'initialize',
+                pageBuilder: (context, state) {
+                  return CustomTransitionPage(
+                    key: state.pageKey,
+                    child: const InitializeQrcodeScreen(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(0, 1),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    },
                   );
                 },
-              );
-            },
+              ),
+              GoRoute(
+                path: 'success',
+                pageBuilder: (context, state) {
+                  return CustomTransitionPage(
+                    key: state.pageKey,
+                    child: const SuccessQRcodeScreen(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(1, 0),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
           ),
           GoRoute(
-            path: '/chat', // Remove the trailing slash
+            path: '/chat',
             parentNavigatorKey: shellNavigatorKey,
             redirect: (context, state) async {
               CurrentSpartanUserNotifier currentSpartanUserNotifier =
@@ -509,7 +536,6 @@ class SpartanApp extends StatefulWidget {
               ),
               GoRoute(
                 path: 'messages',
-                parentNavigatorKey: shellNavigatorKey,
                 pageBuilder: (context, state) {
                   return CustomTransitionPage(
                     key: state.pageKey,

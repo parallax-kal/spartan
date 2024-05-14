@@ -181,7 +181,8 @@ class _RoomsScreenState extends State<RoomsScreen> {
                                 }
                                 Message? message;
                                 String? formattedDate;
-                                if (lastMessage != null) {
+                                if (lastMessage != null &&
+                                    lastMessage.docs.isNotEmpty) {
                                   message = Message.fromJson({
                                     'id': lastMessage.docs.first.id,
                                     ...lastMessage.docs.first.data()
