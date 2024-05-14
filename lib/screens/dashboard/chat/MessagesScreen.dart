@@ -121,7 +121,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                 child: StreamBuilder(
                   stream: ChatService.getMessages(
                       currentRoomNotifier.currentRoom!.id),
-                  builder: ((context, snapshot) {
+                  builder: (context, snapshot) {
                     switch (snapshot.connectionState) {
                       case ConnectionState.none:
                       case ConnectionState.waiting:
@@ -204,7 +204,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                           ),
                         );
                     }
-                  }),
+                  },
                 ),
               ),
               Column(

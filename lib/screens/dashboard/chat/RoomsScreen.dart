@@ -158,7 +158,7 @@ class _RoomsScreenState extends State<RoomsScreen> {
                             return StreamBuilder(
                               stream: CombineLatestStream.list([
                                 ChatService.getLastMessage(room.id),
-                                ChatService.getUnreadRoomMessages(),
+                                ChatService.getUserStream(),
                               ]),
                               builder: ((context, snapshot) {
                                 QuerySnapshot<Map<String, dynamic>>?

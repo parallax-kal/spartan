@@ -32,7 +32,7 @@ class _UniqueStreamScreenState extends State<UniqueStreamScreen> {
       print('checking');
 
       try {
-        await http.get(Uri.parse('http://192.168.43.68:8000/check'));
+        await http.get(Uri.parse('http://192.168.43.68/check'));
       } catch (error) {
         await _changeStatus();
         if (!mounted) return;
@@ -51,7 +51,7 @@ class _UniqueStreamScreenState extends State<UniqueStreamScreen> {
         Navigator.pop(context);
       }))
       ..loadRequest(
-        Uri.parse('http://192.168.43.68:8000/stream.mjpg'),
+        Uri.parse('http://192.168.43.68/stream.mjpg'),
       );
     return Scaffold(
       backgroundColor: Colors.white,

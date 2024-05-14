@@ -23,15 +23,41 @@ class _StreamScreenState extends State<StreamScreen>
           left: 32,
           right: 32,
         ),
-        child: SingleChildScrollView(
-            // child: Expanded(
-            child: StreamBuilder(
-                stream: CribService.getCribs(),
-                builder: (context, snapshot) {
-                  return Column();
-                })
-            // ),
-            ),
+        child: Expanded(
+          child: StreamBuilder(
+            stream: CribService.getCribs(),
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                case ConnectionState.waiting:
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                case ConnectionState.active:
+                case ConnectionState.done:
+                  if (snapshot.data?.docs.isEmpty ?? true) {
+                    return const Center(
+                      child: Text('No cribs found'),
+                    );
+                  }
+
+                  return ListView.builder(
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      final crib = snapshot.data!.docs[index];
+                      return ListTile(
+                        title: Text(crib['name']),
+                        subtitle: Text(crib['status'] ? 'Online' : 'Offline'),
+                        onTap: () {
+                          context.go('/stream/${crib['id']}');
+                        },
+                      );
+                    },
+                  );
+              }
+            },
+          ),
+        ),
       ),
     );
   }

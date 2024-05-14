@@ -9,7 +9,7 @@ class CribService {
   static Stream<QuerySnapshot<Map<String, dynamic>>> getCribs() {
     return firestore
         .collection("cribs")
-        .where("user", isEqualTo: auth.currentUser!.uid)
+        .where("access", arrayContains: {"user": auth.currentUser!.uid})
         .orderBy(
           "createdAt",
           descending: false,

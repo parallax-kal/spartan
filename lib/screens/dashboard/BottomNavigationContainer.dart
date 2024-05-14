@@ -128,6 +128,8 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
     return Scaffold(
       appBar: !noAppbarScreens.contains(widget.path)
           ? AppBar(
+              surfaceTintColor: Colors.white,
+              backgroundColor: Colors.white,
               leading: Padding(
                 padding: const EdgeInsets.only(left: 20),
                 child: Image.asset(

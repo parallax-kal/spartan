@@ -9,16 +9,17 @@ class SpartanUser {
   List<UnReadMessage>? unReadMessages;
   bool? community;
   bool? isOnline;
-
+  bool? hasCribs;
 
   SpartanUser({
     required this.id,
     required this.fullname,
     required this.email,
-    this.profile,
     required this.tokens,
-     this.country,
-     this.terms,
+    this.hasCribs,
+    this.profile,
+    this.country,
+    this.terms,
     this.isOnline = false,
     this.community = false,
     this.unReadMessages = const [],
@@ -33,9 +34,11 @@ class SpartanUser {
       terms: json['terms'],
       country: json['country'],
       tokens: List<String>.from(json['tokens']),
-      isOnline: json['isOnline'],
-      community: json['community'],
-      unReadMessages: List<UnReadMessage>.from(json['unReadMessages']?.map((x) => UnReadMessage.fromJson(x))),
+      isOnline: json['isOnline'] ?? false,
+      community: json['community'] ?? false,
+      hasCribs: json['hasCribs'] ?? false,
+      unReadMessages: List<UnReadMessage>.from(
+          json['unReadMessages']?.map((x) => UnReadMessage.fromJson(x))),
     );
   }
 
@@ -48,8 +51,9 @@ class SpartanUser {
       'country': country,
       'terms': terms,
       'tokens': tokens,
-      'isOnline': isOnline,
-      'community': community,
+      'isOnline': isOnline ?? false,
+      'community': community ?? false,
+      'hasCribs': hasCribs ?? false,
       'unReadMessages': unReadMessages?.map((x) => x.toJson()).toList(),
     };
   }
@@ -97,9 +101,14 @@ class UnReadMessage {
     );
   }
 
-  static int getRoomUnReadMessages(String roomId, List<UnReadMessage>? unReadMessages) {
-    return unReadMessages?.firstWhere((element) => element.roomId == roomId).count ?? 0;
+  static int getRoomUnReadMessages(
+      String roomId, List<UnReadMessage>? unReadMessages) {
+    return unReadMessages
+            ?.firstWhere((element) => element.roomId == roomId)
+            .count ??
+        0;
   }
+
   Map<String, dynamic> toJson() {
     return {
       'roomId': roomId,

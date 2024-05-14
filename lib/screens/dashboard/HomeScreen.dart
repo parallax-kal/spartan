@@ -12,41 +12,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class DeviceAddingOption {
-  final String label;
-  final Widget icon;
-
-  DeviceAddingOption({required this.label, required this.icon});
-}
-
 class _HomeScreenState extends State<HomeScreen> {
-
-
-  List<List<DeviceAddingOption>> deviceAddingOptions = [
-    [
-      DeviceAddingOption(
-        label: 'Manual',
-        icon: SvgPicture.asset(
-          'assets/icons/manual.svg',
-        ),
-      ),
-      DeviceAddingOption(
-        label: 'QR Code',
-        icon: SvgPicture.asset(
-          'assets/icons/qr_code.svg',
-        ),
-      ),
-    ],
-    [
-      DeviceAddingOption(
-        label: 'Bluetooth',
-        icon: SvgPicture.asset(
-          'assets/icons/bluetooth.svg',
-        ),
-      ),
-    ]
-  ];
-
   @override
   Widget build(BuildContext context) {
     CurrentSpartanUserNotifier currentSpartanUser =
@@ -105,154 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           barrierColor: Colors.black.withOpacity(0.3),
                           context: context,
                           builder: (BuildContext context) {
-                            return SimpleDialog(
-                              title: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    'Device onboarding options',
-                                    style: TextStyle(
-                                        color: Color(0xFF002E58),
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 14),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: SvgPicture.asset(
-                                      'assets/icons/dialog_close.svg',
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              contentPadding: const EdgeInsets.all(15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              backgroundColor: Colors.white,
-                              surfaceTintColor: Colors.white,
-                              elevation: 7.3,
-                              shadowColor:
-                                  const Color(0xFF000000).withOpacity(0.4),
-                              children: [
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Column(
-                                  children: deviceAddingOptions
-                                      .map(
-                                        (e) => Column(
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
-                                              children: e
-                                                  .map((option) => InkWell(
-                                                        onTap: () async {
-                                                          if (option.label ==
-                                                              'Manual') {
-                                                            GoRouter.of(context)
-                                                                .push(
-                                                                    '/home/manual');
-                                                          } else if (option
-                                                                  .label ==
-                                                              'QR Code') {
-                                                            GoRouter.of(context)
-                                                                .push(
-                                                                    '/home/qrcode');
-                                                          } else if (option
-                                                                  .label ==
-                                                              'Bluetooth') {
-                                                            GoRouter.of(context)
-                                                                .push(
-                                                                    '/home/bluetooth');
-                                                          }
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        },
-                                                        child: Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(15),
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.26,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: Colors.white,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10),
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                color: const Color(
-                                                                        0xFF000000)
-                                                                    .withOpacity(
-                                                                        0.1),
-                                                                offset:
-                                                                    const Offset(
-                                                                        0, 4),
-                                                                blurRadius: 7.3,
-                                                                spreadRadius: 0,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Container(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .all(
-                                                                        10),
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  color: const Color(
-                                                                      0XFFBFD1F4),
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              500),
-                                                                ),
-                                                                child:
-                                                                    option.icon,
-                                                              ),
-                                                              const SizedBox(
-                                                                height: 8,
-                                                              ),
-                                                              Text(
-                                                                option.label,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  color: Color(
-                                                                      0XFF06345F),
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ))
-                                                  .toList(),
-                                            ),
-                                            const SizedBox(height: 12),
-                                          ],
-                                        ),
-                                      )
-                                      .toList(),
-                                ),
-                              ],
-                            );
+                            return const HomeDialog();
                           },
                         );
                       },
@@ -356,3 +175,151 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
+class HomeDialog extends StatelessWidget {
+  const HomeDialog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SimpleDialog(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            'Device onboarding options',
+            style: TextStyle(
+                color: Color(0xFF002E58),
+                fontWeight: FontWeight.w500,
+                fontSize: 14),
+          ),
+          InkWell(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: SvgPicture.asset(
+              'assets/icons/dialog_close.svg',
+            ),
+          ),
+        ],
+      ),
+      contentPadding: const EdgeInsets.all(15),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      backgroundColor: Colors.white,
+      surfaceTintColor: Colors.white,
+      elevation: 7.3,
+      shadowColor: const Color(0xFF000000).withOpacity(0.4),
+      children: [
+        const SizedBox(
+          height: 10,
+        ),
+        Column(
+          children: deviceAddingOptions
+              .map(
+                (e) => Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: e
+                          .map((option) => InkWell(
+                                onTap: () async {
+                                  if (option.label == 'Manual') {
+                                    GoRouter.of(context).push('/home/manual');
+                                  } else if (option.label == 'QR Code') {
+                                    GoRouter.of(context).push('/home/qrcode');
+                                  } else if (option.label == 'Bluetooth') {
+                                    GoRouter.of(context)
+                                        .push('/home/bluetooth');
+                                  }
+                                  Navigator.of(context).pop();
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(15),
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.26,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(0xFF000000)
+                                            .withOpacity(0.1),
+                                        offset: const Offset(0, 4),
+                                        blurRadius: 7.3,
+                                        spreadRadius: 0,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0XFFBFD1F4),
+                                          borderRadius:
+                                              BorderRadius.circular(500),
+                                        ),
+                                        child: option.icon,
+                                      ),
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
+                                      Text(
+                                        option.label,
+                                        style: const TextStyle(
+                                          color: Color(0XFF06345F),
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ))
+                          .toList(),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                ),
+              )
+              .toList(),
+        ),
+      ],
+    );
+  }
+}
+
+class DeviceAddingOption {
+  final String label;
+  final Widget icon;
+
+  DeviceAddingOption({required this.label, required this.icon});
+}
+
+List<List<DeviceAddingOption>> deviceAddingOptions = [
+  [
+    DeviceAddingOption(
+      label: 'Manual',
+      icon: SvgPicture.asset(
+        'assets/icons/manual.svg',
+      ),
+    ),
+    DeviceAddingOption(
+      label: 'QR Code',
+      icon: SvgPicture.asset(
+        'assets/icons/qr_code.svg',
+      ),
+    ),
+  ],
+  [
+    DeviceAddingOption(
+      label: 'Bluetooth',
+      icon: SvgPicture.asset(
+        'assets/icons/bluetooth.svg',
+      ),
+    ),
+  ]
+];

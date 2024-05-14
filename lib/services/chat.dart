@@ -60,7 +60,7 @@ class ChatService {
   }
 
   static Stream<DocumentSnapshot<Map<String, dynamic>>>
-      getUnreadRoomMessages() {
+      getUserStream() {
     return firestore.collection('users').doc(auth.currentUser!.uid).snapshots();
   }
 
