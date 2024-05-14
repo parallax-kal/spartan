@@ -429,7 +429,8 @@ class SpartanApp extends StatefulWidget {
             path: '/qrcode',
             parentNavigatorKey: shellNavigatorKey,
             redirect: (context, state) {
-              if (state.fullPath == '/') {
+              print(state.fullPath);
+              if (state.fullPath == '/qrcode') {
                 return '/qrcode/initialize';
               }
               return null;
