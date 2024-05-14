@@ -8,7 +8,7 @@ class CribService {
   }
 
   static Future createCrib(Crib crib) async {
-    await firestore.collection('cribs').add(crib.toJson());
+    await firestore.collection('cribs').doc(crib.id).set(crib.toJson());
   }
 
   static Future<Crib?> getCrib(String cribId) async {

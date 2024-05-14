@@ -17,6 +17,7 @@ class SuccessQRcodeScreen extends StatefulWidget {
 class _SuccessQRcodeScreenState extends State<SuccessQRcodeScreen> {
   bool isProcessing = true;
   String? error;
+  String? errorTitle;
 
   @override
   void initState() {
@@ -26,7 +27,8 @@ class _SuccessQRcodeScreenState extends State<SuccessQRcodeScreen> {
       _processQRCode(qrcodeId);
     } else {
       setState(() {
-        error = 'Invalid QR code';
+        errorTitle = "Invalid QR code";
+        error = 'You suplied an invalid qr code.\nPlease try again';
         isProcessing = false;
       });
     }
@@ -38,7 +40,9 @@ class _SuccessQRcodeScreenState extends State<SuccessQRcodeScreen> {
         _createCrib(qrcodeId);
       } else {
         setState(() {
-          error = 'Device already added';
+          errorTitle = 'Device already added';
+          error =
+              'This device has been already registered by another one.\nPlease try another device or let us know\nif you are the owner of this device.';
           isProcessing = false;
         });
       }
@@ -72,7 +76,10 @@ class _SuccessQRcodeScreenState extends State<SuccessQRcodeScreen> {
       body: isProcessing
           ? const ProcessingResult()
           : error != null
-              ? ErrorResult(error: error!)
+              ? ErrorResult(
+                  error: error!,
+                  errorTitle: errorTitle!,
+                )
               : const SuccessResult(),
     );
   }
@@ -91,21 +98,22 @@ class ProcessingResult extends StatelessWidget {
 
 class ErrorResult extends StatelessWidget {
   final String error;
-  const ErrorResult({super.key, required this.error});
+  final String errorTitle;
+  const ErrorResult({super.key, required this.error, required this.errorTitle});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 30, left: 20, right: 20),
+      padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           SvgPicture.asset('assets/svg/error.svg'),
           const SizedBox(height: 10),
-          const Text(
-            'Error',
-            style: TextStyle(
-              color: Color(0XFF002E58),
+          Text(
+            errorTitle,
+            style: const TextStyle(
+              color: Colors.red,
               fontWeight: FontWeight.w600,
               fontSize: 18,
             ),
@@ -114,10 +122,12 @@ class ErrorResult extends StatelessWidget {
           Text(
             error,
             style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
-                height: 1.4),
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+              height: 1.4,
+            ),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 20),
           Row(
@@ -135,12 +145,24 @@ class ErrorResult extends StatelessWidget {
                     color: Color(0XFF002E58),
                   ),
                 ),
-                child: const Text(
-                  'Retry',
-                  style: TextStyle(
-                    color: Color(0XFF002E58),
-                    fontWeight: FontWeight.w600,
-                  ),
+                child: const Row(
+                  children: [
+                    Icon(
+                      Icons.refresh,
+                      color: Color(0XFF002E58),
+                      size: 20,
+                    ),
+                    SizedBox(
+                      width: 3,
+                    ),
+                    Text(
+                      'Retry',
+                      style: TextStyle(
+                        color: Color(0XFF002E58),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(width: 20),
@@ -153,7 +175,7 @@ class ErrorResult extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  minimumSize: const Size(83, 32),
+                  // minimumSize: const Size(83, 32),
                 ),
                 child: const Text(
                   'Go to Stream',
@@ -177,9 +199,9 @@ class SuccessResult extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 30, left: 20, right: 20),
+      padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           SvgPicture.asset('assets/svg/success.svg'),
           const SizedBox(height: 10),
@@ -195,10 +217,11 @@ class SuccessResult extends StatelessWidget {
           const Text(
             'You have successfully added a new device. You can\nnow personalize your device by tapping on continue\nor skip for later changes.',
             style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
-                height: 1.4),
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+              height: 1.4,
+            ),
           ),
           const SizedBox(height: 20),
           Row(

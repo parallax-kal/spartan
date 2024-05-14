@@ -32,10 +32,9 @@ class Crib {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'name': name,
       'access': access.map((e) => e.toJson()).toList(),
-      'status': status.toString(),
+      'status': status.name,
       'ipaddress': ipaddress,
       'wifissid': wifissid,
     };
@@ -60,7 +59,7 @@ class Access {
 
   Map<String, dynamic> toJson() {
     return {
-      'status': status.toString(),
+      'status': status.name,
       'user': user,
       'accepted': accepted,
     };
