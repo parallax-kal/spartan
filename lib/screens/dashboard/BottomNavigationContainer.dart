@@ -77,6 +77,7 @@ List<String> noAppbarScreens = [
   '/stream/:id',
   '/chat/messages',
   '/chat/rooms',
+  '/device/edit',
 ];
 
 List noBottomNavScreens = [

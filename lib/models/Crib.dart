@@ -2,14 +2,18 @@ class Crib {
   String id;
   String? name;
   List<Access> access;
-  STATUS status = STATUS.INACTIVE;
+  STATUS status;
   String? ipaddress;
   String? wifissid;
+  Location location;
+  DateTime createdAt;
 
   Crib({
     required this.id,
     required this.access,
-    this.status = STATUS.INACTIVE,
+    required this.status,
+    required this.location,
+    required this.createdAt,
     this.name,
     this.ipaddress,
     this.wifissid,
@@ -23,10 +27,12 @@ class Crib {
           .map((e) => Access.fromJson(e))
           .toList(),
       status: STATUS.values.firstWhere(
-          (element) => element.toString() == json['status'],
+          (element) => element.name == json['status'],
           orElse: () => STATUS.INACTIVE),
       ipaddress: json['ipaddress'],
       wifissid: json['wifissid'],
+      location: Location.fromJson(json['location']),
+      createdAt: json['createdAt'].toDate(),
     );
   }
 
@@ -37,6 +43,40 @@ class Crib {
       'status': status.name,
       'ipaddress': ipaddress,
       'wifissid': wifissid,
+      'location': location.toJson(),
+      'createdAt': createdAt,
+    };
+  }
+}
+
+class Location {
+  String country;
+  String city;
+  String latitude;
+  String longitude;
+
+  Location({
+    required this.country,
+    required this.city,
+    required this.latitude,
+    required this.longitude,
+  });
+
+  factory Location.fromJson(Map<String, dynamic> json) {
+    return Location(
+      country: json['country'],
+      city: json['city'],
+      latitude: json['latitude'],
+      longitude: json['longitude'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'country': country,
+      'city': city,
+      'latitude': latitude,
+      'longitude': longitude,
     };
   }
 }

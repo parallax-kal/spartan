@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -39,55 +40,45 @@ class _ResultDeviceScreenState extends State<ResultDeviceScreen> {
   void _processQRCode(String qrcodeId) {
     CribService.getCrib(qrcodeId).then((crib) {
       if (crib == null) {
-        _createCrib(qrcodeId);
+        _setErrorState(
+          "Error",
+          "There was an error while processing the crib data.",
+        );
       } else {
         bool hasAdmin =
             crib.access.any((access) => access.status == ACCESSSTATUS.ADMIN);
+
         if (!hasAdmin) {
           _updateCrib(crib);
         } else {
-          _setErrorState("Device already added",
-              "This device has already been registered by another user. Please try another device or contact support if you are the owner.");
+          _setErrorState(
+            "Device already added",
+            "This device has already been registered by another user. Please try another device or contact support if you are the owner.",
+          );
         }
       }
     }).catchError((error) {
       _setErrorState(
-          "Error", "There was an error while processing the crib data.");
+        "Error",
+        "There was an error while processing the crib data.",
+      );
     });
   }
 
   void _updateCrib(Crib previous) {
-    Crib crib = Crib.fromJson({
-      ...previous.toJson(),
-      'access': [
-        Access(
-          status: ACCESSSTATUS.ADMIN,
-          user: auth.currentUser!.email!,
-        ),
-        ...previous.access,
-      ],
-    });
-    CribService.updateCrib(crib.id, crib.toJson()).then((value) {
+    CribService.updateCrib(previous.id, {
+      'access': FieldValue.arrayUnion([
+        {
+          'status': ACCESSSTATUS.ADMIN.name,
+          'user': auth.currentUser!.email,
+        }
+      ]),
+      'users':  FieldValue.arrayUnion([auth.currentUser!.email!]),
+    }).then((value) {
       _setProcessingState(false);
     }).catchError((error) {
-      
       _setErrorState(
           "Error", "There was an error while updating the crib data.");
-    });
-  }
-
-  void _createCrib(String qrcodeId) {
-    Crib crib = Crib(
-      id: qrcodeId,
-      access: [
-        Access(status: ACCESSSTATUS.ADMIN, user: auth.currentUser!.email!)
-      ],
-    );
-    CribService.createCrib(crib).then((value) {
-      _setProcessingState(false);
-    }).catchError((error) {
-      _setErrorState(
-          "Error", "There was an error while creating the crib data.");
     });
   }
 
@@ -303,7 +294,7 @@ class SuccessResult extends StatelessWidget {
               const SizedBox(width: 20),
               ElevatedButton(
                 onPressed: () {
-                  GoRouter.of(context).push('/device/update');
+                  GoRouter.of(context).push('/device/edit');
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0XFF002E58),

@@ -244,81 +244,62 @@ class HomeDialog extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
-        Column(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: deviceAddingOptions
-              .map(
-                (e) => Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: e
-                          .map((option) => InkWell(
-                                onTap: () async {
-                                  if (option.label == 'Manual') {
-                                    GoRouter.of(context).push('/manual');
-                                  } else if (option.label == 'QR Code') {
-                                    GoRouter.of(context)
-                                        .push('/device/result', extra: {
-                                      'result': 'spartan_crib_1245434',
-                                    });
-                                  } else if (option.label == 'Bluetooth') {
-                                    GoRouter.of(context).push('/bluetooth');
-                                  }
-                                  Navigator.of(context).pop();
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(15),
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.26,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: const Color(0xFF000000)
-                                            .withOpacity(0.1),
-                                        offset: const Offset(0, 4),
-                                        blurRadius: 7.3,
-                                        spreadRadius: 0,
-                                      ),
-                                    ],
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
-                                          color: const Color(0XFFBFD1F4),
-                                          borderRadius:
-                                              BorderRadius.circular(500),
-                                        ),
-                                        child: option.icon,
-                                      ),
-                                      const SizedBox(
-                                        height: 8,
-                                      ),
-                                      Text(
-                                        option.label,
-                                        style: const TextStyle(
-                                          color: Color(0XFF06345F),
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ))
-                          .toList(),
+              .map((option) => InkWell(
+                    onTap: () async {
+                      if (option.label == 'Manual') {
+                        GoRouter.of(context).push('/manual');
+                      } else if (option.label == 'QR Code') {
+                        GoRouter.of(context).push('/qrcode/initialize');
+                      }
+                      Navigator.of(context).pop();
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(15),
+                      width: MediaQuery.of(context).size.width * 0.26,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF000000).withOpacity(0.1),
+                            offset: const Offset(0, 4),
+                            blurRadius: 7.3,
+                            spreadRadius: 0,
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: const Color(0XFFBFD1F4),
+                              borderRadius: BorderRadius.circular(500),
+                            ),
+                            child: option.icon,
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            option.label,
+                            style: const TextStyle(
+                              color: Color(0XFF06345F),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 12),
-                  ],
-                ),
-              )
+                  ))
               .toList(),
         ),
+        const SizedBox(height: 12),
       ],
     );
   }
@@ -331,27 +312,17 @@ class DeviceAddingOption {
   DeviceAddingOption({required this.label, required this.icon});
 }
 
-List<List<DeviceAddingOption>> deviceAddingOptions = [
-  [
-    DeviceAddingOption(
-      label: 'Manual',
-      icon: SvgPicture.asset(
-        'assets/icons/manual.svg',
-      ),
+List<DeviceAddingOption> deviceAddingOptions = [
+  DeviceAddingOption(
+    label: 'Manual',
+    icon: SvgPicture.asset(
+      'assets/icons/manual.svg',
     ),
-    DeviceAddingOption(
-      label: 'QR Code',
-      icon: SvgPicture.asset(
-        'assets/icons/qr_code.svg',
-      ),
+  ),
+  DeviceAddingOption(
+    label: 'QR Code',
+    icon: SvgPicture.asset(
+      'assets/icons/qr_code.svg',
     ),
-  ],
-  [
-    DeviceAddingOption(
-      label: 'Bluetooth',
-      icon: SvgPicture.asset(
-        'assets/icons/bluetooth.svg',
-      ),
-    ),
-  ]
+  ),
 ];

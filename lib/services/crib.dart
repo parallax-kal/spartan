@@ -7,10 +7,6 @@ class CribService {
     await firestore.collection('cribs').doc(cribId).update(data);
   }
 
-  static Future createCrib(Crib crib) async {
-    await firestore.collection('cribs').doc(crib.id).set(crib.toJson());
-  }
-
   static Future<Crib?> getCrib(String cribId) async {
     DocumentSnapshot<Map<String, dynamic>> crib =
         await firestore.collection('cribs').doc(cribId).get();
@@ -23,14 +19,39 @@ class CribService {
     });
   }
 
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getCribs() {
-    return firestore
-        .collection("cribs")
-        .where("access", arrayContains: {"user": auth.currentUser!.uid})
-        .orderBy(
-          "createdAt",
-          descending: false,
-        )
-        .snapshots();
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getCribs(
+      SEARCH_STATUS search_status) {
+    if (search_status == SEARCH_STATUS.ALL) {
+      return firestore
+          .collection("cribs")
+          .where(
+            "users",
+            arrayContains: auth.currentUser!.uid,
+          )
+          .orderBy(
+            "createdAt",
+            descending: false,
+          )
+          .snapshots();
+    } else {
+      return firestore
+          .collection("cribs")
+          .where(
+            "users",
+            arrayContains: auth.currentUser!.uid,
+          )
+          .where("status", isEqualTo: search_status.name)
+          .orderBy(
+            "createdAt",
+            descending: false,
+          )
+          .snapshots();
+    }
   }
+}
+
+enum SEARCH_STATUS {
+  ALL,
+  ACTIVE,
+  INACTIVE,
 }

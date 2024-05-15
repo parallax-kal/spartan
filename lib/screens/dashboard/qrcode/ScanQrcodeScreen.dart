@@ -27,6 +27,8 @@ class _ScanQrcodeScreenState extends State<ScanQrcodeScreen> {
     controller!.resumeCamera();
   }
 
+  bool cameraPaused = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,66 +46,74 @@ class _ScanQrcodeScreenState extends State<ScanQrcodeScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                            onPressed: () async {
-                              await controller?.toggleFlash();
-                              setState(() {});
-                            },
-                            child: FutureBuilder(
-                              future: controller?.getFlashStatus(),
-                              builder: (context, snapshot) {
-                                return Text('Flash: ${snapshot.data}');
-                              },
-                            )),
+                      IconButton(
+                        style: IconButton.styleFrom(
+                          backgroundColor: const Color(0xFF008F39),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                        onPressed: () async {
+                          await controller?.toggleFlash();
+                          setState(() {});
+                        },
+                        icon: FutureBuilder(
+                          future: controller?.getFlashStatus(),
+                          builder: (context, snapshot) {
+                            return Icon(
+                              snapshot.data == true
+                                  ? Icons.flash_on
+                                  : Icons.flash_off,
+                              color: Colors.white,
+                            );
+                          },
+                        ),
                       ),
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                            onPressed: () async {
-                              await controller?.flipCamera();
-                              setState(() {});
-                            },
-                            child: FutureBuilder(
-                              future: controller?.getCameraInfo(),
-                              builder: (context, snapshot) {
-                                if (snapshot.data != null) {
-                                  return Text(
-                                      'Camera facing ${(snapshot.data!).name}');
-                                } else {
-                                  return const Text('loading');
-                                }
-                              },
-                            )),
-                      )
+                      const SizedBox(width: 40),
+                      IconButton(
+                        style: IconButton.styleFrom(
+                          backgroundColor: const Color(0XFF1471C7),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                        onPressed: () async {
+                          await controller?.flipCamera();
+                          setState(() {});
+                        },
+                        icon: FutureBuilder(
+                          future: controller?.getCameraInfo(),
+                          builder: (context, snapshot) {
+                            return const Icon(
+                              Icons.cameraswitch,
+                              color: Colors.white,
+                            );
+                          },
+                        ),
+                      ),
                     ],
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await controller?.pauseCamera();
-                          },
-                          child: const Text('pause',
-                              style: TextStyle(fontSize: 20)),
+                  Center(
+                    child: IconButton(
+                      style: IconButton.styleFrom(
+                        backgroundColor: const Color(0XFF002E58),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
                         ),
                       ),
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await controller?.resumeCamera();
-                          },
-                          child: const Text('resume',
-                              style: TextStyle(fontSize: 20)),
-                        ),
-                      )
-                    ],
+                      onPressed: () async {
+                        if (cameraPaused) {
+                          await controller?.resumeCamera();
+                        } else {
+                          await controller?.pauseCamera();
+                        }
+                        setState(() {
+                          cameraPaused = !cameraPaused;
+                        });
+                      },
+                      icon: Icon(cameraPaused ? Icons.play_arrow : Icons.pause,
+                          color: Colors.white),
+                    ),
                   ),
                 ],
               ),
@@ -120,11 +130,33 @@ class _ScanQrcodeScreenState extends State<ScanQrcodeScreen> {
             MediaQuery.of(context).size.height < 400)
         ? 150.0
         : 300.0;
+    void onQRViewCreated(QRViewController controller) {
+      setState(() {
+        this.controller = controller;
+      });
+      controller.scannedDataStream.listen((scanData) {
+        String? data = scanData.code;
+        if (data == null) {
+          return;
+        }
+        List<String> results = data.split("=");
+        if (results.isEmpty || results.length != 2) {
+          return;
+        }
+
+        String result = results.last.trim();
+
+        GoRouter.of(context).push('/device/result', extra: {
+          'result': result,
+        });
+      });
+    }
+
     // To ensure the Scanner view is properly sizes after rotation
     // we need to listen for Flutter SizeChanged notification and update controller
     return QRView(
       key: qrKey,
-      onQRViewCreated: _onQRViewCreated,
+      onQRViewCreated: onQRViewCreated,
       overlay: QrScannerOverlayShape(
           borderColor: Colors.red,
           borderRadius: 10,
@@ -133,17 +165,6 @@ class _ScanQrcodeScreenState extends State<ScanQrcodeScreen> {
           cutOutSize: scanArea),
       onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),
     );
-  }
-
-  void _onQRViewCreated(QRViewController controller) {
-    setState(() {
-      this.controller = controller;
-    });
-    controller.scannedDataStream.listen((scanData) {
-      GoRouter.of(context).push('/device/result', extra: {
-        'result': scanData,
-      });
-    });
   }
 
   void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
