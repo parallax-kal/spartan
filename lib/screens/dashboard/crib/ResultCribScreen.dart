@@ -52,8 +52,6 @@ class _ResultCribScreenState extends State<ResultCribScreen> {
           },
         );
 
-        print(crib.access.first);
-
         bool hasAdmin =
             crib.access.any((access) => access.status == ACCESSSTATUS.ADMIN);
 
@@ -271,7 +269,7 @@ class SuccessResult extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           const Text(
-            'You have successfully added a new crib. You can now personalize your crib by tapping on continue or skip for later changes.',
+            'You have successfully added a new crib. You can now personalize your crib by tapping on\ncontinue or skip for later changes.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,
@@ -317,7 +315,7 @@ class SuccessResult extends StatelessWidget {
               const SizedBox(width: 20),
               ElevatedButton(
                 onPressed: () {
-                  GoRouter.of(context).push('/crib/edit');
+                  GoRouter.of(context).push('/crib/add');
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0XFF002E58),

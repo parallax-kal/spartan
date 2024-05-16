@@ -37,8 +37,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: 20, bottom: 40),
-                      child: Image.asset('assets/images/parent_sitting.png'),
+                      padding: const EdgeInsets.only(top: 20, bottom: 16),
+                      child: Image.asset(
+                        'assets/images/parent_sitting.png',
+                        width: 270,
+                      ),
                     ),
                     currentSpartanUser.currentSpartanUser?.hasCribs == true
                         ? const Column(
@@ -106,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     const SizedBox(
-                      height: 30,
+                      height: 25,
                     ),
                   ],
                 ),
@@ -116,8 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   currentSpartanUser.currentSpartanUser?.community != true
                       ? Container()
                       : Container(
-                          padding: const EdgeInsets.only(
-                              top: 30, left: 10, right: 10, bottom: 15),
+                          padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(8),

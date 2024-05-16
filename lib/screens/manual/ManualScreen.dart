@@ -79,6 +79,13 @@ class _ManualScreenState extends State<ManualScreen> {
                     borderSide: BorderSide(color: Color(0xFFDFDFDF), width: 2),
                   ),
                 ),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value?.length != 11) {
+                    return 'Enter valid SN';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(
                 height: 10,

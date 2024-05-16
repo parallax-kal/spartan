@@ -85,7 +85,6 @@ List<String> noAppbarScreens = [
 
 List noBottomNavScreens = [
   '/chat/messages',
-  '/qrcode/scan',
 ];
 
 class BottomNavigationContainer extends StatefulWidget {
@@ -162,7 +161,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
               padding: const EdgeInsets.only(top: 15, left: 5, right: 5),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(34),
                   topRight: Radius.circular(34),
                 ),
@@ -196,7 +195,8 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
                   _changeTab(context, index);
                 },
                 letIndexChange: (index) => true,
-              ))
+              ),
+            )
           : null,
     );
   }
