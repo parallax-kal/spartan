@@ -1,22 +1,22 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spartan/services/crib.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:spartan/models/Crib.dart';
 
-class UniqueStreamScreen extends StatefulWidget {
-  const UniqueStreamScreen({Key? key}) : super(key: key);
+class PreviewStreamScreen extends StatefulWidget {
+  const PreviewStreamScreen({super.key});
 
   @override
-  State<UniqueStreamScreen> createState() => _UniqueStreamScreenState();
+  State<PreviewStreamScreen> createState() => _PreviewStreamScreenState();
 }
 
-class _UniqueStreamScreenState extends State<UniqueStreamScreen> {
+class _PreviewStreamScreenState extends State<PreviewStreamScreen> {
   Future _changeStatus() async {
     await CribService.updateCrib('spartan_crib_12343234232', {
-      'status': false,
+      'status': STATUS.INACTIVE.name,
     });
   }
 
@@ -28,8 +28,6 @@ class _UniqueStreamScreenState extends State<UniqueStreamScreen> {
       if (!mounted) {
         return;
       }
-
-      print('checking');
 
       try {
         await http.get(Uri.parse('http://192.168.43.68/check'));

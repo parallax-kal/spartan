@@ -13,8 +13,8 @@ class ChatService {
     });
   }
 
-  static Future<void> sendMessage(String roomId, Message message) async {
-    await firestore
+  static Future sendMessage(String roomId, Message message) {
+    return firestore
         .collection('rooms')
         .doc(roomId)
         .collection('messages')
@@ -59,9 +59,7 @@ class ChatService {
         .snapshots();
   }
 
-  static Stream<DocumentSnapshot<Map<String, dynamic>>>
-      getUserStream() {
+  static Stream<DocumentSnapshot<Map<String, dynamic>>> getUserStream() {
     return firestore.collection('users').doc(auth.currentUser!.uid).snapshots();
   }
-
 }

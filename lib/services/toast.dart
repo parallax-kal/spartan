@@ -1,46 +1,28 @@
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
+import 'package:motion_toast/motion_toast.dart';
 
 class ToastService {
   final BuildContext context;
 
   ToastService(this.context);
 
-  void showToast(
-    ContentType contentType,
-    String title,
-    String message,
-  ) async {
-    final materialBanner = MaterialBanner(
-      elevation: 0,
-      forceActionsBelow: true,
-      backgroundColor: Colors.transparent,
-      content: AwesomeSnackbarContent(
-        title: title,
-        message: message,
-        contentType: contentType,
-        inMaterialBanner: true,
-      ),
-      actions: const [SizedBox.shrink()],
-    );
-    ScaffoldMessenger.of(context)
-      ..hideCurrentMaterialBanner()
-      ..showMaterialBanner(materialBanner);
-  }
-
   void showSuccessToast(String message) {
-    showToast(
-      ContentType.success,
-      '🎉 Congulaturations!',
-      message,
-    );
+    MotionToast.success(
+      title: const Text("🎉 Congulaturations!"),
+      description: Text(message),
+      dismissable: true,
+      animationType: AnimationType.fromTop,
+      position: MotionToastPosition.top,
+    ).show(context);
   }
 
   void showErrorToast(String message) {
-    return showToast(
-      ContentType.failure,
-      '😢 Oops!',
-      message,
-    );
+    MotionToast.error(
+      title: const Text("😢 Opps"),
+      description: Text(message),
+      dismissable: true,
+      animationType: AnimationType.fromTop,
+      position: MotionToastPosition.top,
+    ).show(context);
   }
 }

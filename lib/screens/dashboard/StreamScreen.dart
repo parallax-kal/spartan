@@ -1,7 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/models/Crib.dart';
 import 'package:spartan/services/crib.dart';
+import 'package:popover/popover.dart';
+import 'package:spartan/services/loading.dart';
+import 'package:spartan/services/toast.dart';
+import 'package:http/http.dart' as http;
 
 class StreamScreen extends StatefulWidget {
   const StreamScreen({super.key});
@@ -15,28 +22,21 @@ class _StreamScreenState extends State<StreamScreen>
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.only(
-              left: 15,
-              right: 15,
-              top: 10,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
             child: Column(
               children: [
                 Container(
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: const Color(0XFFE3E3E3).withOpacity(0.51),
+                    color: const Color(0xFFE3E3E3).withOpacity(0.51),
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  padding: const EdgeInsets.only(
-                    right: 5,
-                    left: 5,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
                   child: TextFormField(
                     textAlignVertical: TextAlignVertical.center,
                     decoration: const InputDecoration(
@@ -44,27 +44,27 @@ class _StreamScreenState extends State<StreamScreen>
                       fillColor: Colors.transparent,
                       hintText: "Search",
                       suffixIcon: Icon(Icons.search),
-                      border: InputBorder.none, // Remove the border here
+                      border: InputBorder.none,
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
+                const SizedBox(height: 10),
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 3,
-                    vertical: 3,
-                  ),
-                  height: 40,
+                  padding: const EdgeInsets.all(3),
+                  height: 38,
                   decoration: BoxDecoration(
-                    color: const Color(0XFFE3E3E3).withOpacity(0.51),
+                    color: const Color(0xFFE3E3E3).withOpacity(0.51),
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: TabBar(
                     indicatorSize: TabBarIndicatorSize.tab,
                     labelColor: Colors.black,
                     dividerHeight: 0,
+                    unselectedLabelColor: const Color(0xFF515151),
+                    labelStyle: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
                     indicatorPadding: const EdgeInsets.all(0),
                     indicator: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
@@ -79,52 +79,35 @@ class _StreamScreenState extends State<StreamScreen>
                       ],
                     ),
                     tabs: const [
-                      Tab(
-                        text: "All",
-                      ),
-                      Tab(
-                        text: "Active",
-                      ),
-                      Tab(
-                        text: "Inactive",
-                      ),
+                      Tab(text: "All"),
+                      Tab(text: "Active"),
+                      Tab(text: "Inactive"),
+                      Tab(text: 'Pending'),
                     ],
                   ),
                 ),
                 Expanded(
                   child: TabBarView(
-                    children: [
-                      SEARCH_STATUS.ALL,
-                      SEARCH_STATUS.ACTIVE,
-                      SEARCH_STATUS.INACTIVE
-                    ].map((search_status) {
+                    children: SEARCH_STATUS.values.map((status) {
                       return StreamBuilder(
-                        stream: CribService.getCribs(search_status),
+                        stream: CribService.getCribs(status),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
                             return const Center(
-                              child: CircularProgressIndicator(),
-                            );
+                                child: CircularProgressIndicator());
                           } else if (snapshot.hasError) {
-                            return const Center(
-                              child: Text('Error'),
-                            );
-                          } else if (snapshot.data?.docs.isEmpty ?? true) {
-                            return const Center(
-                              child: Text('No Cribs'),
-                            );
+                            return const Center(child: Text('Error'));
+                          } else if (snapshot.data?.isEmpty ?? true) {
+                            return const Center(child: Text('No Cribs'));
                           } else {
-                            List<Crib> cribs = snapshot.data!.docs
-                                .map((e) => Crib.fromJson({
-                                      'id': e.id,
-                                      ...e.data(),
-                                    }))
-                                .toList();
+                            
                             return SingleChildScrollView(
                               child: Column(
-                                children: cribs.map((crib) {
-                                  return CribCard(crib: crib);
+                                children: snapshot.data!.map((crib) {
+                                  return CribWidget(
+                                    crib: crib,
+                                  );
                                 }).toList(),
                               ),
                             );
@@ -143,24 +126,16 @@ class _StreamScreenState extends State<StreamScreen>
   }
 }
 
-class CribCard extends StatefulWidget {
+class CribWidget extends StatelessWidget {
   final Crib crib;
 
-  const CribCard({super.key, required this.crib});
+  const CribWidget({super.key, required this.crib});
 
-  @override
-  State<CribCard> createState() => _CribCardState();
-}
-
-class _CribCardState extends State<CribCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(10),
-      margin: const EdgeInsets.symmetric(
-        vertical: 15,
-        horizontal: 5,
-      ),
+      margin: const EdgeInsets.only(top: 15, left: 8, right: 8),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(5),
@@ -199,14 +174,12 @@ class _CribCardState extends State<CribCard> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    width: 5,
-                  ),
+                  const SizedBox(width: 5),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.crib.name ?? 'Crib',
+                        crib.name ?? 'Crib',
                         style: const TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w500,
@@ -214,7 +187,7 @@ class _CribCardState extends State<CribCard> {
                         ),
                       ),
                       Text(
-                        "${widget.crib.location.city} | ${widget.crib.location.country}",
+                        "${crib.location.city} | ${crib.location.country}",
                         style: const TextStyle(
                           color: Color(0xFF454545),
                           fontWeight: FontWeight.w400,
@@ -225,22 +198,22 @@ class _CribCardState extends State<CribCard> {
                   )
                 ],
               ),
-              const SizedBox(
-                height: 7,
-              ),
+              const SizedBox(height: 7),
               Row(
                 children: [
-                  const Text('Status',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 10,
-                      )),
+                  const Text(
+                    'Status',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 10,
+                    ),
+                  ),
                   const SizedBox(width: 5),
                   Text(
-                    widget.crib.status == STATUS.ACTIVE ? 'Active' : 'Inactive',
+                    crib.status == STATUS.ACTIVE ? 'Active' : 'Inactive',
                     style: TextStyle(
-                      color: widget.crib.status == STATUS.ACTIVE
+                      color: crib.status == STATUS.ACTIVE
                           ? Colors.green
                           : Colors.red,
                       fontWeight: FontWeight.w400,
@@ -255,13 +228,15 @@ class _CribCardState extends State<CribCard> {
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Icon(Icons.more_vert),
-              const SizedBox(height: 14,),
+              CustomButton(
+                crib: crib,
+              ),
+              const SizedBox(height: 14),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    'Access : ${widget.crib.access.length}',
+                    'Access : ${crib.access.length}',
                     style: const TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 10,
@@ -269,7 +244,7 @@ class _CribCardState extends State<CribCard> {
                     ),
                   ),
                   Text(
-                    DateFormat('MMM dd, yyyy').format(widget.crib.createdAt),
+                    DateFormat('MMM dd, yyyy').format(crib.createdAt),
                     style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w400,
@@ -279,6 +254,272 @@ class _CribCardState extends State<CribCard> {
                 ],
               )
             ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class CustomButton extends StatelessWidget {
+  final Crib crib;
+
+  const CustomButton({super.key, required this.crib});
+
+  @override
+  Widget build(BuildContext context) {
+    bool showAcceptPopover = crib.access
+        .where((access) =>
+            access.user == auth.currentUser!.email && access.accepted == true)
+        .isEmpty;
+    return GestureDetector(
+      child: const Icon(Icons.more_vert),
+      onTap: () {
+        showPopover(
+          context: context,
+          bodyBuilder: (context) => showAcceptPopover
+              ? UnAcceptedPopover(
+                  crib: crib,
+                  context: context,
+                )
+              : AcceptedPopover(
+                  crib: crib,
+                  context: context,
+                ),
+          direction: PopoverDirection.bottom,
+          width: 100,
+          height: showAcceptPopover ? 80 : 100,
+        );
+      },
+    );
+  }
+}
+
+class UnAcceptedPopover extends StatelessWidget {
+  final Crib crib;
+  final BuildContext context;
+  const UnAcceptedPopover(
+      {super.key, required this.crib, required this.context});
+
+  @override
+  Widget build(BuildContext context) {
+    LoadingService loadingService = LoadingService(context);
+    ToastService toastService = ToastService(context);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: ListView(
+        padding: const EdgeInsets.all(8),
+        children: [
+          InkWell(
+            onTap: () async {
+              try {
+                loadingService.show();
+                List<Map<String, dynamic>> accesses =
+                    crib.access.map((access) => access.toJson()).toList();
+
+                for (var access in accesses) {
+                  if (access['user'] == auth.currentUser!.email) {
+                    access['accepted'] = true;
+                  }
+                }
+
+                await CribService.updateCrib(crib.id, {
+                  'access': accesses,
+                  'users': FieldValue.arrayUnion([auth.currentUser!.uid]),
+                });
+                toastService.showSuccessToast('Crib accepted');
+              } catch (error) {
+                toastService.showErrorToast(
+                  'Error while accepting crib',
+                );
+              } finally {
+                loadingService.hide();
+                Navigator.pop(context);
+              }
+            },
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Accept',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                Icon(
+                  Icons.task_alt,
+                  color: Color(0xFF008F39),
+                  size: 18,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 4),
+          const Divider(
+            height: 2,
+            color: Color(0xFFEBEBEB),
+          ),
+          const SizedBox(height: 5),
+          InkWell(
+            onTap: () async {
+              try {
+                loadingService.show();
+                await CribService.deleteCrib(crib.id);
+                toastService.showSuccessToast('Crib denied');
+              } catch (error) {
+                toastService.showErrorToast(
+                  'Error while deleting crib',
+                );
+              } finally {
+                loadingService.hide();
+                Navigator.pop(context);
+              }
+            },
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Deny',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                Icon(
+                  Icons.visibility,
+                  color: Colors.red,
+                  size: 18,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class AcceptedPopover extends StatelessWidget {
+  final Crib crib;
+  final BuildContext context;
+  const AcceptedPopover({super.key, required this.crib, required this.context});
+
+  @override
+  Widget build(BuildContext context) {
+    LoadingService loadingService = LoadingService(context);
+    ToastService toastService = ToastService(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: ListView(
+        padding: const EdgeInsets.all(8),
+        children: [
+          InkWell(
+            onTap: () {
+              Navigator.of(context).pop();
+              GoRouter.of(context).push('/cribs/edit');
+            },
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Edit',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                Icon(
+                  Icons.border_color_outlined,
+                  color: Color(0xFF0085FF),
+                  size: 18,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 4),
+          const Divider(
+            height: 2,
+            color: Color(0xFFEBEBEB),
+          ),
+          const SizedBox(height: 5),
+          InkWell(
+            onTap: () async {
+              if (crib.status == STATUS.ACTIVE) {
+                try {
+                  await http
+                      .get(Uri.parse('http://${crib.ipaddress}:8000/check'));
+                  Navigator.of(context).pop();
+                  GoRouter.of(context).push('/stream/preview');
+                } catch (error) {
+                  toastService.showErrorToast('Crib is inactive');
+                }
+              } else {
+                toastService.showErrorToast('Crib is inactive');
+              }
+            },
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Preview',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                Icon(
+                  Icons.visibility,
+                  color: Color(0xFF008F39),
+                  size: 18,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 4),
+          const Divider(
+            height: 2,
+            color: Color(0xFFEBEBEB),
+          ),
+          const SizedBox(height: 5),
+          InkWell(
+            onTap: () async {
+              try {
+                loadingService.show();
+                await CribService.deleteCrib(crib.id);
+                toastService.showSuccessToast('Crib deleted');
+              } catch (error) {
+                toastService.showErrorToast(
+                  'Error while deleting crib',
+                );
+              } finally {
+                loadingService.hide();
+                Navigator.pop(context);
+              }
+            },
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Delete',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                  size: 18,
+                ),
+              ],
+            ),
           ),
         ],
       ),

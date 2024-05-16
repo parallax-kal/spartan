@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ? const Column(
                             children: [
                               Text(
-                                'Devices connected',
+                                'Cribs connected',
                                 style: TextStyle(
                                   color: Color(0xFF002E58),
                                   fontWeight: FontWeight.w600,
@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                               Text(
-                                'You have some devices checkout stream.',
+                                'You have some cribs checkout stream.',
                                 style: TextStyle(
                                   color: Color(0xFF002E58),
                                   fontWeight: FontWeight.w600,
@@ -64,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         : const Column(
                             children: [
                               Text(
-                                'No devices yet',
+                                'No cribs yet',
                                 style: TextStyle(
                                   color: Color(0xFF002E58),
                                   fontWeight: FontWeight.w600,
@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                               Text(
-                                'You don\'t have any devices connected yet.',
+                                'You don\'t have any cribs connected yet.',
                                 style: TextStyle(
                                   color: Color(0xFF002E58),
                                   fontWeight: FontWeight.w600,
@@ -101,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         );
                       },
                       child: const Text(
-                        '+ Add new device',
+                        '+ Add new crib',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -216,7 +216,7 @@ class HomeDialog extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Text(
-            'Device onboarding options',
+            'Crib onboarding options',
             style: TextStyle(
                 color: Color(0xFF002E58),
                 fontWeight: FontWeight.w500,

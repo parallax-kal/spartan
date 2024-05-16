@@ -7,6 +7,7 @@ class Crib {
   String? wifissid;
   Location location;
   DateTime createdAt;
+  List<String> users;
 
   Crib({
     required this.id,
@@ -14,6 +15,7 @@ class Crib {
     required this.status,
     required this.location,
     required this.createdAt,
+    this.users = const [],
     this.name,
     this.ipaddress,
     this.wifissid,
@@ -32,6 +34,7 @@ class Crib {
       ipaddress: json['ipaddress'],
       wifissid: json['wifissid'],
       location: Location.fromJson(json['location']),
+      users: json['users'].cast<String>(),
       createdAt: json['createdAt'].toDate(),
     );
   }
@@ -44,6 +47,7 @@ class Crib {
       'ipaddress': ipaddress,
       'wifissid': wifissid,
       'location': location.toJson(),
+      'users': users,
       'createdAt': createdAt,
     };
   }

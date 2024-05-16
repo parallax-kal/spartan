@@ -7,15 +7,15 @@ import 'package:spartan/models/Crib.dart';
 import 'package:spartan/screens/dashboard/BottomNavigationContainer.dart';
 import 'package:spartan/services/crib.dart';
 
-class ResultDeviceScreen extends StatefulWidget {
+class ResultCribScreen extends StatefulWidget {
   final dynamic result;
-  const ResultDeviceScreen({super.key, required this.result});
+  const ResultCribScreen({super.key, required this.result});
 
   @override
-  State<ResultDeviceScreen> createState() => _ResultDeviceScreenState();
+  State<ResultCribScreen> createState() => _ResultCribScreenState();
 }
 
-class _ResultDeviceScreenState extends State<ResultDeviceScreen> {
+class _ResultCribScreenState extends State<ResultCribScreen> {
   bool isProcessing = true;
   String? error;
   String? errorTitle;
@@ -38,26 +38,47 @@ class _ResultDeviceScreenState extends State<ResultDeviceScreen> {
   }
 
   void _processQRCode(String qrcodeId) {
-    CribService.getCrib(qrcodeId).then((crib) {
-      if (crib == null) {
+    CribService.getCrib(qrcodeId).then((cribData) {
+      if (!cribData.exists) {
         _setErrorState(
-          "Error",
-          "There was an error while processing the crib data.",
+          "Crib not found",
+          "The crib you are trying to connect to does not exist. Please try another crib or contact support if you are the owner.",
         );
       } else {
+        Crib crib = Crib.fromJson(
+          {
+            'id': cribData.id,
+            ...?cribData.data(),
+          },
+        );
+
+        print(crib.access.first);
+
         bool hasAdmin =
             crib.access.any((access) => access.status == ACCESSSTATUS.ADMIN);
 
         if (!hasAdmin) {
           _updateCrib(crib);
         } else {
+          bool isOwner = crib.access.any((access) =>
+              access.status == ACCESSSTATUS.ADMIN &&
+              access.user == auth.currentUser!.email);
+
+          bool isAlreadyConnected =
+              crib.users.contains(auth.currentUser!.email);
+
           _setErrorState(
-            "Device already added",
-            "This device has already been registered by another user. Please try another device or contact support if you are the owner.",
+            "Crib already added",
+            isOwner
+                ? "You are the owner of this crib. Go to Stream to Personalize it"
+                : isAlreadyConnected
+                    ? "You have already connected to this crib. You can now personalize your crib by tapping on continue or skip for later changes."
+                    : "This crib has already been registered by another user. Please try another crib or contact support if you are the owner.",
           );
         }
       }
     }).catchError((error) {
+      print(error);
       _setErrorState(
         "Error",
         "There was an error while processing the crib data.",
@@ -73,7 +94,7 @@ class _ResultDeviceScreenState extends State<ResultDeviceScreen> {
           'user': auth.currentUser!.email,
         }
       ]),
-      'users':  FieldValue.arrayUnion([auth.currentUser!.email!]),
+      'users': FieldValue.arrayUnion([auth.currentUser!.uid]),
     }).then((value) {
       _setProcessingState(false);
     }).catchError((error) {
@@ -216,6 +237,7 @@ class ErrorResult extends StatelessWidget {
                   style: TextStyle(
                     color: Color(0XFFF3F6FC),
                     fontWeight: FontWeight.w600,
+                    fontSize: 12,
                   ),
                 ),
               ),
@@ -249,7 +271,8 @@ class SuccessResult extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           const Text(
-            'You have successfully added a new device. You can\nnow personalize your device by tapping on continue\nor skip for later changes.',
+            'You have successfully added a new crib. You can now personalize your crib by tapping on continue or skip for later changes.',
+            textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
@@ -294,7 +317,7 @@ class SuccessResult extends StatelessWidget {
               const SizedBox(width: 20),
               ElevatedButton(
                 onPressed: () {
-                  GoRouter.of(context).push('/device/edit');
+                  GoRouter.of(context).push('/crib/edit');
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0XFF002E58),

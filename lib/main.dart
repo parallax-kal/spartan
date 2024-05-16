@@ -14,11 +14,13 @@ import 'package:spartan/screens/dashboard/HomeScreen.dart';
 import 'package:spartan/screens/dashboard/ProfileScreen.dart';
 import 'package:spartan/screens/dashboard/StreamScreen.dart';
 import 'package:spartan/screens/dashboard/chat/RoomsScreen.dart';
-import 'package:spartan/screens/dashboard/device/EditDeviceScreen.dart';
+import 'package:spartan/screens/dashboard/crib/AddCribScreen.dart';
+import 'package:spartan/screens/dashboard/crib/EditCribInfoScreen.dart';
+import 'package:spartan/screens/dashboard/crib/EditCribScreen.dart';
 import 'package:spartan/screens/dashboard/qrcode/InitializeQrcodeScreen.dart';
 import 'package:spartan/screens/dashboard/qrcode/ScanQrcodeScreen.dart';
-import 'package:spartan/screens/dashboard/device/ResultDeviceScreen.dart';
-import 'package:spartan/screens/dashboard/stream/UniqueStreamScreen.dart';
+import 'package:spartan/screens/dashboard/crib/ResultCribScreen.dart';
+import 'package:spartan/screens/dashboard/stream/PreviewStreamScreen.dart';
 import 'package:spartan/screens/manual/ManualScreen.dart';
 import 'firebase_options.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -477,21 +479,59 @@ class SpartanApp extends StatefulWidget {
             ],
           ),
           GoRoute(
-            path: '/device',
+            path: '/crib',
             parentNavigatorKey: shellNavigatorKey,
             redirect: (context, state) {
-              if (state.fullPath == '/device') {
-                return '/device/edit';
+              if (state.fullPath == '/crib') {
+                return '/crib/edit';
               }
               return null;
             },
             routes: [
               GoRoute(
+                path: 'add',
+                pageBuilder: (context, state) {
+                  return CustomTransitionPage(
+                    key: state.pageKey,
+                    child: const AddCribScreen(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(1, 0),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    },
+                  );
+                },
+              ),
+              GoRoute(
                 path: 'edit',
                 pageBuilder: (context, state) {
                   return CustomTransitionPage(
                     key: state.pageKey,
-                    child: const EditDeviceScreen(),
+                    child: const EditCribScreen(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(1, 0),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    },
+                  );
+                },
+              ),
+                GoRoute(
+                path: 'edit-info',
+                pageBuilder: (context, state) {
+                  return CustomTransitionPage(
+                    key: state.pageKey,
+                    child: const EditCribInfoScreen(),
                     transitionsBuilder:
                         (context, animation, secondaryAnimation, child) {
                       return SlideTransition(
@@ -510,7 +550,7 @@ class SpartanApp extends StatefulWidget {
                 pageBuilder: (context, state) {
                   return CustomTransitionPage(
                     key: state.pageKey,
-                    child: ResultDeviceScreen(result: state.extra),
+                    child: ResultCribScreen(result: state.extra),
                     transitionsBuilder:
                         (context, animation, secondaryAnimation, child) {
                       return SlideTransition(
@@ -530,9 +570,19 @@ class SpartanApp extends StatefulWidget {
             path: '/manual',
             parentNavigatorKey: shellNavigatorKey,
             pageBuilder: (context, state) {
-              return NoTransitionPage(
+              return CustomTransitionPage(
                 key: state.pageKey,
                 child: const ManualScreen(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  return SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(1, 0),
+                      end: Offset.zero,
+                    ).animate(animation),
+                    child: child,
+                  );
+                },
               );
             },
           ),
@@ -612,12 +662,12 @@ class SpartanApp extends StatefulWidget {
             },
           ),
           GoRoute(
-            path: '/stream/:id',
+            path: '/stream/preview',
             parentNavigatorKey: shellNavigatorKey,
             pageBuilder: (context, state) {
               return CustomTransitionPage(
                 key: state.pageKey,
-                child: const UniqueStreamScreen(),
+                child: const PreviewStreamScreen(),
                 transitionsBuilder:
                     (context, animation, secondaryAnimation, child) {
                   return SlideTransition(
