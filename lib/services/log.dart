@@ -18,4 +18,5 @@ class LogService {
         .collection('logs')
         .snapshots();
   }
+
 }

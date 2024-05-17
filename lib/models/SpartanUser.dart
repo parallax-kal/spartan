@@ -39,7 +39,9 @@ class SpartanUser {
       isOnline: json['isOnline'] ?? false,
       community: json['community'] ?? false,
       hasCribs: json['hasCribs'] ?? false,
-      status: json['status'],
+      status: USERSTATUS.values.firstWhere(
+          (element) => element.name == json['status'],
+          orElse: () => USERSTATUS.ACTIVE),
       unReadMessages: List<UnReadMessage>.from(
           json['unReadMessages']?.map((x) => UnReadMessage.fromJson(x))),
     );

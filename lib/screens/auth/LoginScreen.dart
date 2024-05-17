@@ -4,9 +4,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/constants/global.dart';
+import 'package:spartan/models/Log.dart';
 import 'package:spartan/models/SpartanUser.dart';
 import 'package:spartan/services/auth.dart';
 import 'package:spartan/services/loading.dart';
+import 'package:spartan/services/log.dart';
 import 'package:spartan/services/toast.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -207,6 +209,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                   .update({
                                 'tokens': [token]
                               });
+                              final address = await authService.getLocation();
+
+                              await LogService.addUserLog(
+                                Log(
+                                  title: 'Login account',
+                                  description:
+                                      'From ${address['country_name']} ${address['country_capital']} with ip ${address['ip']}',
+                                  createdAt: DateTime.now(),
+                                ),
+                              );
+
                               toastService.showSuccessToast(
                                 'Successfully signed in with email and password',
                               );
@@ -258,12 +271,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           final userData = user.data();
                           if (userData?['status'] == USERSTATUS.DELETED.name) {
                             toastService.showErrorToast(
-                                'This account has been deactivated contact us for info');
+                              'This account has been deactivated contact us for info',
+                            );
                             return;
                           }
                           if (!user.exists) {
                             toastService.showErrorToast(
-                                'This account does not exist go to signup page.');
+                              'This account does not exist go to signup page.',
+                            );
                           } else {
                             final userData = user.data();
                             if (userData?['status'] ==
@@ -273,12 +288,25 @@ class _LoginScreenState extends State<LoginScreen> {
                                   'This account has been deactivated contact us for info');
                               return;
                             }
+
                             await firestore
                                 .collection('users')
                                 .doc(userCredential.user!.uid)
                                 .update({
                               'tokens': [token]
                             });
+
+                            final address = await authService.getLocation();
+
+                            await LogService.addUserLog(
+                              Log(
+                                title: 'Login account',
+                                description:
+                                    'From ${address['country_name']} ${address['country_capital']} with ip ${address['ip']}',
+                                createdAt: DateTime.now(),
+                              ),
+                            );
+
                             toastService.showSuccessToast(
                               'You have successfully signed in with Google.',
                             );
@@ -381,6 +409,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                 .update({
                               'tokens': [token]
                             });
+
+                            final address = await authService.getLocation();
+
+                            await LogService.addUserLog(
+                              Log(
+                                title: 'Login account',
+                                description:
+                                    'From ${address['country_name']} ${address['country_capital']} with ip ${address['ip']}',
+                                createdAt: DateTime.now(),
+                              ),
+                            );
+
                             toastService.showSuccessToast(
                               'You have successfully signed in with Facebook.',
                             );

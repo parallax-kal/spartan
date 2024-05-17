@@ -4,14 +4,16 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/constants/global.dart';
+import 'package:spartan/models/Log.dart';
 import 'package:spartan/notifiers/CountryTermsNotifier.dart';
+import 'package:spartan/services/log.dart';
 import 'package:spartan/services/toast.dart';
 
 class TermsAndConditions extends StatefulWidget {
-  const TermsAndConditions({Key? key}) : super(key: key);
+  const TermsAndConditions({super.key});
 
   @override
-  _TermsAndConditionsState createState() => _TermsAndConditionsState();
+  State<TermsAndConditions> createState() => _TermsAndConditionsState();
 }
 
 class _TermsAndConditionsState extends State<TermsAndConditions> {
@@ -64,7 +66,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                     ],
                   ),
                 ),
-                Container(
+                SizedBox(
                   width: double.infinity,
                   child: Text(
                     copyrightText,
@@ -165,6 +167,22 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                       'country': usermodel.country,
                                       'terms': usermodel.acceptedTerms,
                                     },
+                                  );
+                                  await LogService.addUserLog(
+                                    Log(
+                                      title: 'Country Selected',
+                                      description:
+                                          'Country selected as ${usermodel.country}',
+                                      createdAt: DateTime.now(),
+                                    ),
+                                  );
+                                  await LogService.addUserLog(
+                                    Log(
+                                      title: 'Terms Accepted',
+                                      description:
+                                          'Terms and Conditions accepted',
+                                      createdAt: DateTime.now(),
+                                    ),
                                   );
                                   toastService.showSuccessToast(
                                       'Accepted Terms and conditions');

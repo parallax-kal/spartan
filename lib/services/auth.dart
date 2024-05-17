@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:spartan/models/SpartanUser.dart';
+import 'package:http/http.dart' as http;
 
 class AuthService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -70,6 +73,15 @@ class AuthService {
     await auth.signOut();
     await _googleSignIn.signOut();
     await facebookauth.logOut();
+  }
+
+   Future<Map<String, dynamic>> getLocation() async {
+    try {
+      final response = await http.get(Uri.parse('https://ipapi.co/json/'));
+      return jsonDecode(response.body);
+    } catch (e) {
+      throw Exception('Failed to get IP Address: $e');
+    }
   }
 
   Future<List<Map<String, dynamic>>> getUsers() async {

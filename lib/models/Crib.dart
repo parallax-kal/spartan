@@ -122,5 +122,5 @@ class Access {
 enum ACCESSSTATUS {
   ADMIN,
   OPERATOR,
-  GUEST,
+  GUEST, ACTIVE,
 }

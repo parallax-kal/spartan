@@ -7,8 +7,10 @@ import 'package:spartan/constants/global.dart';
 import 'package:spartan/models/SpartanUser.dart';
 import 'package:spartan/services/auth.dart';
 import 'package:spartan/services/loading.dart';
+import 'package:spartan/services/log.dart';
 import 'package:spartan/services/toast.dart';
 import 'package:spartan/constants/firebase.dart';
+import 'package:spartan/models/Log.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -267,6 +269,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               _emailController.clear();
                               _passwordController.clear();
                               _confirmPasswordController.clear();
+
+                              final address = await authService.getLocation();
+
+                              await LogService.addUserLog(
+                                Log(
+                                  title: 'Create account',
+                                  description:
+                                      'From ${address['country_name']} ${address['country_capital']} with ip ${address['ip']}',
+                                  createdAt: DateTime.now(),
+                                ),
+                              );
+
                               toastService.showSuccessToast(
                                 'Email has been sent to your email please verify it and login.',
                               );
@@ -333,6 +347,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 'status': USERSTATUS.ACTIVE.name,
                                 'tokens': [token],
                               });
+                              final address = await authService.getLocation();
+
+                              await LogService.addUserLog(
+                                Log(
+                                  title: 'Create account',
+                                  description:
+                                      'From ${address['country_name']} ${address['country_capital']} with ip ${address['ip']}',
+                                  createdAt: DateTime.now(),
+                                ),
+                              );
+
                               toastService.showSuccessToast(
                                 'You have successfully signed in with Google.',
                               );
@@ -434,6 +459,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 'status': USERSTATUS.ACTIVE.name,
                                 'tokens': [token],
                               });
+
+                              final address = await authService.getLocation();
+                              await LogService.addUserLog(
+                                Log(
+                                  title: 'Create account',
+                                  description:
+                                      'From ${address['country_name']} ${address['country_capital']} with ip ${address['ip']}',
+                                  createdAt: DateTime.now(),
+                                ),
+                              );
                               toastService.showSuccessToast(
                                 'You have successfully signed in with Facebook.',
                               );
