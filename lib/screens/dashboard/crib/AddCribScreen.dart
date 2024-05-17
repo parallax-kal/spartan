@@ -1,13 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/models/Crib.dart';
 import 'package:spartan/notifiers/CurrentCribIdNotifier.dart';
 import 'package:spartan/screens/dashboard/BottomNavigationContainer.dart';
 import 'package:spartan/services/crib.dart';
-import 'package:spartan/services/loading.dart';
 import 'package:spartan/services/toast.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 
@@ -51,7 +49,6 @@ class _AddCribScreenState extends State<AddCribScreen> {
 
   @override
   Widget build(BuildContext context) {
-    LoadingService loadingService = LoadingService(context);
     ToastService toastService = ToastService(context);
 
     CurrentCribIdNotifier currentCribIdNotifier =
@@ -327,7 +324,8 @@ class _AddCribScreenState extends State<AddCribScreen> {
                     ),
                     onPressed: () async {
                       try {
-                        if (_nameController.text.isEmpty) {
+                        String name = _nameController.text.trim();
+                        if (name.isEmpty) {
                           toastService.showErrorToast('Please add a name');
                           return;
                         }
@@ -356,7 +354,6 @@ class _AddCribScreenState extends State<AddCribScreen> {
                                       : ACCESSSTATUS.GUEST,
                                 ))
                             .toList();
-
                         await CribService.updateCrib(
                             currentCribIdNotifier.cribId!, {
                           'name': _nameController.text,
@@ -367,9 +364,10 @@ class _AddCribScreenState extends State<AddCribScreen> {
                                 )
                                 .toList(),
                           ),
-                          'owner': auth.currentUser!.email,
                         });
                         BottomNavigationContainer.changeTab(context, '/stream');
+                        toastService
+                            .showSuccessToast('Crib added successfully!');
                       } catch (error) {
                         print(error);
                         toastService.showErrorToast('Error adding crib');

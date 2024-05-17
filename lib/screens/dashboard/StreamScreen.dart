@@ -101,7 +101,6 @@ class _StreamScreenState extends State<StreamScreen>
                           } else if (snapshot.data?.isEmpty ?? true) {
                             return const Center(child: Text('No Cribs'));
                           } else {
-                            
                             return SingleChildScrollView(
                               child: Column(
                                 children: snapshot.data!.map((crib) {
@@ -268,10 +267,9 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool showAcceptPopover = crib.access
-        .where((access) =>
-            access.user == auth.currentUser!.email && access.accepted == true)
-        .isEmpty;
+    bool showAcceptPopover = crib.access.every((access) =>
+        access.user != auth.currentUser!.email ||
+        (access.accepted != true && access.status != ACCESSSTATUS.ADMIN));
     return GestureDetector(
       child: const Icon(Icons.more_vert),
       onTap: () {
@@ -417,30 +415,34 @@ class AcceptedPopover extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.all(8),
         children: [
-          InkWell(
-            onTap: () {
-              Navigator.of(context).pop();
-              GoRouter.of(context).push('/cribs/edit');
-            },
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Edit',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
+          crib.access.any((access) =>
+                  access.user == auth.currentUser!.email &&
+                  access.status == ACCESSSTATUS.GUEST)
+              ? const SizedBox()
+              : InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    GoRouter.of(context).push('/cribs/edit');
+                  },
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Edit',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      Icon(
+                        Icons.border_color_outlined,
+                        color: Color(0xFF0085FF),
+                        size: 18,
+                      ),
+                    ],
                   ),
                 ),
-                Icon(
-                  Icons.border_color_outlined,
-                  color: Color(0xFF0085FF),
-                  size: 18,
-                ),
-              ],
-            ),
-          ),
           const SizedBox(height: 4),
           const Divider(
             height: 2,
@@ -506,7 +508,7 @@ class AcceptedPopover extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Delete',
+                  'Remove',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 12,

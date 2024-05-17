@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:spartan/notifiers/CurrentCribIdNotifier.dart';
 
 class ManualScreen extends StatefulWidget {
   const ManualScreen({super.key});
@@ -12,6 +14,8 @@ class _ManualScreenState extends State<ManualScreen> {
   final TextEditingController _deviceSinController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    CurrentCribIdNotifier currentCribIdNotifier =
+        Provider.of<CurrentCribIdNotifier>(context);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
@@ -94,6 +98,8 @@ class _ManualScreenState extends State<ManualScreen> {
                 alignment: Alignment.centerRight,
                 child: ElevatedButton(
                   onPressed: () {
+                    currentCribIdNotifier
+                        .setCribId('spartan_crib_${_deviceSinController.text}');
                     GoRouter.of(context).push('/crib/result', extra: {
                       'result': 'spartan_crib_${_deviceSinController.text}',
                     });
