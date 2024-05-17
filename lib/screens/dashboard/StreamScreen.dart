@@ -365,7 +365,7 @@ class UnAcceptedPopover extends StatelessWidget {
             onTap: () async {
               try {
                 loadingService.show();
-                await CribService.deleteCrib(crib.id);
+                await CribService.deleteCrib(crib);
                 toastService.showSuccessToast('Crib denied');
               } catch (error) {
                 toastService.showErrorToast(
@@ -493,7 +493,7 @@ class AcceptedPopover extends StatelessWidget {
             onTap: () async {
               try {
                 loadingService.show();
-                await CribService.deleteCrib(crib.id);
+                await CribService.deleteCrib(crib);
                 toastService.showSuccessToast('Crib deleted');
               } catch (error) {
                 toastService.showErrorToast(

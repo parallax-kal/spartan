@@ -73,19 +73,21 @@ List<String> noAppbarScreens = [
   '/qrcode/initialize',
   '/crib/result',
   '/qrcode/scan',
-  '/profile',
+  '/profile/index',
   '/stream/:id',
   '/chat/messages',
   '/chat/rooms',
   '/crib/edit',
   '/manual',
   '/crib/add',
-  '/crib/edit-info'
+  '/crib/edit-info',
+  '/profile/settings',
+  '/profile/user-data',
+  '/profile/delete-account',
+  '/profile/account-log'
 ];
 
-List noBottomNavScreens = [
-  '/chat/messages',
-];
+List noBottomNavScreens = ['/chat/messages', '/qrcode/scan'];
 
 class BottomNavigationContainer extends StatefulWidget {
   final String path;
@@ -130,6 +132,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.path);
     return Scaffold(
       appBar: !noAppbarScreens.contains(widget.path)
           ? AppBar(
@@ -203,10 +206,24 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
 }
 
 enum Location {
-  HOME(['/', '/home/qr']),
+  HOME([
+    '/',
+    '/qrcode/initialize',
+    '/crib/result',
+    '/crib/add',
+    '/crib/edit',
+    '/crib/edit-info',
+    '/manual'
+  ]),
   CHAT(['/chat', '/chat/rooms', '/chat/messages', '/chat/join-community']),
   STREAM(['/stream']),
-  PROFILE(['/profile']);
+  PROFILE([
+    '/profile/index',
+    '/profile/settings',
+    '/profile/user-data',
+    '/profile/delete-account',
+    '/profile/account-log'
+  ]);
 
   final List<String> paths;
 

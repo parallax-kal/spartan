@@ -8,8 +8,18 @@ class CribService {
     return firestore.collection('cribs').doc(cribId).update(data);
   }
 
-  static Future deleteCrib(String cribId) {
-    return firestore.collection("cribs").doc(cribId).update({
+  static Future deleteCrib(Crib crib) {
+    bool isOwner = crib.access.any((access) =>
+        access.status == ACCESSSTATUS.ADMIN &&
+        access.user == auth.currentUser!.email);
+    if (isOwner) {
+      return firestore.collection("cribs").doc(crib.id).update({
+        "status": "INACTIVE",
+        "access": [],
+        "users": [],
+      });
+    }
+    return firestore.collection("cribs").doc(crib.id).update({
       "status": "INACTIVE",
       "access": FieldValue.arrayRemove(
         [
@@ -23,7 +33,22 @@ class CribService {
     });
   }
 
-  static Future<DocumentSnapshot<Map<String, dynamic>>> getCrib(String cribId) async {
+  static Future deleteAllCribs() async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await firestore
+        .collection('cribs')
+        .where('users', arrayContains: auth.currentUser!.uid)
+        .get();
+
+    List<Future<void>> deleteFutures = [];
+    snapshot.docs.forEach((doc) {
+      deleteFutures.add(doc.reference.delete());
+    });
+
+    await Future.wait(deleteFutures);
+  }
+
+  static Future<DocumentSnapshot<Map<String, dynamic>>> getCrib(
+      String cribId) async {
     return firestore.collection('cribs').doc(cribId).get();
   }
 

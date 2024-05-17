@@ -57,6 +57,12 @@ class AuthService {
     return userCredential;
   }
 
+  Future deleteAccount() async {
+    await firestore.collection('users').doc(auth.currentUser!.uid).delete();
+    await auth.currentUser!.delete();
+    await signOut();
+  }
+
   // Sign out
   Future<void> signOut() async {
     await auth.signOut();

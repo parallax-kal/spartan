@@ -17,6 +17,8 @@ import 'package:spartan/screens/dashboard/chat/RoomsScreen.dart';
 import 'package:spartan/screens/dashboard/crib/AddCribScreen.dart';
 import 'package:spartan/screens/dashboard/crib/EditCribInfoScreen.dart';
 import 'package:spartan/screens/dashboard/crib/EditCribScreen.dart';
+import 'package:spartan/screens/dashboard/profile/AccountLogScreen.dart';
+import 'package:spartan/screens/dashboard/profile/DeleteAccountScreen.dart';
 import 'package:spartan/screens/dashboard/profile/ProfileDataScreen.dart';
 import 'package:spartan/screens/dashboard/profile/SettingsScreen.dart';
 import 'package:spartan/screens/dashboard/qrcode/InitializeQrcodeScreen.dart';
@@ -725,10 +727,46 @@ class SpartanApp extends StatefulWidget {
                 },
               ),
               GoRoute(
-                path: 'profile-data',
+                path: 'user-data',
                 pageBuilder: (context, state) {
                   return CustomTransitionPage(
                     child: const ProfileDataScreen(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(1, 0),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    },
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'account-log',
+                pageBuilder: (context, state) {
+                  return CustomTransitionPage(
+                    child: const AccountLogScreen(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(1, 0),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    },
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'delete-account',
+                pageBuilder: (context, state) {
+                  return CustomTransitionPage(
+                    child: const DeleteAccountScreen(),
                     transitionsBuilder:
                         (context, animation, secondaryAnimation, child) {
                       return SlideTransition(
