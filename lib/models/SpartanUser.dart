@@ -10,12 +10,14 @@ class SpartanUser {
   bool? community;
   bool? isOnline;
   bool? hasCribs;
+  USERSTATUS status = USERSTATUS.ACTIVE;
 
   SpartanUser({
     required this.id,
     required this.fullname,
     required this.email,
     required this.tokens,
+    this.status = USERSTATUS.ACTIVE,
     this.hasCribs,
     this.profile,
     this.country,
@@ -37,6 +39,7 @@ class SpartanUser {
       isOnline: json['isOnline'] ?? false,
       community: json['community'] ?? false,
       hasCribs: json['hasCribs'] ?? false,
+      status: json['status'],
       unReadMessages: List<UnReadMessage>.from(
           json['unReadMessages']?.map((x) => UnReadMessage.fromJson(x))),
     );
@@ -54,6 +57,7 @@ class SpartanUser {
       'isOnline': isOnline ?? false,
       'community': community ?? false,
       'hasCribs': hasCribs ?? false,
+      'status': status.name,
       'unReadMessages': unReadMessages?.map((x) => x.toJson()).toList(),
     };
   }
@@ -83,6 +87,11 @@ class SpartanUser {
       isOnline: isOnline ?? this.isOnline,
     );
   }
+}
+
+enum USERSTATUS {
+  DELETED,
+  ACTIVE,
 }
 
 class UnReadMessage {

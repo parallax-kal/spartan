@@ -1,16 +1,17 @@
-  import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spartan/constants/global.dart';
+import 'package:spartan/models/SpartanUser.dart';
 import 'package:spartan/services/auth.dart';
 import 'package:spartan/services/loading.dart';
 import 'package:spartan/services/toast.dart';
 import 'package:spartan/constants/firebase.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -248,6 +249,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 'email': _emailController.text,
                                 'fullname': _fullnameController.text,
                                 'unReadMessages': [],
+                                'status': USERSTATUS.ACTIVE.name,
                                 'tokens': [token],
                               });
 
@@ -331,20 +333,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 'unReadMessages': [],
                                 'tokens': [token],
                               });
+                              toastService.showSuccessToast(
+                                'You have successfully signed in with Google.',
+                              );
                               context.push('/location');
                             } else {
-                              await firestore
-                                  .collection('users')
-                                  .doc(userCredential.user!.uid)
-                                  .update({
-                                'tokens': [token]
-                              });
-                              context.push('/');
+                              toastService.showErrorToast(
+                                'You have already signed up with this email. login instead',
+                              );
                             }
-
-                            toastService.showSuccessToast(
-                              'You have successfully signed in with Google.',
-                            );
                           } catch (error) {
                             String errorMessage =
                                 displayErrorMessage(error as Exception);
@@ -436,21 +433,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 'unReadMessages': [],
                                 'tokens': [token],
                               });
+                              toastService.showSuccessToast(
+                                'You have successfully signed in with Facebook.',
+                              );
                               context.push('/location');
                               return;
                             } else {
-                              await firestore
-                                  .collection('users')
-                                  .doc(userCredential.user!.uid)
-                                  .update({
-                                'tokens': [token],
-                              });
-                              context.push('/');
+                              toastService.showErrorToast(
+                                'You have already signed up with this email. login instead',
+                              );
                             }
-
-                            toastService.showSuccessToast(
-                              'You have successfully signed in with Facebook.',
-                            );
                           } catch (error) {
                             String errorMessage =
                                 displayErrorMessage(error as Exception);

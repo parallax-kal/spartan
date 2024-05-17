@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/constants/global.dart';
+import 'package:spartan/models/SpartanUser.dart';
 import 'package:spartan/services/auth.dart';
 import 'package:spartan/services/loading.dart';
 import 'package:spartan/services/toast.dart';
@@ -184,6 +185,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                 return;
                               }
+                              final user = await firestore
+                                  .collection('users')
+                                  .doc(userCredential.user!.uid)
+                                  .get();
+                              final userData = user.data();
+                              if (userData?['status'] ==
+                                  USERSTATUS.DELETED.name) {
+                                toastService.showErrorToast(
+                                    'This account has been deleted wait for 7 days to reactivate it');
+                                return;
+                              }
                               String? token = await messaging.getToken();
                               await firestore
                                   .collection('users')
@@ -239,32 +251,36 @@ class _LoginScreenState extends State<LoginScreen> {
                               .doc(userCredential.user!.uid)
                               .get();
                           String? token = await messaging.getToken();
-
+                          final userData = user.data();
+                          if (userData?['status'] == USERSTATUS.DELETED.name) {
+                            toastService.showErrorToast(
+                                'This account has been deleted wait for 7 days to reactivate it');
+                            return;
+                          }
                           if (!user.exists) {
-                            await firestore
-                                .collection('users')
-                                .doc(userCredential.user!.uid)
-                                .set({
-                              'email': userCredential.user!.email,
-                              'fullname': userCredential.user!.displayName,
-                              'profile': userCredential.user!.photoURL,
-                              'unReadMessages': [],
-                              'tokens': [token],
-                            });
-                            context.push('/location');
+                            toastService.showErrorToast(
+                                'This account does not exist go to signup page to create an account');
                           } else {
+                            final userData = user.data();
+                            if (userData?['status'] ==
+                                USERSTATUS.DELETED.name) {
+                              await authService.signOut();
+                              toastService.showErrorToast(
+                                  'This account has been deleted wait for 7 days to reactivate it');
+                              return;
+                            }
                             await firestore
                                 .collection('users')
                                 .doc(userCredential.user!.uid)
                                 .update({
                               'tokens': [token]
                             });
+                            toastService.showSuccessToast(
+                              'You have successfully signed in with Google.',
+                            );
                             context.go('/');
                           }
 
-                          toastService.showSuccessToast(
-                            'You have successfully signed in with Google.',
-                          );
                           return;
                         } catch (error) {
                           String errorMessage =
@@ -344,30 +360,28 @@ class _LoginScreenState extends State<LoginScreen> {
                               .get();
                           String? token = await messaging.getToken();
                           if (!user.exists) {
-                            await firestore
-                                .collection('users')
-                                .doc(userCredential.user!.uid)
-                                .set({
-                              'email': userCredential.user!.email,
-                              'fullname': userCredential.user!.displayName,
-                              'profile': userCredential.user!.photoURL,
-                              'unReadMessages': [],
-                              'tokens': [token],
-                            });
-                            context.push('/location');
+                            toastService.showErrorToast(
+                                'This account does not exist go to signup page to create an account');
                           } else {
+                            final userData = user.data();
+                            if (userData?['status'] ==
+                                USERSTATUS.DELETED.name) {
+                              toastService.showErrorToast(
+                                  'This account has been deleted wait for 7 days to reactivate it');
+                              await authService.signOut();
+                              return;
+                            }
                             await firestore
                                 .collection('users')
                                 .doc(userCredential.user!.uid)
                                 .update({
                               'tokens': [token]
                             });
+                            toastService.showSuccessToast(
+                              'You have successfully signed in with Facebook.',
+                            );
                             context.go('/');
                           }
-
-                          toastService.showSuccessToast(
-                            'You have successfully signed in with Facebook.',
-                          );
                         } catch (error) {
                           String errorMessage =
                               displayErrorMessage(error as Exception);
