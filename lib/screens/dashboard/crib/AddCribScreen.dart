@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/models/Crib.dart';
+import 'package:spartan/models/Log.dart';
 import 'package:spartan/notifiers/CurrentCribIdNotifier.dart';
 import 'package:spartan/screens/dashboard/BottomNavigationContainer.dart';
 import 'package:spartan/services/crib.dart';
+import 'package:spartan/services/log.dart';
 import 'package:spartan/services/toast.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 
@@ -365,6 +367,25 @@ class _AddCribScreenState extends State<AddCribScreen> {
                                 .toList(),
                           ),
                         });
+                        String message = '';
+                        if (name.isNotEmpty) {
+                          message = 'Updated crib $name';
+                        }
+                        if (accesses.isNotEmpty) {
+                          if (message.isNotEmpty) {
+                            message += ' and ';
+                          } else {
+                            message = 'Updated';
+                          }
+                          message += ' access to ${accesses.length} users';
+                        }
+                        await LogService.addUserLog(
+                          Log(
+                            title: 'Updated Crib',
+                            description: message,
+                            createdAt: DateTime.now(),
+                          ),
+                        );
                         BottomNavigationContainer.changeTab(context, '/stream');
                         toastService
                             .showSuccessToast('Crib added successfully!');

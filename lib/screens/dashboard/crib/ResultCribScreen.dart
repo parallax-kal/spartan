@@ -5,9 +5,11 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/models/Crib.dart';
+import 'package:spartan/models/Log.dart';
 import 'package:spartan/notifiers/CurrentCribIdNotifier.dart';
 import 'package:spartan/screens/dashboard/BottomNavigationContainer.dart';
 import 'package:spartan/services/crib.dart';
+import 'package:spartan/services/log.dart';
 
 class ResultCribScreen extends StatefulWidget {
   final dynamic result;
@@ -96,6 +98,13 @@ class _ResultCribScreenState extends State<ResultCribScreen> {
       ]),
       'users': FieldValue.arrayUnion([auth.currentUser!.uid]),
     }).then((value) {
+      LogService.addUserLog(
+        Log(
+          title: 'Added Crib',
+          description: 'Added a new crib with ID ${previous.id}',
+          createdAt: DateTime.now(),
+        ),
+      );
       _setProcessingState(false);
     }).catchError((error) {
       _setErrorState(

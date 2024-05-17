@@ -5,10 +5,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:spartan/constants/firebase.dart';
+import 'package:spartan/models/Log.dart';
 import 'package:spartan/models/Room.dart';
 import 'package:spartan/notifiers/CurrentRoomNotifier.dart';
 import 'package:spartan/notifiers/CurrentSpartanUserNotifier.dart';
 import 'package:spartan/services/loading.dart';
+import 'package:spartan/services/log.dart';
 import 'package:spartan/services/toast.dart';
 
 class JoinCommunityScreen extends StatefulWidget {
@@ -129,8 +131,10 @@ class _JoinCommunityScreenState extends State<JoinCommunityScreen> {
                                         .collection('users')
                                         .doc(auth.currentUser!.uid)
                                         .update({'community': true});
-                                    Room room =
-                                        Room.fromJson({'id': 'spartan_global', ...room_fire.data()!});
+                                    Room room = Room.fromJson({
+                                      'id': 'spartan_global',
+                                      ...room_fire.data()!
+                                    });
                                     await room.getTotalMembers();
                                     currentSpartanUserNotifier
                                         .setCurrentSpartanUser(
@@ -140,6 +144,14 @@ class _JoinCommunityScreenState extends State<JoinCommunityScreen> {
                                     );
 
                                     currentRoomNotifier.setCurrentRoom(room);
+                                    await LogService.addUserLog(
+                                      Log(
+                                        title: 'Joined Community',
+                                        description:
+                                            'Joined Spartan Global Community',
+                                        createdAt: DateTime.now(),
+                                      ),
+                                    );
                                     toastService.showSuccessToast(
                                         'Joined Spartan Global Communty');
                                     GoRouter.of(context).push('/chat/messages');

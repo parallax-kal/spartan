@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spartan/constants/firebase.dart';
+import 'package:spartan/models/Log.dart';
 import 'package:spartan/services/auth.dart';
 import 'package:spartan/services/crib.dart';
 import 'package:spartan/services/loading.dart';
+import 'package:spartan/services/log.dart';
 import 'package:spartan/services/toast.dart';
 
 class DeleteAccountScreen extends StatefulWidget {
@@ -95,6 +97,13 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                   try {
                     loadingService.show();
                     await CribService.deleteAllCribs();
+                    LogService.addUserLog(
+                      Log(
+                        title: 'Deleted Account',
+                        description: 'User has deleted their account',
+                        createdAt: DateTime.now(),
+                      ),
+                    );
                     await authService.deleteAccount();
                     toastService.showSuccessToast(
                       'You have deleted your account successfully!',

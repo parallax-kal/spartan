@@ -56,15 +56,95 @@ class _AccountLogScreenState extends State<AccountLogScreen> {
         actions: [
           IconButton(
             onPressed: () async {
-              try {
-                loadingService.show();
-                await LogService.deleteAllUserLogs();
-                loadingService.hide();
-                // toastService.showSuccessToast('Logs deleted successfully');
-              } catch (error) {
-                String errorMessage = displayErrorMessage(error as Exception);
-                // toastService.showErrorToast(errorMessage);
-              } finally {}
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return SimpleDialog(
+                    title: Align(
+                      alignment: Alignment.centerRight,
+                      child: IconButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        icon: const Icon(Icons.close),
+                      ),
+                    ),
+                    titlePadding: const EdgeInsets.all(0),
+                    contentPadding: const EdgeInsets.all(0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    backgroundColor: Colors.white,
+                    surfaceTintColor: Colors.white,
+                    elevation: 7.3,
+                    shadowColor: const Color(0xFF000000).withOpacity(0.4),
+                    children: [
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Image.asset(
+                        'assets/images/logo.png',
+                        height: 35,
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      const Text(
+                        'You are about to log\nout of the system',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 15,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Text(
+                        'Do you wish to continue?',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Color(0XFF969696),
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () async {
+                            try {
+                              loadingService.show();
+                              await LogService.deleteAllUserLogs();
+                              toastService.showSuccessToast(
+                                'Logs deleted successfully',
+                              );
+                            } catch (error) {
+                              String errorMessage =
+                                  displayErrorMessage(error as Exception);
+                              toastService.showErrorToast(errorMessage);
+                            } finally {
+                              loadingService.hide();
+                            }
+                          },
+                          child: const Text(
+                            'Continue',
+                            style: TextStyle(
+                              color: Color(0XFF7ABFFF),
+                              fontWeight: FontWeight.w400,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
             },
             icon: const Icon(Icons.delete_forever_outlined),
           )

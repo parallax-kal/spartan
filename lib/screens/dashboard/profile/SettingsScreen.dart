@@ -38,7 +38,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           child: SingleChildScrollView(
             child: Container(
               constraints: BoxConstraints(
-                minHeight: MediaQuery.of(context).size.height - 250,
+                minHeight: MediaQuery.of(context).size.height - 200,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -93,8 +93,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          surfaceTintColor: Colors.red,
+                          backgroundColor: Colors.red.withOpacity(0.9),
+                          surfaceTintColor: Colors.red.withOpacity(0.9),
                           elevation: 4,
                           minimumSize: const Size(double.infinity, 40),
                         ),
