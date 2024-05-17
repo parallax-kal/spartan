@@ -255,13 +255,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                               await userCredential.user!.sendEmailVerification(
                                 ActionCodeSettings(
-                                  url: 'https://spartan.ai',
+                                  url: 'https://spartancorp.io',
                                   handleCodeInApp: true,
                                   iOSBundleId: 'com.spartan.app',
                                   androidPackageName: 'com.spartan.app',
                                   androidInstallApp: true,
                                   androidMinimumVersion: '16',
-                                  dynamicLinkDomain: 'spartancorp.page.link',
                                 ),
                               );
                               await authService.signOut();
@@ -272,9 +271,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 'Email has been sent to your email please verify it and login.',
                               );
                             } catch (error) {
-                              String errorMessage =
-                                  displayErrorMessage(error as Exception);
-                              toastService.showErrorToast(errorMessage);
+                              // String errorMessage =
+                              //     displayErrorMessage(error as Exception);
+                              print(error);
+                              // toastService.showErrorToast(errorMessage);
                             } finally {
                               loadingService.hide();
                             }
@@ -331,6 +331,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 'fullname': userCredential.user!.displayName,
                                 'profile': userCredential.user!.photoURL,
                                 'unReadMessages': [],
+                                'status': USERSTATUS.ACTIVE.name,
                                 'tokens': [token],
                               });
                               toastService.showSuccessToast(
@@ -431,6 +432,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 'fullname': userCredential.user!.displayName,
                                 'profile': userCredential.user!.photoURL,
                                 'unReadMessages': [],
+                                'status': USERSTATUS.ACTIVE.name,
                                 'tokens': [token],
                               });
                               toastService.showSuccessToast(

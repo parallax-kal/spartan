@@ -2,6 +2,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:spartan/models/SpartanUser.dart';
 
 class AuthService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -58,8 +59,9 @@ class AuthService {
   }
 
   Future deleteAccount() async {
-    await firestore.collection('users').doc(auth.currentUser!.uid).delete();
-    await auth.currentUser!.delete();
+    await firestore.collection('users').doc(auth.currentUser!.uid).update({
+      'status': USERSTATUS.DELETED.name,
+    });
     await signOut();
   }
 

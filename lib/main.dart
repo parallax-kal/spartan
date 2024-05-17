@@ -4,6 +4,7 @@ import 'package:spartan/models/SpartanUser.dart';
 import 'package:spartan/notifiers/CurrentRoomNotifier.dart';
 import 'package:spartan/notifiers/CurrentSpartanUserNotifier.dart';
 import 'package:spartan/notifiers/CountryTermsNotifier.dart';
+import 'package:spartan/screens/auth/ForgotPasswordScreen.dart';
 import 'package:spartan/screens/auth/LoginScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:spartan/screens/auth/RegisterScreen.dart';
@@ -790,6 +791,14 @@ class SpartanApp extends StatefulWidget {
         pageBuilder: (context, state) => NoTransitionPage(
           key: state.pageKey,
           child: const LoginScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/forgot',
+        parentNavigatorKey: rootNavigatorKey,
+        pageBuilder: (context, state) => NoTransitionPage(
+          key: state.pageKey,
+          child: const ForgotPasswordScreen(),
         ),
       ),
       GoRoute(

@@ -11,7 +11,7 @@ const locales = [
   // Locale('ja', 'JP'), // Japanese
 ];
 
-const publicRoutes = ['/login', '/register', '/forgot-password'];
+const publicRoutes = ['/login', '/register', '/forgot'];
 
 String copyrightText =
     'Copyright \u00a9${DateTime.now().year} Spartans Inc. All rights reserved.';

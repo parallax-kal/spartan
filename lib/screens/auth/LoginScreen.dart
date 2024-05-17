@@ -144,16 +144,21 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(
                         height: 5,
                       ),
-                      const SizedBox(
+                      SizedBox(
                         width: double.infinity,
-                        child: Text(
-                          'Forgot Password ?',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 13,
-                            color: Colors.black,
+                        child: InkWell(
+                          onTap: () {
+                            GoRouter.of(context).push('/forgot');
+                          },
+                          child: const Text(
+                            'Forgot Password ?',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                              color: Colors.black,
+                            ),
+                            textAlign: TextAlign.right,
                           ),
-                          textAlign: TextAlign.right,
                         ),
                       ),
                       const SizedBox(
@@ -173,13 +178,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                 await userCredential.user!
                                     .sendEmailVerification(
                                   ActionCodeSettings(
-                                    url: 'https://spartan.ai',
+                                    url: 'https://spartancorp.io',
                                     handleCodeInApp: true,
                                     iOSBundleId: 'com.spartan.app',
                                     androidPackageName: 'com.spartan.app',
                                     androidInstallApp: true,
                                     androidMinimumVersion: '16',
-                                    dynamicLinkDomain: 'spartancorp.page.link',
                                   ),
                                 );
 
@@ -254,19 +258,19 @@ class _LoginScreenState extends State<LoginScreen> {
                           final userData = user.data();
                           if (userData?['status'] == USERSTATUS.DELETED.name) {
                             toastService.showErrorToast(
-                                'This account has been deleted wait for 7 days to reactivate it');
+                                'This account has been deactivated contact us for info');
                             return;
                           }
                           if (!user.exists) {
                             toastService.showErrorToast(
-                                'This account does not exist go to signup page to create an account');
+                                'This account does not exist go to signup page.');
                           } else {
                             final userData = user.data();
                             if (userData?['status'] ==
                                 USERSTATUS.DELETED.name) {
                               await authService.signOut();
                               toastService.showErrorToast(
-                                  'This account has been deleted wait for 7 days to reactivate it');
+                                  'This account has been deactivated contact us for info');
                               return;
                             }
                             await firestore

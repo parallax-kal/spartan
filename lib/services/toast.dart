@@ -13,6 +13,8 @@ class ToastService {
       dismissable: true,
       animationType: AnimationType.fromTop,
       position: MotionToastPosition.top,
+      height: 110,
+      toastDuration: const Duration(seconds: 5),
     ).show(context);
   }
 
@@ -23,6 +25,8 @@ class ToastService {
       dismissable: true,
       animationType: AnimationType.fromTop,
       position: MotionToastPosition.top,
+      height: 110,
+      toastDuration: const Duration(seconds: 5),
     ).show(context);
   }
 }
