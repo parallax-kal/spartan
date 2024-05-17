@@ -24,11 +24,12 @@ class ChatService {
   static Stream<QuerySnapshot<Map<String, dynamic>>> getGlobalRoom() {
     return firestore
         .collection('rooms')
-        .where('name', isEqualTo: 'Spartan_Global')
+        .where('name', isEqualTo: 'Spartan Global')
         .snapshots();
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getRooms() {
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getRooms() {
     // use auth.currentUser.uid to get the rooms of the current user
     return firestore
         .collection('rooms')

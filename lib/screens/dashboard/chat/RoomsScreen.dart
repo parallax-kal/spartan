@@ -121,7 +121,7 @@ class _RoomsScreenState extends State<RoomsScreen> {
                 child: StreamBuilder(
                   stream: CombineLatestStream.list([
                     ChatService.getGlobalRoom(),
-                    ChatService().getRooms(),
+                    ChatService.getRooms(),
                   ]).map((event) {
                     final data = [
                       ...event[0].docs,

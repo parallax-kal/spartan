@@ -17,12 +17,12 @@ class LogService {
         .doc(auth.currentUser!.uid)
         .collection('logs')
         .get();
-    
+
     final batch = firestore.batch();
     for (final doc in logsSnapshot.docs) {
       batch.delete(doc.reference);
     }
-    
+
     await batch.commit();
   }
 

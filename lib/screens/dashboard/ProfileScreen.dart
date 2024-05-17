@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -6,6 +8,7 @@ import 'package:spartan/services/auth.dart';
 import 'package:spartan/services/loading.dart';
 import 'package:spartan/services/toast.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:file_picker/file_picker.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -60,7 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.only(
-                top: 40,
+                top: 55,
                 bottom: 10,
               ),
               child: Expanded(
@@ -79,8 +82,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         image: CachedNetworkImageProvider(
                                           auth.currentUser!.photoURL!,
                                           scale: 0.5,
-                                          maxHeight: 60,
-                                          maxWidth: 60,
+                                          maxHeight: 55,
+                                          maxWidth: 55,
                                         ),
                                         loadingBuilder: (
                                           BuildContext context,
@@ -97,23 +100,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ) {
                                           return SvgPicture.asset(
                                             'assets/icons/profile/profile_outlined.svg',
-                                            width: 70,
-                                            height: 70,
+                                            width: 65,
+                                            height: 65,
                                           );
                                         },
                                       ),
                                     )
                                   : SvgPicture.asset(
                                       'assets/icons/profile/profile_outlined.svg',
-                                      width: 70,
-                                      height: 70,
+                                      width: 65,
+                                      height: 65,
                                     ),
                             ),
                             Positioned(
                               right: 0,
                               bottom: 8,
                               child: InkWell(
-                                onTap: () {},
+                                onTap: () async {
+                                  FilePickerResult? result =
+                                      await FilePicker.platform.pickFiles();
+
+                                  if (result != null) {
+                                    File file = File(result.files.single.path!);
+                                  } else {
+                                    // User canceled the picker
+                                  }
+                                },
                                 child: Container(
                                   padding: const EdgeInsets.all(6),
                                   decoration: const BoxDecoration(
@@ -259,7 +271,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   height: 15,
                                 ),
                                 const Text(
-                                  'You are about to log\nout of the system',
+                                  'You are about to log\nout from Spartan',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.black,
@@ -332,10 +344,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
               ),
-              // ),
             ),
             Positioned(
-              top: 90,
+              top: 24,
               right: 0,
               child: Container(
                 decoration: const BoxDecoration(

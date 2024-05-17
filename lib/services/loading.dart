@@ -1,31 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
+import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 
 class LoadingService {
   final BuildContext context;
-  late SimpleFontelicoProgressDialog pd;
+
+  late ProgressDialog pd;
 
   LoadingService(this.context) {
-    pd = SimpleFontelicoProgressDialog(
-      context: context,
-      barrierDimisable: true,
-    );
+    pd = ProgressDialog(context: context);
   }
 
   void show({
-    SimpleFontelicoProgressDialogType type =
-        SimpleFontelicoProgressDialogType.phoenix,
     String message = 'Loading ...',
   }) {
     pd.show(
-      type: type,
-      message: message,
-      hideText: false,
-      indicatorColor: const Color(0XFF0C3D6B),
+      msg: message,
+      msgColor: const Color(0XFF0C3D6B),
+      backgroundColor: Colors.white,
+      progressBgColor: Colors.black.withOpacity(0.5),
+      surfaceTintColor: Colors.white,
+      barrierColor: Colors.black.withOpacity(0.7),
+      valuePosition: ValuePosition.center,
     );
   }
 
   void hide() {
-    pd.hide();
+    pd.close();
   }
 }

@@ -10,6 +10,17 @@ class ProfileDataScreen extends StatefulWidget {
 class _ProfileDataScreenState extends State<ProfileDataScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+    );
   }
 }

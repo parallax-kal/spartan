@@ -32,100 +32,98 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ),
       ),
-      body: Expanded(
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          child: SingleChildScrollView(
-            child: Container(
-              constraints: BoxConstraints(
-                minHeight: MediaQuery.of(context).size.height - 200,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'This is the section for managing your account. You can view your account log and delete your account from here.',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                    ),
+          child: Container(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height - 190,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'This is the section for managing your account. You can view your account log and delete your account from here.',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Column(
-                    children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          surfaceTintColor: Colors.white,
-                          shadowColor: Colors.black.withOpacity(0.25),
-                          elevation: 4,
-                          minimumSize: const Size(double.infinity, 40),
-                        ),
-                        onPressed: () {
-                          GoRouter.of(context).push('/profile/account-log');
-                        },
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.web_stories_outlined,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Column(
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        surfaceTintColor: Colors.white,
+                        shadowColor: Colors.black.withOpacity(0.25),
+                        elevation: 4,
+                        minimumSize: const Size(double.infinity, 40),
+                      ),
+                      onPressed: () {
+                        GoRouter.of(context).push('/profile/account-log');
+                      },
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.web_stories_outlined,
+                            color: Colors.black,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            'Account log',
+                            style: TextStyle(
                               color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
                             ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              'Account log',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14,
-                              ),
-                            )
-                          ],
-                        ),
+                          )
+                        ],
                       ),
-                      const SizedBox(
-                        height: 10,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red.withOpacity(0.8),
+                        surfaceTintColor: Colors.red.withOpacity(0.8),
+                        elevation: 4,
+                        minimumSize: const Size(double.infinity, 40),
                       ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red.withOpacity(0.9),
-                          surfaceTintColor: Colors.red.withOpacity(0.9),
-                          elevation: 4,
-                          minimumSize: const Size(double.infinity, 40),
-                        ),
-                        onPressed: () {
-                          GoRouter.of(context).push('/profile/delete-account');
-                        },
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.delete_outline,
+                      onPressed: () {
+                        GoRouter.of(context).push('/profile/delete-account');
+                      },
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.delete_outline,
+                            color: Colors.white,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            'Delete Account',
+                            style: TextStyle(
                               color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
                             ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              'Delete Account',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  )
-                ],
-              ),
+                    ),
+                  ],
+                )
+              ],
             ),
           ),
         ),

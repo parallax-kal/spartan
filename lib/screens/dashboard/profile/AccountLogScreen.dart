@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/models/Log.dart';
 import 'package:spartan/services/loading.dart';
 import 'package:spartan/services/log.dart';
@@ -52,10 +51,9 @@ class _AccountLogScreenState extends State<AccountLogScreen> {
             Navigator.of(context).pop();
           },
         ),
-        centerTitle: true,
         actions: [
           IconButton(
-            onPressed: () async {
+            onPressed: () {
               showDialog(
                 context: context,
                 builder: (context) {
@@ -90,7 +88,7 @@ class _AccountLogScreenState extends State<AccountLogScreen> {
                         height: 15,
                       ),
                       const Text(
-                        'You are about to log\nout of the system',
+                        'You are about to delete logs from your Spartan',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.black,
@@ -120,13 +118,15 @@ class _AccountLogScreenState extends State<AccountLogScreen> {
                             try {
                               loadingService.show();
                               await LogService.deleteAllUserLogs();
+                              Navigator.of(context).pop();
                               toastService.showSuccessToast(
                                 'Logs deleted successfully',
                               );
                             } catch (error) {
-                              String errorMessage =
-                                  displayErrorMessage(error as Exception);
-                              toastService.showErrorToast(errorMessage);
+                              print(error);
+                              // String errorMessage =
+                              //     displayErrorMessage(error as Exception);
+                              // toastService.showErrorToast(errorMessage);
                             } finally {
                               loadingService.hide();
                             }
