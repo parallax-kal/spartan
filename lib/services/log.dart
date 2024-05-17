@@ -11,12 +11,27 @@ class LogService {
         .add(log.toJson());
   }
 
+  static Future deleteAllUserLogs() async {
+    final logsSnapshot = await firestore
+        .collection('users')
+        .doc(auth.currentUser!.uid)
+        .collection('logs')
+        .get();
+    
+    final batch = firestore.batch();
+    for (final doc in logsSnapshot.docs) {
+      batch.delete(doc.reference);
+    }
+    
+    await batch.commit();
+  }
+
   static Stream<QuerySnapshot<Map<String, dynamic>>> getUserLog() {
     return firestore
         .collection('users')
         .doc(auth.currentUser!.uid)
         .collection('logs')
+        .orderBy('createdAt', descending: true)
         .snapshots();
   }
-
 }

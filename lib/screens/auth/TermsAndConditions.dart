@@ -31,6 +31,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
           ? null
           : AppBar(
               surfaceTintColor: Colors.white,
+              backgroundColor: Colors.white,
               centerTitle: true,
               leading: IconButton(
                 icon: const Icon(
@@ -81,7 +82,11 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
             )
           : SafeArea(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.only(
+                  top: 20,
+                  left: 10,
+                  right: 10,
+                ),
                 child: Stack(
                   children: [
                     SingleChildScrollView(
@@ -111,6 +116,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
+                          const SizedBox(height: 80)
                         ],
                       ),
                     ),

@@ -8,7 +8,7 @@ class LoadingService {
   LoadingService(this.context) {
     pd = SimpleFontelicoProgressDialog(
       context: context,
-      barrierDimisable: false,
+      barrierDimisable: true,
     );
   }
 

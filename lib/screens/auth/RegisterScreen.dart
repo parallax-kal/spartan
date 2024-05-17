@@ -274,7 +274,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                               await LogService.addUserLog(
                                 Log(
-                                  title: 'Create account',
+                                  title: 'Created account',
                                   description:
                                       'From ${address['country_name']} ${address['country_capital']} with ip ${address['ip']}',
                                   createdAt: DateTime.now(),
@@ -351,7 +351,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                               await LogService.addUserLog(
                                 Log(
-                                  title: 'Create account',
+                                  title: 'Created account',
                                   description:
                                       'From ${address['country_name']} ${address['country_capital']} with ip ${address['ip']}',
                                   createdAt: DateTime.now(),
@@ -463,7 +463,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               final address = await authService.getLocation();
                               await LogService.addUserLog(
                                 Log(
-                                  title: 'Create account',
+                                  title: 'Created account',
                                   description:
                                       'From ${address['country_name']} ${address['country_capital']} with ip ${address['ip']}',
                                   createdAt: DateTime.now(),

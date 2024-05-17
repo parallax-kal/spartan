@@ -166,8 +166,9 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                       const SizedBox(
                                         width: 8,
                                       ),
-                                      Text(
-                                          DateFormat('d MMM').format(wholeday)),
+                                        Text(
+                                        DateFormat('d MMM${wholeday.year != DateTime.now().year ? ' yyyy' : ''}').format(wholeday),
+                                        ),
                                       const SizedBox(
                                         width: 8,
                                       ),

@@ -213,7 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                               await LogService.addUserLog(
                                 Log(
-                                  title: 'Login account',
+                                  title: 'Logged in account',
                                   description:
                                       'From ${address['country_name']} ${address['country_capital']} with ip ${address['ip']}',
                                   createdAt: DateTime.now(),
@@ -300,7 +300,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             await LogService.addUserLog(
                               Log(
-                                title: 'Login account',
+                                title: 'Logged in account',
                                 description:
                                     'From ${address['country_name']} ${address['country_capital']} with ip ${address['ip']}',
                                 createdAt: DateTime.now(),
@@ -414,7 +414,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             await LogService.addUserLog(
                               Log(
-                                title: 'Login account',
+                                title: 'Logged in account',
                                 description:
                                     'From ${address['country_name']} ${address['country_capital']} with ip ${address['ip']}',
                                 createdAt: DateTime.now(),
