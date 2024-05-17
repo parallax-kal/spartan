@@ -3,6 +3,7 @@ import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spartan/constants/firebase.dart';
 
 List<MyCustomBottomNavBarItem> tabs = [
   MyCustomBottomNavBarItem(
@@ -128,6 +129,13 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
 
     changeIndex(index);
     router.push(location.paths[0]);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = tabs.indexWhere(
+        (element) => element.initialLocation.paths.contains(widget.path));
   }
 
   @override
