@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/services/auth.dart';
 import 'package:spartan/services/crib.dart';
+import 'package:spartan/services/loading.dart';
+import 'package:spartan/services/toast.dart';
 
 class DeleteAccountScreen extends StatefulWidget {
   const DeleteAccountScreen({super.key});
@@ -13,6 +17,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
   @override
   Widget build(BuildContext context) {
     AuthService authService = AuthService();
+    LoadingService loadingService = LoadingService(context);
+    ToastService toastService = ToastService(context);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -85,8 +92,21 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  await CribService.deleteAllCribs();
-                  await authService.deleteAccount();
+                  try {
+                    loadingService.show();
+                    await CribService.deleteAllCribs();
+                    await authService.deleteAccount();
+                    toastService.showSuccessToast(
+                      'You have deleted your account successfully!',
+                    );
+                    context.go('/login');
+                  } catch (error) {
+                    String errorMessage =
+                        displayErrorMessage(error as Exception);
+                    toastService.showErrorToast(errorMessage);
+                  } finally {
+                    loadingService.hide();
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0C3D6B),
