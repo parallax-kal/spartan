@@ -9,7 +9,6 @@ import 'package:spartan/notifiers/CurrentSpartanUserNotifier.dart';
 import 'package:spartan/services/auth.dart';
 import 'package:spartan/services/loading.dart';
 import 'package:spartan/services/toast.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -58,7 +57,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     LoadingService loadingService = LoadingService(context);
     ToastService toastService = ToastService(context);
     CurrentSpartanUserNotifier currentSpartanUserNotifier =
-    Provider.of<CurrentSpartanUserNotifier>(context, listen: false);
+        Provider.of<CurrentSpartanUserNotifier>(context, listen: false);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -79,15 +78,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Stack(
                           children: [
                             Container(
-                              child: currentSpartanUserNotifier.currentSpartanUser?.profile != null
+                              child: currentSpartanUserNotifier
+                                          .currentSpartanUser?.profile !=
+                                      null
                                   ? CircleAvatar(
                                       radius: 48,
-                                      backgroundImage:
-                                          CachedNetworkImageProvider(
-                                        currentSpartanUserNotifier.currentSpartanUser!.profile!,
-                                        scale: 0.5,
-                                        maxHeight: 55,
-                                        maxWidth: 55,
+                                      backgroundImage: NetworkImage(
+                                        currentSpartanUserNotifier
+                                            .currentSpartanUser!.profile!,
                                       ),
                                     )
                                   : SvgPicture.asset(
@@ -146,8 +144,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           const SizedBox(height: 15),
                                           CircleAvatar(
                                             radius: 48,
-                                            backgroundImage:
-                                                FileImage(imageFile),
+                                            backgroundImage: FileImage(
+                                              imageFile,
+                                            ),
                                           ),
                                           const SizedBox(height: 15),
                                           Row(
@@ -189,7 +188,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 ),
                                                 onPressed: () async {
                                                   try {
-                                                    loadingService.show();
+                                                    loadingService.show(
+                                                        message:
+                                                            'Uploading...');
                                                     String filename =
                                                         'profile_pictures/${auth.currentUser!.uid}_${DateTime.now().millisecondsSinceEpoch}.jpg';
                                                     await storage
@@ -202,14 +203,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                     await authService
                                                         .updateProfilePicture(
                                                             downloadURL);
+                                                    currentSpartanUserNotifier
+                                                        .setCurrentSpartanUser(
+                                                      currentSpartanUserNotifier
+                                                          .currentSpartanUser!
+                                                          .copyWith(
+                                                        profile: downloadURL,
+                                                      ),
+                                                    );
                                                     toastService.showSuccessToast(
                                                         'Profile picture updated successfully!');
                                                   } catch (error) {
-                                                    String errorMessage =
-                                                        displayErrorMessage(
-                                                            error as Exception);
-                                                    toastService.showErrorToast(
-                                                        errorMessage);
+                                                    print(error);
+                                                    // String errorMessage =
+                                                    //     displayErrorMessage(
+                                                    //         error as Exception);
+                                                    // toastService.showErrorToast(
+                                                    //     errorMessage);
                                                   } finally {
                                                     loadingService.hide();
                                                     Navigator.of(context).pop();
@@ -404,8 +414,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   child: TextButton(
                                     onPressed: () async {
                                       try {
-                                        Navigator.of(context).pop();
                                         loadingService.show();
+                                        currentSpartanUserNotifier
+                                            .clearSpartanUser();
                                         await authService.signOut();
                                         toastService.showSuccessToast(
                                           'You have been logged out successfully!',

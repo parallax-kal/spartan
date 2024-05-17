@@ -191,7 +191,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                     ),
                                   );
                                   toastService.showSuccessToast(
-                                      'Accepted Terms and conditions');
+                                      'Accepted Terms and set country successfully');
                                   GoRouter.of(context).push('/');
                                 } catch (error) {
                                   toastService.showErrorToast(

@@ -75,6 +75,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
             title: Row(
               children: [
                 CircleAvatar(
+                  radius: 48,
                   backgroundImage:
                       NetworkImage(currentRoomNotifier.currentRoom!.profile),
                 ),
@@ -166,9 +167,11 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                       const SizedBox(
                                         width: 8,
                                       ),
-                                        Text(
-                                        DateFormat('d MMM${wholeday.year != DateTime.now().year ? ' yyyy' : ''}').format(wholeday),
-                                        ),
+                                      Text(
+                                        DateFormat(
+                                                'd MMM${wholeday.year != DateTime.now().year ? ' yyyy' : ''}')
+                                            .format(wholeday),
+                                      ),
                                       const SizedBox(
                                         width: 8,
                                       ),
@@ -328,6 +331,7 @@ class ChatBubble extends StatelessWidget {
         if (!isSender)
           if (profile != null)
             CircleAvatar(
+              radius: 48,
               backgroundImage: NetworkImage(profile!),
             ),
         if (profile == null)

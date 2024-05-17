@@ -390,7 +390,6 @@ class _AddCribScreenState extends State<AddCribScreen> {
                         toastService
                             .showSuccessToast('Crib added successfully!');
                       } catch (error) {
-                        print(error);
                         toastService.showErrorToast('Error adding crib');
                       }
                     },

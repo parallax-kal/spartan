@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/models/Log.dart';
 import 'package:spartan/services/loading.dart';
 import 'package:spartan/services/log.dart';
@@ -123,10 +124,9 @@ class _AccountLogScreenState extends State<AccountLogScreen> {
                                 'Logs deleted successfully',
                               );
                             } catch (error) {
-                              print(error);
-                              // String errorMessage =
-                              //     displayErrorMessage(error as Exception);
-                              // toastService.showErrorToast(errorMessage);
+                              String errorMessage =
+                                  displayErrorMessage(error as Exception);
+                              toastService.showErrorToast(errorMessage);
                             } finally {
                               loadingService.hide();
                             }
