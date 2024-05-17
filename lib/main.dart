@@ -17,6 +17,8 @@ import 'package:spartan/screens/dashboard/chat/RoomsScreen.dart';
 import 'package:spartan/screens/dashboard/crib/AddCribScreen.dart';
 import 'package:spartan/screens/dashboard/crib/EditCribInfoScreen.dart';
 import 'package:spartan/screens/dashboard/crib/EditCribScreen.dart';
+import 'package:spartan/screens/dashboard/profile/ProfileDataScreen.dart';
+import 'package:spartan/screens/dashboard/profile/SettingsScreen.dart';
 import 'package:spartan/screens/dashboard/qrcode/InitializeQrcodeScreen.dart';
 import 'package:spartan/screens/dashboard/qrcode/ScanQrcodeScreen.dart';
 import 'package:spartan/screens/dashboard/crib/ResultCribScreen.dart';
@@ -688,12 +690,59 @@ class SpartanApp extends StatefulWidget {
           GoRoute(
             path: '/profile',
             parentNavigatorKey: shellNavigatorKey,
-            pageBuilder: (context, state) {
-              return NoTransitionPage(
-                key: state.pageKey,
-                child: const ProfileScreen(),
-              );
+            redirect: (context, state) {
+              if (state.fullPath == '/profile') {
+                return '/profile/index';
+              }
+              return null;
             },
+            routes: [
+              GoRoute(
+                path: 'index',
+                pageBuilder: (context, state) {
+                  return NoTransitionPage(
+                    key: state.pageKey,
+                    child: const ProfileScreen(),
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'settings',
+                pageBuilder: (context, state) {
+                  return CustomTransitionPage(
+                    child: const SettingsScreen(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(1, 0),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    },
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'profile-data',
+                pageBuilder: (context, state) {
+                  return CustomTransitionPage(
+                    child: const ProfileDataScreen(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(1, 0),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
           ),
         ],
       ),

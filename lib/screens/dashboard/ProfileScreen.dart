@@ -18,28 +18,32 @@ List<ProfileOption> profileOptions = [
   ProfileOption(
     title: 'Profile',
     icon: 'assets/icons/profile/profile_outlined.svg',
-    onPressed: () {},
+    onPressed: (BuildContext context) {
+      GoRouter.of(context).push('/user-data');
+    },
   ),
   ProfileOption(
     title: 'Settings',
     icon: 'assets/icons/settings.svg',
-    onPressed: () {},
+    onPressed: (BuildContext context) {
+      GoRouter.of(context).push('/settings');
+    },
   ),
-  ProfileOption(
-    title: 'Help Center',
-    icon: 'assets/icons/alert.svg',
-    onPressed: () {},
-  ),
-  ProfileOption(
-    title: 'Feedback',
-    icon: 'assets/icons/feedback.svg',
-    onPressed: () {},
-  ),
-  ProfileOption(
-    title: 'App info',
-    icon: 'assets/icons/info.svg',
-    onPressed: () {},
-  )
+  // ProfileOption(
+  //   title: 'Help Center',
+  //   icon: 'assets/icons/alert.svg',
+  //   onPressed: () {},
+  // ),
+  // ProfileOption(
+  //   title: 'Feedback',
+  //   icon: 'assets/icons/feedback.svg',
+  //   onPressed: () {},
+  // ),
+  // ProfileOption(
+  //   title: 'App info',
+  //   icon: 'assets/icons/info.svg',
+  //   onPressed: () {},
+  // )
 ];
 
 class _ProfileScreenState extends State<ProfileScreen> {
@@ -54,13 +58,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: SafeArea(
         child: Stack(
           children: [
-            Container(
-              padding: const EdgeInsets.only(top: 50),
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
+            Expanded(
               child: SingleChildScrollView(
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.8,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    top: 40,
+                    bottom: 10,
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -156,7 +160,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                           const SizedBox(
-                            height: 80,
+                            height: 60,
                           ),
                           SizedBox(
                             width: double.infinity,
@@ -167,7 +171,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     (index, option) => MapEntry(
                                       index,
                                       GestureDetector(
-                                        onTap: option.onPressed,
+                                        onTap: () {
+                                          option.onPressed(context);
+                                        },
                                         child: Container(
                                           color: index == 0
                                               ? const Color.fromRGBO(
@@ -213,23 +219,105 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ],
                       ),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       MaterialButton(
                         textColor: const Color(0xFF8C8C8C),
                         onPressed: () async {
-                          try {
-                            loadingService.show();
-                            await authService.signOut();
-                            toastService.showSuccessToast(
-                              'You have been logged out successfully!',
-                            );
-                            context.go('/login');
-                          } catch (error) {
-                            String errorMessage =
-                                displayErrorMessage(error as Exception);
-                            toastService.showErrorToast(errorMessage);
-                          } finally {
-                            loadingService.hide();
-                          }
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return SimpleDialog(
+                                title: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: IconButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    icon: const Icon(Icons.close),
+                                  ),
+                                ),
+                                titlePadding: const EdgeInsets.all(0),
+                                contentPadding: const EdgeInsets.all(0),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                backgroundColor: Colors.white,
+                                surfaceTintColor: Colors.white,
+                                elevation: 7.3,
+                                shadowColor:
+                                    const Color(0xFF000000).withOpacity(0.4),
+                                children: [
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Image.asset(
+                                    'assets/images/logo.png',
+                                    height: 35,
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  const Text(
+                                    'You are about to log\nout of the system',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  const Text(
+                                    'Do you wish to continue?',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Color(0XFF969696),
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: TextButton(
+                                      onPressed: () async {
+                                        try {
+                                          loadingService.show();
+                                          await authService.signOut();
+                                          toastService.showSuccessToast(
+                                            'You have been logged out successfully!',
+                                          );
+                                          context.go('/login');
+                                        } catch (error) {
+                                          String errorMessage =
+                                              displayErrorMessage(
+                                                  error as Exception);
+                                          toastService
+                                              .showErrorToast(errorMessage);
+                                        } finally {
+                                          loadingService.hide();
+                                        }
+                                      },
+                                      child: const Text(
+                                        'Continue',
+                                        style: TextStyle(
+                                          color: Color(0XFF7ABFFF),
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         },
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -248,7 +336,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
             Positioned(
-              top: 65,
+              top: 90,
               right: 0,
               child: Container(
                 decoration: const BoxDecoration(
@@ -263,6 +351,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 child: SvgPicture.asset(
                   'assets/svg/two_triangles.svg',
+                  width: 110,
                 ),
               ),
             ),
@@ -276,7 +365,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 class ProfileOption {
   final String title;
   final String icon;
-  final Function() onPressed;
+  final Function(BuildContext context) onPressed;
 
   ProfileOption({
     required this.title,
