@@ -17,6 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     CurrentSpartanUserNotifier currentSpartanUser =
         Provider.of<CurrentSpartanUserNotifier>(context, listen: false);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -220,9 +221,10 @@ class HomeDialog extends StatelessWidget {
           const Text(
             'Crib onboarding options',
             style: TextStyle(
-                color: Color(0xFF002E58),
-                fontWeight: FontWeight.w500,
-                fontSize: 14),
+              color: Color(0xFF002E58),
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+            ),
           ),
           InkWell(
             onTap: () {
@@ -234,7 +236,7 @@ class HomeDialog extends StatelessWidget {
           ),
         ],
       ),
-      contentPadding: const EdgeInsets.all(15),
+      contentPadding: const EdgeInsets.all(8),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
@@ -244,7 +246,7 @@ class HomeDialog extends StatelessWidget {
       shadowColor: const Color(0xFF000000).withOpacity(0.4),
       children: [
         const SizedBox(
-          height: 10,
+          height: 5,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,

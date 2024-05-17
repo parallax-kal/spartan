@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/models/Crib.dart';
+import 'package:spartan/notifiers/CurrentCribIdNotifier.dart';
 import 'package:spartan/screens/dashboard/BottomNavigationContainer.dart';
 import 'package:spartan/services/crib.dart';
 
@@ -22,7 +24,6 @@ class _ResultCribScreenState extends State<ResultCribScreen> {
 
   @override
   void initState() {
-    super.initState();
     if (widget.result is Map && widget.result['result'] is String) {
       String qrcodeId = widget.result['result'];
       if (!qrcodeId.startsWith('spartan_crib_')) {
@@ -35,6 +36,7 @@ class _ResultCribScreenState extends State<ResultCribScreen> {
       _setErrorState("Invalid QR code",
           "You supplied an invalid QR code. Please try again.");
     }
+    super.initState();
   }
 
   void _processQRCode(String qrcodeId) {
@@ -117,6 +119,9 @@ class _ResultCribScreenState extends State<ResultCribScreen> {
 
   @override
   Widget build(BuildContext context) {
+    CurrentCribIdNotifier currentCribIdNotifier =
+        Provider.of<CurrentCribIdNotifier>(context);
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
@@ -124,6 +129,7 @@ class _ResultCribScreenState extends State<ResultCribScreen> {
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
             Navigator.of(context).pop();
+            currentCribIdNotifier.setCribId(null);
           },
         ),
       ),
@@ -157,6 +163,9 @@ class ErrorResult extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    CurrentCribIdNotifier currentCribIdNotifier =
+        Provider.of<CurrentCribIdNotifier>(context);
+
     return Padding(
       padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
       child: Column(
@@ -189,7 +198,8 @@ class ErrorResult extends StatelessWidget {
             children: [
               OutlinedButton(
                 onPressed: () {
-                  context.pop();
+                  Navigator.of(context).pop();
+                  currentCribIdNotifier.setCribId(null);
                 },
                 style: OutlinedButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -222,7 +232,7 @@ class ErrorResult extends StatelessWidget {
               const SizedBox(width: 20),
               ElevatedButton(
                 onPressed: () {
-                  GoRouter.of(context).push('/stream');
+                  BottomNavigationContainer.changeTab(context, '/stream');
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0XFF002E58),

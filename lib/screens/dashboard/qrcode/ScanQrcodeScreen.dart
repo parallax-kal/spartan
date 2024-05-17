@@ -3,7 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:spartan/notifiers/CurrentCribIdNotifier.dart';
 
 class ScanQrcodeScreen extends StatefulWidget {
   const ScanQrcodeScreen({super.key});
@@ -29,12 +31,23 @@ class _ScanQrcodeScreenState extends State<ScanQrcodeScreen> {
 
   bool cameraPaused = false;
 
+  bool sentResult = false;
+
+  @override
+  void initState() {
+    sentResult = false;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: <Widget>[
-          Expanded(flex: 4, child: _buildQrView(context)),
+          Expanded(
+            flex: 4,
+            child: _buildQrView(context),
+          ),
           Expanded(
             flex: 1,
             child: FittedBox(
@@ -130,13 +143,17 @@ class _ScanQrcodeScreenState extends State<ScanQrcodeScreen> {
             MediaQuery.of(context).size.height < 400)
         ? 150.0
         : 300.0;
+
+    CurrentCribIdNotifier currentCribIdNotifier =
+        Provider.of<CurrentCribIdNotifier>(context);
+
     void onQRViewCreated(QRViewController controller) {
       setState(() {
         this.controller = controller;
       });
       controller.scannedDataStream.listen((scanData) {
         String? data = scanData.code;
-        if (data == null) {
+        if (data == null || currentCribIdNotifier.cribId != null) {
           return;
         }
         List<String> results = data.split("=");
@@ -145,7 +162,7 @@ class _ScanQrcodeScreenState extends State<ScanQrcodeScreen> {
         }
 
         String result = results.last.trim();
-
+        currentCribIdNotifier.setCribId(result);
         GoRouter.of(context).push('/crib/result', extra: {
           'result': result,
         });

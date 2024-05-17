@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spartan/notifiers/CurrentCribIdNotifier.dart';
+import 'package:provider/provider.dart';
 
 class InitializeQrcodeScreen extends StatefulWidget {
-
   const InitializeQrcodeScreen({super.key});
 
   @override
@@ -12,9 +13,9 @@ class InitializeQrcodeScreen extends StatefulWidget {
 
 class _InitializeQrcodeScreenState extends State<InitializeQrcodeScreen>
     with TickerProviderStateMixin {
-      
   @override
   Widget build(BuildContext context) {
+    CurrentCribIdNotifier currentCribIdNotifier = Provider.of(context);
     return Scaffold(
       backgroundColor: const Color(0XFF083B69),
       bottomSheet: BottomSheet(
@@ -73,6 +74,7 @@ class _InitializeQrcodeScreenState extends State<InitializeQrcodeScreen>
               ),
               ElevatedButton(
                 onPressed: () {
+                  currentCribIdNotifier.setCribId(null);
                   GoRouter.of(context).push('/qrcode/scan');
                 },
                 style: ElevatedButton.styleFrom(

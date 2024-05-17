@@ -91,19 +91,19 @@ enum STATUS {
 }
 
 class Access {
-  ACCESSSTATUS status;
+  ACCESSSTATUS? status;
   String user;
   bool? accepted;
 
   Access({
-    required this.status,
+    this.status,
     required this.user,
     this.accepted = false,
   });
 
   Map<String, dynamic> toJson() {
     return {
-      'status': status.name,
+      'status': status?.name,
       'user': user,
       'accepted': accepted,
     };
@@ -122,4 +122,5 @@ class Access {
 enum ACCESSSTATUS {
   ADMIN,
   OPERATOR,
+  GUEST,
 }

@@ -130,6 +130,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.path);
     return Scaffold(
       appBar: !noAppbarScreens.contains(widget.path)
           ? AppBar(

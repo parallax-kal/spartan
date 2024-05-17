@@ -39,6 +39,7 @@ import 'dart:isolate';
 import 'dart:ui';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spartan/notifiers/CurrentCribIdNotifier.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -65,6 +66,9 @@ void main() async {
           ),
           ChangeNotifierProvider(
             create: (context) => CurrentRoomNotifier(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => CurrentCribIdNotifier(),
           ),
         ],
         child: const SpartanApp(),
@@ -526,7 +530,7 @@ class SpartanApp extends StatefulWidget {
                   );
                 },
               ),
-                GoRoute(
+              GoRoute(
                 path: 'edit-info',
                 pageBuilder: (context, state) {
                   return CustomTransitionPage(

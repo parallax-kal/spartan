@@ -74,13 +74,17 @@ class _LoginScreenState extends State<LoginScreen> {
                           hintText: 'Enter your email',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(6)),
-                            borderSide:
-                                BorderSide(color: Color(0xFFDFDFDF), width: 2),
+                            borderSide: BorderSide(
+                              color: Color(0xFFDFDFDF),
+                              width: 2,
+                            ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(6)),
-                            borderSide:
-                                BorderSide(color: Color(0xFF1455A9), width: 2),
+                            borderSide: BorderSide(
+                              color: Color(0xFF1455A9),
+                              width: 2,
+                            ),
                           ),
                         ),
                         validator: (value) {
