@@ -11,6 +11,15 @@ class AuthService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FacebookAuth facebookauth = FacebookAuth.instance;
 
+  Future updateProfilePicture(String url) async {
+    await auth.currentUser!.updatePhotoURL(
+      url,
+    );
+    await firestore.collection('users').doc(auth.currentUser!.uid).update({
+      'profile': url,
+    });
+  }
+
   // Sign in with Google
   Future<AuthCredential> signInWithGoogle() async {
     try {
@@ -75,7 +84,7 @@ class AuthService {
     await facebookauth.logOut();
   }
 
-   Future<Map<String, dynamic>> getLocation() async {
+  Future<Map<String, dynamic>> getLocation() async {
     try {
       final response = await http.get(Uri.parse('https://ipapi.co/json/'));
       return jsonDecode(response.body);

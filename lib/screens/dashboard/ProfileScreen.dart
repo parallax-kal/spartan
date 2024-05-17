@@ -3,12 +3,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:spartan/constants/firebase.dart';
+import 'package:spartan/notifiers/CurrentSpartanUserNotifier.dart';
 import 'package:spartan/services/auth.dart';
 import 'package:spartan/services/loading.dart';
 import 'package:spartan/services/toast.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -55,6 +57,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     AuthService authService = AuthService();
     LoadingService loadingService = LoadingService(context);
     ToastService toastService = ToastService(context);
+    CurrentSpartanUserNotifier currentSpartanUserNotifier =
+    Provider.of<CurrentSpartanUserNotifier>(context, listen: false);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -75,35 +79,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Stack(
                           children: [
                             Container(
-                              child: auth.currentUser!.photoURL != null
-                                  ? ClipRRect(
-                                      borderRadius: BorderRadius.circular(50),
-                                      child: Image(
-                                        image: CachedNetworkImageProvider(
-                                          auth.currentUser!.photoURL!,
-                                          scale: 0.5,
-                                          maxHeight: 55,
-                                          maxWidth: 55,
-                                        ),
-                                        loadingBuilder: (
-                                          BuildContext context,
-                                          Widget child,
-                                          ImageChunkEvent? imageChunkEvent,
-                                        ) =>
-                                            imageChunkEvent == null
-                                                ? child
-                                                : const CircularProgressIndicator(),
-                                        errorBuilder: (
-                                          BuildContext context,
-                                          Object error,
-                                          StackTrace? stackTrace,
-                                        ) {
-                                          return SvgPicture.asset(
-                                            'assets/icons/profile/profile_outlined.svg',
-                                            width: 65,
-                                            height: 65,
-                                          );
-                                        },
+                              child: currentSpartanUserNotifier.currentSpartanUser?.profile != null
+                                  ? CircleAvatar(
+                                      radius: 48,
+                                      backgroundImage:
+                                          CachedNetworkImageProvider(
+                                        currentSpartanUserNotifier.currentSpartanUser!.profile!,
+                                        scale: 0.5,
+                                        maxHeight: 55,
+                                        maxWidth: 55,
                                       ),
                                     )
                                   : SvgPicture.asset(
@@ -117,14 +101,136 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               bottom: 8,
                               child: InkWell(
                                 onTap: () async {
-                                  FilePickerResult? result =
-                                      await FilePicker.platform.pickFiles();
-
-                                  if (result != null) {
-                                    File file = File(result.files.single.path!);
-                                  } else {
-                                    // User canceled the picker
+                                  final ImagePicker picker = ImagePicker();
+                                  final XFile? image = await picker.pickImage(
+                                    source: ImageSource.gallery,
+                                  );
+                                  if (image == null) {
+                                    return;
                                   }
+                                  File imageFile = File(image.path);
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      LoadingService loadingService =
+                                          LoadingService(context);
+                                      ToastService toastService =
+                                          ToastService(context);
+
+                                      return SimpleDialog(
+                                        titlePadding: const EdgeInsets.only(
+                                          left: 10,
+                                          right: 10,
+                                          top: 10,
+                                        ),
+                                        backgroundColor: Colors.white,
+                                        surfaceTintColor: Colors.white,
+                                        elevation: 7.3,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(9),
+                                        ),
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                        title: const Text(
+                                          'Do you wish to use this image as your profile image',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                        children: [
+                                          const SizedBox(height: 15),
+                                          CircleAvatar(
+                                            radius: 48,
+                                            backgroundImage:
+                                                FileImage(imageFile),
+                                          ),
+                                          const SizedBox(height: 15),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              OutlinedButton(
+                                                style: OutlinedButton.styleFrom(
+                                                  side: const BorderSide(
+                                                      color: Color(0xFFDFDFDF),
+                                                      width: 2),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            6),
+                                                  ),
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: const Text(
+                                                  'Cancel',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 13,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      const Color(0xFF0C3D6B),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            6),
+                                                  ),
+                                                ),
+                                                onPressed: () async {
+                                                  try {
+                                                    loadingService.show();
+                                                    String filename =
+                                                        'profile_pictures/${auth.currentUser!.uid}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+                                                    await storage
+                                                        .ref(filename)
+                                                        .putFile(imageFile);
+                                                    String downloadURL =
+                                                        await storage
+                                                            .ref(filename)
+                                                            .getDownloadURL();
+                                                    await authService
+                                                        .updateProfilePicture(
+                                                            downloadURL);
+                                                    toastService.showSuccessToast(
+                                                        'Profile picture updated successfully!');
+                                                  } catch (error) {
+                                                    String errorMessage =
+                                                        displayErrorMessage(
+                                                            error as Exception);
+                                                    toastService.showErrorToast(
+                                                        errorMessage);
+                                                  } finally {
+                                                    loadingService.hide();
+                                                    Navigator.of(context).pop();
+                                                  }
+                                                },
+                                                child: const Text(
+                                                  'Continue',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 14.5,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 15)
+                                        ],
+                                      );
+                                    },
+                                  );
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.all(6),
@@ -166,7 +272,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Text(
                           auth.currentUser!.email!,
                           style: const TextStyle(
-                            fontFamily: 'InriaSans',
                             color: Color(0xFF828282),
                           ),
                         ),
@@ -299,6 +404,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   child: TextButton(
                                     onPressed: () async {
                                       try {
+                                        Navigator.of(context).pop();
                                         loadingService.show();
                                         await authService.signOut();
                                         toastService.showSuccessToast(
