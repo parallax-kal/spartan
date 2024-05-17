@@ -14,6 +14,7 @@ class ToastService {
       animationType: AnimationType.fromTop,
       position: MotionToastPosition.top,
       height: 110,
+      width: MediaQuery.of(context).size.width,
       toastDuration: const Duration(seconds: 5),
     ).show(context);
   }
@@ -26,6 +27,7 @@ class ToastService {
       animationType: AnimationType.fromTop,
       position: MotionToastPosition.top,
       height: 110,
+      width: MediaQuery.of(context).size.width,
       toastDuration: const Duration(seconds: 5),
     ).show(context);
   }

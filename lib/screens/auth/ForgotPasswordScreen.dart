@@ -52,6 +52,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 height: 10,
               ),
               TextFormField(
+                controller: emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
                   contentPadding: EdgeInsets.symmetric(
@@ -87,6 +88,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           androidInstallApp: true,
                           androidMinimumVersion: '16',
                         ),
+                      );
+                      toastService.showSuccessToast(
+                        'We have sent a password reset link to your email address.',
                       );
                     } catch (error) {
                       String errorMessage =

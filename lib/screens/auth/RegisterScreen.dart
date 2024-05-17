@@ -271,10 +271,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 'Email has been sent to your email please verify it and login.',
                               );
                             } catch (error) {
-                              // String errorMessage =
-                              //     displayErrorMessage(error as Exception);
-                              print(error);
-                              // toastService.showErrorToast(errorMessage);
+                              String errorMessage =
+                                  displayErrorMessage(error as Exception);
+                              toastService.showErrorToast(errorMessage);
                             } finally {
                               loadingService.hide();
                             }
