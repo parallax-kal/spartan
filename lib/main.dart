@@ -20,6 +20,8 @@ import 'package:spartan/screens/dashboard/crib/EditCribInfoScreen.dart';
 import 'package:spartan/screens/dashboard/crib/EditCribScreen.dart';
 import 'package:spartan/screens/dashboard/profile/AccountLogScreen.dart';
 import 'package:spartan/screens/dashboard/profile/DeleteAccountScreen.dart';
+import 'package:spartan/screens/dashboard/profile/EditEmailScreen.dart';
+import 'package:spartan/screens/dashboard/profile/EditPasswordScreen.dart';
 import 'package:spartan/screens/dashboard/profile/ProfileDataScreen.dart';
 import 'package:spartan/screens/dashboard/profile/SettingsScreen.dart';
 import 'package:spartan/screens/dashboard/qrcode/InitializeQrcodeScreen.dart';
@@ -768,6 +770,42 @@ class SpartanApp extends StatefulWidget {
                 pageBuilder: (context, state) {
                   return CustomTransitionPage(
                     child: const DeleteAccountScreen(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(1, 0),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    },
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'edit-email',
+                pageBuilder: (context, state) {
+                  return CustomTransitionPage(
+                    child: const EditEmailScreen(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(1, 0),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    },
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'edit-password',
+                pageBuilder: (context, state) {
+                  return CustomTransitionPage(
+                    child: const EditPasswordScreen(),
                     transitionsBuilder:
                         (context, animation, secondaryAnimation, child) {
                       return SlideTransition(

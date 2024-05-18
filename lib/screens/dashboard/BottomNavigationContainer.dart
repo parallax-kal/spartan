@@ -3,7 +3,6 @@ import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:spartan/constants/firebase.dart';
 
 List<MyCustomBottomNavBarItem> tabs = [
   MyCustomBottomNavBarItem(
