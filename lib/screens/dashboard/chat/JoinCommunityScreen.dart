@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +12,7 @@ import 'package:spartan/services/log.dart';
 import 'package:spartan/services/toast.dart';
 
 class JoinCommunityScreen extends StatefulWidget {
-  const JoinCommunityScreen({Key? key}) : super(key: key);
+  const JoinCommunityScreen({super.key});
 
   @override
   State<JoinCommunityScreen> createState() => _JoinCommunityScreenState();

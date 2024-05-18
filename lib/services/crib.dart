@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names, camel_case_types
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/models/Crib.dart';
@@ -40,9 +42,9 @@ class CribService {
         .get();
 
     List<Future<void>> deleteFutures = [];
-    snapshot.docs.forEach((doc) {
+    for (var doc in snapshot.docs) {
       deleteFutures.add(doc.reference.delete());
-    });
+    }
 
     await Future.wait(deleteFutures);
   }
@@ -78,14 +80,14 @@ class CribService {
           List<Crib> cribs = [];
 
           // Merge documents from both queries
-          snapshots.forEach((snapshot) {
+          for (var snapshot in snapshots) {
             cribs.addAll(snapshot.docs.map((doc) {
               return Crib.fromJson({
                 'id': doc.id,
                 ...doc.data(),
               });
             }));
-          });
+          }
 
           return cribs;
         });

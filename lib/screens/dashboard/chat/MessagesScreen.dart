@@ -11,6 +11,7 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:spartan/services/chat.dart';
 import 'package:chat_composer/chat_composer.dart';
 import 'package:spartan/services/toast.dart';
+import 'package:voice_message_package/voice_message_package.dart';
 
 class MessagesScreen extends StatefulWidget {
   const MessagesScreen({super.key});
@@ -24,6 +25,14 @@ class _MessagesScreenState extends State<MessagesScreen> {
   bool _emojiShowing = false;
   final ScrollController _emojiScrollController = ScrollController();
   final ScrollController _messageScrollController = ScrollController();
+
+  @override
+  void dispose() {
+    chatTextController.dispose();
+    _emojiScrollController.dispose();
+    _messageScrollController.dispose();
+    super.dispose();
+  }
 
   List<Map<DateTime, List<Message>>> sortMessages(List<Message> messages) {
     Map<DateTime, List<Message>> sortedMessages = {};
@@ -167,59 +176,62 @@ class _MessagesScreenState extends State<MessagesScreen> {
 
                         return SingleChildScrollView(
                           controller: _messageScrollController,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: sortedMessages.map((sortedMessage) {
-                              DateTime wholeday = sortedMessage.keys.first;
-                              List<Message> messages =
-                                  sortedMessage.values.first;
+                          child: Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: sortedMessages.map((sortedMessage) {
+                                DateTime wholeday = sortedMessage.keys.first;
+                                List<Message> messages =
+                                    sortedMessage.values.first;
 
-                              return Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Expanded(child: Divider()),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      Text(
-                                        DateFormat(
-                                                'd MMM${wholeday.year != DateTime.now().year ? ' yyyy' : ''}')
-                                            .format(wholeday),
-                                      ),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      const Expanded(child: Divider()),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Column(
-                                    children: messages.map((message) {
-                                      return Column(
-                                        children: [
-                                          ChatBubble(
-                                            text: message.message!,
-                                            isSender: message.sender.uid ==
-                                                auth.currentUser!.uid,
-                                            createdAt: message.createdAt,
-                                            profile: message.sender.profile,
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                        ],
-                                      );
-                                    }).toList(),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                ],
-                              );
-                            }).toList(),
+                                return Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const Expanded(child: Divider()),
+                                        const SizedBox(
+                                          width: 8,
+                                        ),
+                                        Text(
+                                          DateFormat(
+                                                  'd MMM${wholeday.year != DateTime.now().year ? ' yyyy' : ''}')
+                                              .format(wholeday),
+                                        ),
+                                        const SizedBox(
+                                          width: 8,
+                                        ),
+                                        const Expanded(child: Divider()),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Column(
+                                      children: messages.map((message) {
+                                        return Column(
+                                          children: [
+                                            ChatBubble(
+                                              message: message.message!,
+                                              isSender: message.sender.uid ==
+                                                  auth.currentUser!.uid,
+                                              createdAt: message.createdAt,
+                                              profile: message.sender.profile,
+                                              type: message.type,
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                          ],
+                                        );
+                                      }).toList(),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                  ],
+                                );
+                              }).toList(),
+                            ),
                           ),
                         );
                     }
@@ -265,23 +277,22 @@ class _MessagesScreenState extends State<MessagesScreen> {
                         );
                         chatTextController.text = '';
                       } catch (error) {
-                        String errorMessage =
-                            displayErrorMessage(error);
+                        String errorMessage = displayErrorMessage(error);
                         toastService.showErrorToast(errorMessage);
                       }
                     },
+                    composerColor: const Color.fromRGBO(217, 217, 217, 0.38),
+                    backgroundColor: Colors.white,
+                    sendButtonBackgroundColor: const Color(0xFF235380),
                     onRecordEnd: (path) async {
                       if (path != null) {
                         try {
                           File file = File(path);
-                          await storage
-                              .ref(
-                                  'messages/voice_note_${DateTime.now().microsecondsSinceEpoch}.${file.path.split('.').last}')
-                              .putFile(file);
-                          String url = await storage
-                              .ref(
-                                  'messages/voice_note_${DateTime.now().microsecondsSinceEpoch}.${file.path.split('.').last}')
-                              .getDownloadURL();
+                          String filename =
+                              'messages/audio/voice_note_${DateTime.now().microsecondsSinceEpoch}.acc';
+                          await storage.ref(filename).putFile(file);
+                          String url =
+                              await storage.ref(filename).getDownloadURL();
                           Message message = Message(
                             message: url,
                             sender: Sender(
@@ -295,10 +306,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                             currentRoomNotifier.currentRoom!.id,
                             message,
                           );
-
                         } catch (error) {
-                          String errorMessage =
-                              displayErrorMessage(error);
+                          String errorMessage = displayErrorMessage(error);
                           toastService.showErrorToast(errorMessage);
                         }
                       }
@@ -311,35 +320,36 @@ class _MessagesScreenState extends State<MessagesScreen> {
                         ),
                         onPressed: () {
                           showBottomSheet(
-                              context: context,
-                              builder: (context) {
-                                return Container(
-                                  height: 100,
-                                  color: Colors.white,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      IconButton(
-                                        icon: const Icon(Icons.camera_alt),
-                                        onPressed: () {},
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(Icons.photo),
-                                        onPressed: () {},
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(Icons.mic),
-                                        onPressed: () {},
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(Icons.location_on),
-                                        onPressed: () {},
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              });
+                            context: context,
+                            builder: (context) {
+                              return Container(
+                                height: 100,
+                                color: Colors.white,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.camera_alt),
+                                      onPressed: () {},
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.photo),
+                                      onPressed: () {},
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.mic),
+                                      onPressed: () {},
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.location_on),
+                                      onPressed: () {},
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
                         },
                       ),
                     ],
@@ -380,14 +390,16 @@ class _MessagesScreenState extends State<MessagesScreen> {
 
 class ChatBubble extends StatelessWidget {
   final bool isSender;
-  final String text;
+  final String message;
   final String? profile;
   final DateTime createdAt;
+  final MESSAGETYPE type;
   const ChatBubble({
     super.key,
     required this.isSender,
-    required this.text,
+    required this.message,
     required this.createdAt,
+    required this.type,
     this.profile,
   });
 
@@ -421,31 +433,7 @@ class ChatBubble extends StatelessWidget {
             child: Icon(Icons.person),
           ),
         if (isSender) const SizedBox(width: 10),
-        Container(
-          padding: EdgeInsets.only(
-            top: 12,
-            bottom: isSender ? 12 : 30,
-            left: 15,
-            right: isSender ? 30 : 12,
-          ),
-          decoration: BoxDecoration(
-            color: isSender ? const Color(0xFF235380) : Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: const Radius.circular(12),
-              topRight: const Radius.circular(12),
-              bottomLeft: Radius.circular(isSender ? 12 : 0),
-              bottomRight: Radius.circular(isSender ? 0 : 12),
-            ),
-          ),
-          child: Text(
-            text,
-            style: TextStyle(
-              color: isSender ? Colors.white : Colors.black,
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
+        MessageRender(message: message, type: type, isSender: isSender),
         if (!isSender) const SizedBox(width: 10),
         if (!isSender)
           Text(
@@ -462,5 +450,71 @@ class ChatBubble extends StatelessWidget {
           )
       ],
     );
+  }
+}
+
+class MessageRender extends StatelessWidget {
+  final String message;
+  final MESSAGETYPE type;
+  final bool isSender;
+
+  MessageRender({
+    required this.message,
+    required this.type,
+    required this.isSender,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return type == MESSAGETYPE.AUDIO
+        ? VoiceMessageView(
+            circlesColor: const Color(0xFF235380),
+            activeSliderColor: const Color(0xFF235380),
+            controller: VoiceController(
+              audioSrc: message,
+              onComplete: () {
+                return;
+              },
+              onPause: () {
+                return;
+              },
+              onPlaying: () {
+                return;
+              },
+              onError: (err) {
+                String errorMessage = displayErrorMessage(err);
+                ToastService(context).showErrorToast(errorMessage);
+              },
+              maxDuration: const Duration(minutes: 2),
+              isFile: false,
+            ),
+            innerPadding: 12,
+            cornerRadius: 20,
+          )
+        : Container(
+            padding: EdgeInsets.only(
+              top: 12,
+              bottom: isSender ? 12 : 30,
+              left: 15,
+              right: isSender ? 30 : 12,
+            ),
+            decoration: BoxDecoration(
+              color: isSender ? const Color(0xFF235380) : Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: const Radius.circular(12),
+                topRight: const Radius.circular(12),
+                bottomLeft: Radius.circular(isSender ? 12 : 0),
+                bottomRight: Radius.circular(isSender ? 0 : 12),
+              ),
+            ),
+            child: Text(
+              message,
+              style: TextStyle(
+                color: isSender ? Colors.white : Colors.black,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          );
   }
 }

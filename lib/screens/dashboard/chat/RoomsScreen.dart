@@ -32,7 +32,7 @@ class _RoomsScreenState extends State<RoomsScreen> {
         backgroundColor: Colors.white,
         body: Padding(
           padding:
-              const EdgeInsets.only(left: 20, right: 20, top: 50, bottom: 20),
+              const EdgeInsets.only(left: 15, right: 15, top: 50, bottom: 20),
           child: Column(
             children: [
               Row(
@@ -151,6 +151,7 @@ class _RoomsScreenState extends State<RoomsScreen> {
                         return ListView.builder(
                           shrinkWrap: true,
                           itemCount: snapshot.data?.length,
+                          padding: const EdgeInsets.all(0),
                           itemBuilder: (context, index) {
                             final room = Room.fromJson(
                               {
@@ -242,7 +243,7 @@ class _RoomsScreenState extends State<RoomsScreen> {
                                           : Text(
                                               message.type == MESSAGETYPE.TEXT
                                                   ? message.message!
-                                                  : '',
+                                                  : 'Shared an ${message.type.name.toLowerCase()} file',
                                               style: const TextStyle(
                                                 color: Color(0XFF707070),
                                                 fontWeight: FontWeight.w500,
