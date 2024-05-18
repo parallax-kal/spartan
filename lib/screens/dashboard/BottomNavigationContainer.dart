@@ -84,7 +84,9 @@ List<String> noAppbarScreens = [
   '/profile/settings',
   '/profile/user-data',
   '/profile/delete-account',
-  '/profile/account-log'
+  '/profile/account-log',
+  '/profile/edit-email',
+  '/profile/edit-password',
 ];
 
 List noBottomNavScreens = ['/chat/messages', '/qrcode/scan'];
@@ -228,7 +230,9 @@ enum Location {
     '/profile/settings',
     '/profile/user-data',
     '/profile/delete-account',
-    '/profile/account-log'
+    '/profile/account-log',
+    '/profile/edit-email',
+    '/profile/edit-password',
   ]);
 
   final List<String> paths;

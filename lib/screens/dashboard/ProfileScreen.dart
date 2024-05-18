@@ -268,23 +268,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const SizedBox(
                           height: 10,
                         ),
-                        Text(
-                          auth.currentUser!.displayName!,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                          ),
-                        ),
+                        auth.currentUser?.displayName != null
+                            ? Text(
+                                auth.currentUser!.displayName!,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                ),
+                              )
+                            : const SizedBox(),
                         const SizedBox(
                           height: 3,
                         ),
-                        Text(
-                          auth.currentUser!.email!,
-                          style: const TextStyle(
-                            color: Color(0xFF828282),
-                          ),
-                        ),
+                        auth.currentUser?.email != null
+                            ? Text(
+                                auth.currentUser!.email!,
+                                style: const TextStyle(
+                                  color: Color(0xFF828282),
+                                ),
+                              )
+                            : const SizedBox(),
                         const SizedBox(
                           height: 60,
                         ),
@@ -463,7 +467,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
             Positioned(
-              top: 24,
+              top: 11,
               right: 0,
               child: Container(
                 decoration: const BoxDecoration(

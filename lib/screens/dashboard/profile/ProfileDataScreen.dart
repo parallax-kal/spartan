@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spartan/constants/firebase.dart';
+import 'package:spartan/services/loading.dart';
+import 'package:spartan/services/toast.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfileDataScreen extends StatefulWidget {
   const ProfileDataScreen({super.key});
@@ -13,6 +16,8 @@ class ProfileDataScreen extends StatefulWidget {
 class _ProfileDataScreenState extends State<ProfileDataScreen> {
   @override
   Widget build(BuildContext context) {
+    LoadingService loadingService = LoadingService(context);
+    ToastService toastService = ToastService(context);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -126,8 +131,30 @@ class _ProfileDataScreenState extends State<ProfileDataScreen> {
                   ],
                 ),
                 child: InkWell(
-                  onTap: () {
-                    GoRouter.of(context).push('/profile/edit-password');
+                  onTap: () async {
+                    try {
+                      loadingService.show(message: 'Sending');
+                      await auth.sendPasswordResetEmail(
+                        email: auth.currentUser!.email!,
+                        actionCodeSettings: ActionCodeSettings(
+                          url: 'https://spartancorp.io',
+                          handleCodeInApp: true,
+                          iOSBundleId: 'com.spartan.app',
+                          androidPackageName: 'com.spartan.app',
+                          androidInstallApp: true,
+                          androidMinimumVersion: '16',
+                        ),
+                      );
+                      toastService.showSuccessToast(
+                        'Password reset link sent to your email',
+                      );
+                    } catch (error) {
+                      String errorMessage =
+                          displayErrorMessage(error as Exception);
+                      toastService.showErrorToast(errorMessage);
+                    } finally {
+                      loadingService.hide();
+                    }
                   },
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
