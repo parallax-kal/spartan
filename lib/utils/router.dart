@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/constants/global.dart';
+import 'package:spartan/models/Crib.dart';
 import 'package:spartan/models/SpartanUser.dart';
 import 'package:spartan/notifiers/CurrentSpartanUserNotifier.dart';
 import 'package:spartan/screens/dashboard/chat/MessagesScreen.dart';
@@ -153,7 +154,7 @@ final GoRouter router = GoRouter(
           parentNavigatorKey: shellNavigatorKey,
           redirect: (context, state) {
             if (state.fullPath == '/crib') {
-              return '/crib/edit';
+              return '/crib/add';
             }
             return null;
           },
@@ -161,9 +162,10 @@ final GoRouter router = GoRouter(
             GoRoute(
               path: 'add',
               pageBuilder: (context, state) {
+                Crib crib = state.extra as Crib;
                 return CustomTransitionPage(
                   key: state.pageKey,
-                  child: const AddCribScreen(),
+                  child: AddCribScreen(crib: crib),
                   transitionsBuilder:
                       (context, animation, secondaryAnimation, child) {
                     return SlideTransition(

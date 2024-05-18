@@ -12,7 +12,8 @@ import 'package:spartan/services/toast.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 
 class AddCribScreen extends StatefulWidget {
-  const AddCribScreen({super.key});
+  final Crib? crib;
+  const AddCribScreen({super.key, this.crib});
 
   @override
   State<AddCribScreen> createState() => _AddCribScreenState();
@@ -23,9 +24,24 @@ class _AddCribScreenState extends State<AddCribScreen> {
 
   List<Map<String, dynamic>> accesses = [];
 
+  String renderStatus(ACCESSSTATUS? status) {
+    if (status == null) {
+      return '+ Role';
+    }
+    return status.name.substring(0, 1).toUpperCase() +
+        status.name.substring(1).toLowerCase();
+  }
+
   @override
   void initState() {
     super.initState();
+    accesses = widget.crib?.access.map((access) {
+          return {
+            'user': access.user,
+            'status': renderStatus(access.status),
+          };
+        }).toList() ??
+        [];
     _stringTagController = StringTagController();
     _stringTagController.addListener(() {
       accesses = _stringTagController.getTags!.map((email) {
@@ -66,9 +82,9 @@ class _AddCribScreenState extends State<AddCribScreen> {
           },
         ),
         centerTitle: true,
-        title: const Text(
-          'Add device',
-          style: TextStyle(
+        title: Text(
+          '${widget.crib != null ? 'Edit' : 'Add'} device',
+          style: const TextStyle(
             color: Colors.black,
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -95,6 +111,7 @@ class _AddCribScreenState extends State<AddCribScreen> {
               const SizedBox(height: 6),
               TextFormField(
                 controller: _nameController,
+                initialValue: widget.crib?.name,
                 decoration: const InputDecoration(
                   contentPadding: EdgeInsets.symmetric(
                     horizontal: 18,
@@ -123,6 +140,8 @@ class _AddCribScreenState extends State<AddCribScreen> {
               TextFieldTags<String>(
                 textfieldTagsController: _stringTagController,
                 textSeparators: const [' ', ','],
+                initialTags:
+                    widget.crib?.access.map((access) => access.user).toList(),
                 letterCase: LetterCase.normal,
                 validator: (String email) {
                   if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
@@ -243,15 +262,9 @@ class _AddCribScreenState extends State<AddCribScreen> {
                                           ],
                                         ),
                                         child: Text(
-                                          accesses
-                                                  .firstWhere((element) =>
-                                                      element['user'] == email)
-                                                  .containsKey('status')
-                                              ? accesses.firstWhere((element) =>
-                                                      element['user'] ==
-                                                      email)['status'] ??
-                                                  '+ Role'
-                                              : '+ Role',
+                                          accesses.firstWhere((element) =>
+                                              element['user'] ==
+                                              email)['status'],
                                           style: const TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.w500,
