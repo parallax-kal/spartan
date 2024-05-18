@@ -100,7 +100,6 @@ enum MESSAGETYPE {
   VIDEO,
   AUDIO,
   FILE,
-  LOCATION,
 }
 
 enum MESSAGESTATUS {

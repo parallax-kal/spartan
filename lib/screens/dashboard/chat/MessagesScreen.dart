@@ -1,17 +1,15 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/models/Message.dart';
 import 'package:spartan/notifiers/CurrentRoomNotifier.dart';
-import 'package:flutter/foundation.dart' as foundation;
-import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:spartan/services/chat.dart';
 import 'package:chat_composer/chat_composer.dart';
 import 'package:spartan/services/toast.dart';
 import 'package:voice_message_package/voice_message_package.dart';
+import 'package:file_picker/file_picker.dart';
 
 class MessagesScreen extends StatefulWidget {
   const MessagesScreen({super.key});
@@ -22,14 +20,12 @@ class MessagesScreen extends StatefulWidget {
 
 class _MessagesScreenState extends State<MessagesScreen> {
   TextEditingController chatTextController = TextEditingController();
-  bool _emojiShowing = false;
-  final ScrollController _emojiScrollController = ScrollController();
+
   final ScrollController _messageScrollController = ScrollController();
 
   @override
   void dispose() {
     chatTextController.dispose();
-    _emojiScrollController.dispose();
     _messageScrollController.dispose();
     super.dispose();
   }
@@ -58,331 +54,283 @@ class _MessagesScreenState extends State<MessagesScreen> {
     return sortedList;
   }
 
+  MESSAGETYPE checkFileType(String extension) {
+    if (['jpg', 'jpeg', 'png', 'gif'].contains(extension)) {
+      return MESSAGETYPE.IMAGE;
+    } else if (['mp4', 'mkv', 'avi', 'mov'].contains(extension)) {
+      return MESSAGETYPE.VIDEO;
+    } else if (['mp3', 'acc', 'wav'].contains(extension)) {
+      return MESSAGETYPE.AUDIO;
+    } else {
+      return MESSAGETYPE.FILE;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     CurrentRoomNotifier currentRoomNotifier =
         Provider.of<CurrentRoomNotifier>(context, listen: true);
     ToastService toastService = ToastService(context);
-    return GestureDetector(
-      onTap: FocusScope.of(context).unfocus,
-      child: PopScope(
-        canPop: !_emojiShowing,
-        onPopInvoked: (_) async {
-          if (_emojiShowing) {
-            setState(() => _emojiShowing = !_emojiShowing);
-          } else {
-            Navigator.of(context).pop();
-          }
-        },
-        child: Scaffold(
-          backgroundColor: const Color(0XFFF2F2F2),
-          appBar: AppBar(
-            leadingWidth: 30,
-            leading: IconButton(
-              icon: const Icon(Icons.keyboard_backspace),
-              onPressed: () {
-                Navigator.pop(context);
-              },
+    return Scaffold(
+      backgroundColor: const Color(0XFFF2F2F2),
+      appBar: AppBar(
+        leadingWidth: 30,
+        leading: IconButton(
+          icon: const Icon(Icons.keyboard_backspace),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Row(
+          children: [
+            CircleAvatar(
+              backgroundImage: currentRoomNotifier.currentRoom!.profile == null
+                  ? null
+                  : NetworkImage(currentRoomNotifier.currentRoom!.profile!),
+              child: currentRoomNotifier.currentRoom!.profile == null
+                  ? currentRoomNotifier.currentRoom!.id == 'spartan_global'
+                      ? Image.asset(
+                          'assets/images/logo.png',
+                          width: 30,
+                        )
+                      : const Icon(
+                          Icons.group,
+                          color: Colors.white,
+                        )
+                  : null,
             ),
-            title: Row(
+            const SizedBox(
+              width: 15,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  backgroundImage: currentRoomNotifier.currentRoom!.profile ==
-                          null
-                      ? null
-                      : NetworkImage(currentRoomNotifier.currentRoom!.profile!),
-                  child: currentRoomNotifier.currentRoom!.profile == null
-                      ? currentRoomNotifier.currentRoom!.id == 'spartan_global'
-                          ? Image.asset(
-                              'assets/images/logo.png',
-                              width: 30,
-                            )
-                          : const Icon(
-                              Icons.group,
-                              color: Colors.white,
-                            )
-                      : null,
+                Text(
+                  currentRoomNotifier.currentRoom!.name,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
                 ),
-                const SizedBox(
-                  width: 15,
+                Text(
+                  '${currentRoomNotifier.currentRoom!.totalMembers} Members',
+                  style: const TextStyle(
+                    color: Color(0XFF707070),
+                    fontWeight: FontWeight.w500,
+                    fontSize: 12,
+                  ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      currentRoomNotifier.currentRoom!.name,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13,
-                      ),
-                    ),
-                    Text(
-                      '${currentRoomNotifier.currentRoom!.totalMembers} Members',
-                      style: const TextStyle(
-                        color: Color(0XFF707070),
-                        fontWeight: FontWeight.w500,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                )
               ],
-            ),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.menu),
-                onPressed: () {},
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-            ],
+            )
+          ],
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () {},
           ),
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: StreamBuilder(
-                  stream: ChatService.getMessages(
-                      currentRoomNotifier.currentRoom!.id),
-                  builder: (context, snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.none:
-                      case ConnectionState.waiting:
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      case ConnectionState.active:
-                      case ConnectionState.done:
-                        List<Message>? messages = snapshot.data?.docs
-                            .map((e) => Message.fromJson({
-                                  'id': e.id,
-                                  ...e.data(),
-                                }))
-                            .toList();
+          const SizedBox(
+            width: 20,
+          ),
+        ],
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: StreamBuilder(
+              stream:
+                  ChatService.getMessages(currentRoomNotifier.currentRoom!.id),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  case ConnectionState.active:
+                  case ConnectionState.done:
+                    List<Message>? messages = snapshot.data?.docs
+                        .map((e) => Message.fromJson({
+                              'id': e.id,
+                              ...e.data(),
+                            }))
+                        .toList();
 
-                        if (messages == null || messages.isEmpty) {
-                          return const Center(
-                            child: Text(
-                              'Say Hii! 👋',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          );
-                        }
-
-                        List<Map<DateTime, List<Message>>> sortedMessages =
-                            sortMessages(messages);
-
-                        return SingleChildScrollView(
-                          controller: _messageScrollController,
-                          child: Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: sortedMessages.map((sortedMessage) {
-                                DateTime wholeday = sortedMessage.keys.first;
-                                List<Message> messages =
-                                    sortedMessage.values.first;
-
-                                return Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        const Expanded(child: Divider()),
-                                        const SizedBox(
-                                          width: 8,
-                                        ),
-                                        Text(
-                                          DateFormat(
-                                                  'd MMM${wholeday.year != DateTime.now().year ? ' yyyy' : ''}')
-                                              .format(wholeday),
-                                        ),
-                                        const SizedBox(
-                                          width: 8,
-                                        ),
-                                        const Expanded(child: Divider()),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    Column(
-                                      children: messages.map((message) {
-                                        return Column(
-                                          children: [
-                                            ChatBubble(
-                                              message: message.message!,
-                                              isSender: message.sender.uid ==
-                                                  auth.currentUser!.uid,
-                                              createdAt: message.createdAt,
-                                              profile: message.sender.profile,
-                                              type: message.type,
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                          ],
-                                        );
-                                      }).toList(),
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                  ],
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        );
+                    if (messages == null || messages.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          'Say Hii! 👋',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      );
                     }
-                  },
-                ),
-              ),
-              Column(
-                children: [
-                  ChatComposer(
-                    controller: chatTextController,
-                    leading: Material(
-                      color: Colors.transparent,
-                      child: IconButton(
-                        onPressed: () {
-                          FocusScope.of(context).unfocus();
-                          setState(() {
-                            _emojiShowing = !_emojiShowing;
-                          });
-                        },
-                        icon: const Icon(
-                          Icons.emoji_emotions_outlined,
-                          color: Color(0xFF7B7B7B),
+
+                    List<Map<DateTime, List<Message>>> sortedMessages =
+                        sortMessages(messages);
+
+                    return SingleChildScrollView(
+                      controller: _messageScrollController,
+                      child: Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: sortedMessages.map((sortedMessage) {
+                            DateTime wholeday = sortedMessage.keys.first;
+                            List<Message> messages = sortedMessage.values.first;
+
+                            return Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    const Expanded(child: Divider()),
+                                    const SizedBox(
+                                      width: 8,
+                                    ),
+                                    Text(
+                                      DateFormat(
+                                              'd MMM${wholeday.year != DateTime.now().year ? ' yyyy' : ''}')
+                                          .format(wholeday),
+                                    ),
+                                    const SizedBox(
+                                      width: 8,
+                                    ),
+                                    const Expanded(child: Divider()),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Column(
+                                  children: messages.map((message) {
+                                    return Column(
+                                      children: [
+                                        ChatBubble(
+                                          message: message.message!,
+                                          isSender: message.sender.uid ==
+                                              auth.currentUser!.uid,
+                                          createdAt: message.createdAt,
+                                          profile: message.sender.profile,
+                                          type: message.type,
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                    );
+                                  }).toList(),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                              ],
+                            );
+                          }).toList(),
                         ),
                       ),
+                    );
+                }
+              },
+            ),
+          ),
+          ChatComposer(
+            controller: chatTextController,
+            onReceiveText: (str) async {
+              try {
+                Message message = Message(
+                  message: str!,
+                  sender: Sender(
+                    uid: auth.currentUser!.uid,
+                    profile: auth.currentUser!.photoURL!,
+                  ),
+                  type: MESSAGETYPE.TEXT,
+                  createdAt: DateTime.now(),
+                );
+                await ChatService.sendMessage(
+                  currentRoomNotifier.currentRoom!.id,
+                  message,
+                );
+                chatTextController.text = '';
+              } catch (error) {
+                String errorMessage = displayErrorMessage(error);
+                toastService.showErrorToast(errorMessage);
+              }
+            },
+            composerColor: const Color.fromRGBO(217, 217, 217, 0.38),
+            backgroundColor: Colors.white,
+            sendButtonBackgroundColor: const Color(0xFF235380),
+            onRecordEnd: (path) async {
+              if (path != null) {
+                try {
+                  File file = File(path);
+                  String filename =
+                      'messages/voice_note/voice_note_${DateTime.now().microsecondsSinceEpoch}.acc';
+                  await storage.ref(filename).putFile(file);
+                  String url = await storage.ref(filename).getDownloadURL();
+                  Message message = Message(
+                    message: url,
+                    sender: Sender(
+                      uid: auth.currentUser!.uid,
+                      profile: auth.currentUser!.photoURL!,
                     ),
-                    onReceiveText: (str) async {
+                    type: MESSAGETYPE.AUDIO,
+                    createdAt: DateTime.now(),
+                  );
+                  await ChatService.sendMessage(
+                    currentRoomNotifier.currentRoom!.id,
+                    message,
+                  );
+                } catch (error) {
+                  String errorMessage = displayErrorMessage(error);
+                  toastService.showErrorToast(errorMessage);
+                }
+              }
+            },
+            actions: [
+              IconButton(
+                icon: const Icon(
+                  Icons.attach_file,
+                  color: Color(0xFF7B7B7B),
+                ),
+                onPressed: () async {
+                  FilePickerResult? result =
+                      await FilePicker.platform.pickFiles(allowMultiple: true);
+                  if (result != null) {
+                    List<File> files =
+                        result.paths.map((path) => File(path!)).toList();
+                    for (File file in files) {
                       try {
-                        setState(() {
-                          _emojiShowing = false;
-                        });
+                        
+                        MESSAGETYPE type = checkFileType(file.path);
+                        String filename =
+                            'messages/${type.name.toLowerCase()}/${DateTime.now().microsecondsSinceEpoch}_${file.path.split('/').last}';
+                        await storage.ref(filename).putFile(file);
+                        String url =
+                            await storage.ref(filename).getDownloadURL();
                         Message message = Message(
-                          message: str!,
+                          message: url,
                           sender: Sender(
                             uid: auth.currentUser!.uid,
                             profile: auth.currentUser!.photoURL!,
                           ),
-                          type: MESSAGETYPE.TEXT,
+                          type: type,
                           createdAt: DateTime.now(),
                         );
                         await ChatService.sendMessage(
                           currentRoomNotifier.currentRoom!.id,
                           message,
                         );
-                        chatTextController.text = '';
                       } catch (error) {
                         String errorMessage = displayErrorMessage(error);
                         toastService.showErrorToast(errorMessage);
                       }
-                    },
-                    composerColor: const Color.fromRGBO(217, 217, 217, 0.38),
-                    backgroundColor: Colors.white,
-                    sendButtonBackgroundColor: const Color(0xFF235380),
-                    onRecordEnd: (path) async {
-                      if (path != null) {
-                        try {
-                          File file = File(path);
-                          String filename =
-                              'messages/audio/voice_note_${DateTime.now().microsecondsSinceEpoch}.acc';
-                          await storage.ref(filename).putFile(file);
-                          String url =
-                              await storage.ref(filename).getDownloadURL();
-                          Message message = Message(
-                            message: url,
-                            sender: Sender(
-                              uid: auth.currentUser!.uid,
-                              profile: auth.currentUser!.photoURL!,
-                            ),
-                            type: MESSAGETYPE.AUDIO,
-                            createdAt: DateTime.now(),
-                          );
-                          await ChatService.sendMessage(
-                            currentRoomNotifier.currentRoom!.id,
-                            message,
-                          );
-                        } catch (error) {
-                          String errorMessage = displayErrorMessage(error);
-                          toastService.showErrorToast(errorMessage);
-                        }
-                      }
-                    },
-                    actions: [
-                      IconButton(
-                        icon: const Icon(
-                          Icons.attach_file,
-                          color: Color(0xFF7B7B7B),
-                        ),
-                        onPressed: () {
-                          showBottomSheet(
-                            context: context,
-                            builder: (context) {
-                              return Container(
-                                height: 100,
-                                color: Colors.white,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.camera_alt),
-                                      onPressed: () {},
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Icons.photo),
-                                      onPressed: () {},
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Icons.mic),
-                                      onPressed: () {},
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Icons.location_on),
-                                      onPressed: () {},
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                  Offstage(
-                    offstage: !_emojiShowing,
-                    child: EmojiPicker(
-                      textEditingController: chatTextController,
-                      scrollController: _emojiScrollController,
-                      config: Config(
-                        height: 256,
-                        checkPlatformCompatibility: true,
-                        emojiViewConfig: EmojiViewConfig(
-                          // Issue: https://github.com/flutter/flutter/issues/28894
-                          emojiSizeMax: 28 *
-                              (foundation.defaultTargetPlatform ==
-                                      TargetPlatform.iOS
-                                  ? 1.2
-                                  : 1.0),
-                        ),
-                        swapCategoryAndBottomBar: false,
-                        skinToneConfig: const SkinToneConfig(),
-                        categoryViewConfig: const CategoryViewConfig(),
-                        bottomActionBarConfig: const BottomActionBarConfig(),
-                        searchViewConfig: const SearchViewConfig(),
-                      ),
-                    ),
-                  ),
-                ],
-              )
+                    }
+                  }
+                },
+              ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }
