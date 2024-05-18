@@ -296,7 +296,38 @@ class _MessagesScreenState extends State<MessagesScreen> {
                           Icons.attach_file,
                           color: Color(0xFF7B7B7B),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          showBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return Container(
+                                  height: 100,
+                                  color: Colors.white,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(Icons.camera_alt),
+                                        onPressed: () {},
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.photo),
+                                        onPressed: () {},
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.mic),
+                                        onPressed: () {},
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.location_on),
+                                        onPressed: () {},
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              });
+                        },
                       ),
                     ],
                   ),

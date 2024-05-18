@@ -7,6 +7,7 @@ import 'package:spartan/constants/global.dart';
 import 'package:spartan/models/Crib.dart';
 import 'package:spartan/models/SpartanUser.dart';
 import 'package:spartan/notifiers/CurrentSpartanUserNotifier.dart';
+import 'package:spartan/screens/dashboard/NotificationsScreen.dart';
 import 'package:spartan/screens/dashboard/chat/MessagesScreen.dart';
 import 'package:spartan/screens/dashboard/BottomNavigationContainer.dart';
 import 'package:spartan/screens/auth/CountryScreen.dart';
@@ -97,6 +98,25 @@ final GoRouter router = GoRouter(
             return NoTransitionPage(
               key: state.pageKey,
               child: const HomeScreen(),
+            );
+          },
+        ),
+        GoRoute(
+          path: '/notifications',
+          parentNavigatorKey: shellNavigatorKey,
+          pageBuilder: (context, state) {
+            return CustomTransitionPage(
+              child: NotificationsSCreen(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0, 1),
+                    end: Offset.zero,
+                  ).animate(animation),
+                  child: child,
+                );
+              },
             );
           },
         ),

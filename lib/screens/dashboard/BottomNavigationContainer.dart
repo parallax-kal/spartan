@@ -85,6 +85,7 @@ List<String> noAppbarScreens = [
   '/profile/account-log',
   '/profile/edit-email',
   '/profile/edit-password',
+  '/notifications'
 ];
 
 List noBottomNavScreens = ['/chat/messages', '/qrcode/scan'];
