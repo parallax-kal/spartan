@@ -125,15 +125,15 @@ class _MessagesScreenState extends State<MessagesScreen> {
             )
           ],
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {},
-          ),
-          const SizedBox(
-            width: 20,
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     icon: const Icon(Icons.menu),
+        //     onPressed: () {},
+        //   ),
+        //   const SizedBox(
+        //     width: 20,
+        //   ),
+        // ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -300,7 +300,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                         result.paths.map((path) => File(path!)).toList();
                     for (File file in files) {
                       try {
-                        
+
                         MESSAGETYPE type = checkFileType(file.path);
                         String filename =
                             'messages/${type.name.toLowerCase()}/${DateTime.now().microsecondsSinceEpoch}_${file.path.split('/').last}';

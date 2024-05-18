@@ -13,6 +13,13 @@ class ChatService {
     });
   }
 
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getTips() {
+    return firestore
+        .collection('tips')
+        .orderBy('createdAt', descending: true)
+        .snapshots();
+  }
+
   static Future sendMessage(String roomId, Message message) {
     return firestore
         .collection('rooms')
@@ -22,12 +29,8 @@ class ChatService {
   }
 
   static Stream<DocumentSnapshot<Map<String, dynamic>>> getGlobalRoom() {
-    return firestore
-        .collection('rooms')
-        .doc('spartan_global')
-        .snapshots();
+    return firestore.collection('rooms').doc('spartan_global').snapshots();
   }
-
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getRooms() {
     // use auth.currentUser.uid to get the rooms of the current user
