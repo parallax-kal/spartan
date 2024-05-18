@@ -9,7 +9,7 @@ import 'package:spartan/services/chat.dart';
 import 'package:chat_composer/chat_composer.dart';
 import 'package:spartan/services/toast.dart';
 import 'package:voice_message_package/voice_message_package.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
 
 class MessagesScreen extends StatefulWidget {
   const MessagesScreen({super.key});
@@ -62,7 +62,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
     } else if (['mp3', 'acc', 'wav'].contains(extension)) {
       return MESSAGETYPE.AUDIO;
     } else {
-      return MESSAGETYPE.FILE;
+      return MESSAGETYPE.TEXT;
     }
   }
 
@@ -71,6 +71,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
     CurrentRoomNotifier currentRoomNotifier =
         Provider.of<CurrentRoomNotifier>(context, listen: true);
     ToastService toastService = ToastService(context);
+    ImagePicker picker = ImagePicker();
+
     return Scaffold(
       backgroundColor: const Color(0XFFF2F2F2),
       appBar: AppBar(
@@ -293,37 +295,36 @@ class _MessagesScreenState extends State<MessagesScreen> {
                   color: Color(0xFF7B7B7B),
                 ),
                 onPressed: () async {
-                  FilePickerResult? result =
-                      await FilePicker.platform.pickFiles(allowMultiple: true);
-                  if (result != null) {
-                    List<File> files =
-                        result.paths.map((path) => File(path!)).toList();
-                    for (File file in files) {
-                      try {
+                  final List<XFile>? images = await picker.pickMultiImage();
+                  if (images == null) {
+                    return;
+                  }
 
-                        MESSAGETYPE type = checkFileType(file.path);
-                        String filename =
-                            'messages/${type.name.toLowerCase()}/${DateTime.now().microsecondsSinceEpoch}_${file.path.split('/').last}';
-                        await storage.ref(filename).putFile(file);
-                        String url =
-                            await storage.ref(filename).getDownloadURL();
-                        Message message = Message(
-                          message: url,
-                          sender: Sender(
-                            uid: auth.currentUser!.uid,
-                            profile: auth.currentUser!.photoURL!,
-                          ),
-                          type: type,
-                          createdAt: DateTime.now(),
-                        );
-                        await ChatService.sendMessage(
-                          currentRoomNotifier.currentRoom!.id,
-                          message,
-                        );
-                      } catch (error) {
-                        String errorMessage = displayErrorMessage(error);
-                        toastService.showErrorToast(errorMessage);
-                      }
+                  List<File> files =
+                      images.map((image) => File(image.path)).toList();
+                  for (File file in files) {
+                    try {
+                      MESSAGETYPE type = checkFileType(file.path);
+                      String filename =
+                          'messages/${type.name.toLowerCase()}/${DateTime.now().microsecondsSinceEpoch}_${file.path.split('/').last}';
+                      await storage.ref(filename).putFile(file);
+                      String url = await storage.ref(filename).getDownloadURL();
+                      Message message = Message(
+                        message: url,
+                        sender: Sender(
+                          uid: auth.currentUser!.uid,
+                          profile: auth.currentUser!.photoURL!,
+                        ),
+                        type: type,
+                        createdAt: DateTime.now(),
+                      );
+                      await ChatService.sendMessage(
+                        currentRoomNotifier.currentRoom!.id,
+                        message,
+                      );
+                    } catch (error) {
+                      String errorMessage = displayErrorMessage(error);
+                      toastService.showErrorToast(errorMessage);
                     }
                   }
                 },
@@ -439,30 +440,32 @@ class MessageRender extends StatelessWidget {
             innerPadding: 12,
             cornerRadius: 20,
           )
-        : Container(
-            padding: EdgeInsets.only(
-              top: 12,
-              bottom: isSender ? 12 : 30,
-              left: 15,
-              right: isSender ? 30 : 12,
-            ),
-            decoration: BoxDecoration(
-              color: isSender ? const Color(0xFF235380) : Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: const Radius.circular(12),
-                topRight: const Radius.circular(12),
-                bottomLeft: Radius.circular(isSender ? 12 : 0),
-                bottomRight: Radius.circular(isSender ? 0 : 12),
-              ),
-            ),
-            child: Text(
-              message,
-              style: TextStyle(
-                color: isSender ? Colors.white : Colors.black,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          );
+        : type == MESSAGETYPE.IMAGE
+            ? Image.network(message)
+            : Container(
+                padding: EdgeInsets.only(
+                  top: 12,
+                  bottom: isSender ? 12 : 30,
+                  left: 15,
+                  right: isSender ? 30 : 12,
+                ),
+                decoration: BoxDecoration(
+                  color: isSender ? const Color(0xFF235380) : Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: const Radius.circular(12),
+                    topRight: const Radius.circular(12),
+                    bottomLeft: Radius.circular(isSender ? 12 : 0),
+                    bottomRight: Radius.circular(isSender ? 0 : 12),
+                  ),
+                ),
+                child: Text(
+                  message,
+                  style: TextStyle(
+                    color: isSender ? Colors.white : Colors.black,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              );
   }
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -64,7 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     AuthService authService = AuthService();
     LoadingService loadingService = LoadingService(context);
     ToastService toastService = ToastService(context);
-
+    ImagePicker picker = ImagePicker();
     CurrentSpartanUserNotifier currentSpartanUserNotifier =
         Provider.of<CurrentSpartanUserNotifier>(context);
 
@@ -105,7 +107,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               bottom: 8,
                               child: InkWell(
                                 onTap: () async {
-                                  final ImagePicker picker = ImagePicker();
                                   final XFile? image = await picker.pickImage(
                                     source: ImageSource.gallery,
                                   );
@@ -428,8 +429,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         context.go('/login');
                                       } catch (error) {
                                         String errorMessage =
-                                            displayErrorMessage(
-                                                error);
+                                            displayErrorMessage(error);
                                         toastService
                                             .showErrorToast(errorMessage);
                                       } finally {

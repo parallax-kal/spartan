@@ -39,27 +39,27 @@ class _RoomsScreenState extends State<RoomsScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // GestureDetector(
-                  //   child: Container(
-                  //     padding: const EdgeInsets.all(10),
-                  //     decoration: BoxDecoration(
-                  //       color: Colors.white,
-                  //       borderRadius: BorderRadius.circular(500),
-                  //       boxShadow: [
-                  //         BoxShadow(
-                  //           color: Colors.black.withOpacity(0.3),
-                  //           spreadRadius: 0.5,
-                  //           blurRadius: 4,
-                  //           offset: const Offset(0, 0),
-                  //         )
-                  //       ],
-                  //     ),
-                  //     child: SvgPicture.asset(
-                  //       'assets/icons/search.svg',
-                  //     ),
-                  //   ),
-                  //   onTap: () {},
-                  // ),
+                  GestureDetector(
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(500),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            spreadRadius: 0.5,
+                            blurRadius: 4,
+                            offset: const Offset(0, 0),
+                          )
+                        ],
+                      ),
+                      child: SvgPicture.asset(
+                        'assets/icons/search.svg',
+                      ),
+                    ),
+                    onTap: () {},
+                  ),
                   Container(
                     width: 200,
                     height: 40,
