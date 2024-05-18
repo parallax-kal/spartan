@@ -150,7 +150,7 @@ class _ProfileDataScreenState extends State<ProfileDataScreen> {
                       );
                     } catch (error) {
                       String errorMessage =
-                          displayErrorMessage(error as Exception);
+                          displayErrorMessage(error);
                       toastService.showErrorToast(errorMessage);
                     } finally {
                       loadingService.hide();

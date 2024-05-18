@@ -111,7 +111,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                     context.go('/login');
                   } catch (error) {
                     String errorMessage =
-                        displayErrorMessage(error as Exception);
+                        displayErrorMessage(error);
                     toastService.showErrorToast(errorMessage);
                   } finally {
                     loadingService.hide();

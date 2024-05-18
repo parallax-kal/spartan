@@ -122,7 +122,7 @@ class _JoinCommunityScreenState extends State<JoinCommunityScreen> {
                                 onTap: () async {
                                   try {
                                     loadingService.show();
-                                    final room_fire = await firestore
+                                    final roomFire = await firestore
                                         .collection('rooms')
                                         .doc('spartan_global')
                                         .get();
@@ -133,7 +133,7 @@ class _JoinCommunityScreenState extends State<JoinCommunityScreen> {
                                         .update({'community': true});
                                     Room room = Room.fromJson({
                                       'id': 'spartan_global',
-                                      ...room_fire.data()!
+                                      ...roomFire.data()!
                                     });
                                     await room.getTotalMembers();
                                     currentSpartanUserNotifier
@@ -156,9 +156,10 @@ class _JoinCommunityScreenState extends State<JoinCommunityScreen> {
                                         'Joined Spartan Global Communty');
                                     GoRouter.of(context).push('/chat/messages');
                                   } catch (error) {
-                                    String message =
-                                        displayErrorMessage(error as Exception);
-                                    toastService.showErrorToast(message);
+                                    print(error);
+                                    // String message =
+                                    //     displayErrorMessage(error);
+                                    // toastService.showErrorToast(message);
                                   } finally {
                                     loadingService.hide();
                                     Navigator.of(context).pop();

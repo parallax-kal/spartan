@@ -4,7 +4,7 @@ import 'package:spartan/constants/firebase.dart';
 class Room {
   String id;
   String name;
-  String profile;
+  String? profile;
   List<String> invitedIds;
   bool private;
   bool group;
@@ -15,12 +15,12 @@ class Room {
   Room({
     required this.id,
     required this.name,
-    required this.profile,
+    required this.createdAt,
     required this.private,
     required this.group,
+    this.profile,
     this.invitedIds = const [],
     this.acceptedIds = const [],
-    required this.createdAt,
   });
 
   factory Room.fromJson(Map<String, dynamic> json) {

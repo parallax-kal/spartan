@@ -226,7 +226,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               context.go('/');
                             } catch (error) {
                               String errorMessage =
-                                  displayErrorMessage(error as Exception);
+                                  displayErrorMessage(error);
                               toastService.showErrorToast(errorMessage);
                             } finally {
                               loadingService.hide();
@@ -316,7 +316,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           return;
                         } catch (error) {
                           String errorMessage =
-                              displayErrorMessage(error as Exception);
+                              displayErrorMessage(error);
                           toastService.showErrorToast(errorMessage);
                         } finally {
                           loadingService.hide();
@@ -428,7 +428,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           }
                         } catch (error) {
                           String errorMessage =
-                              displayErrorMessage(error as Exception);
+                              displayErrorMessage(error);
                           toastService.showErrorToast(errorMessage);
                         } finally {
                           loadingService.hide();

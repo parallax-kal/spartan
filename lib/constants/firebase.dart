@@ -11,7 +11,7 @@ FirebaseMessaging messaging = FirebaseMessaging.instance;
 FirebaseStorage storage = FirebaseStorage.instance;
 
 String displayErrorMessage(
-  Exception e,
+  Object e,
 ) {
   if (e is FirebaseAuthException) {
     if (e.code == 'user-not-found') {

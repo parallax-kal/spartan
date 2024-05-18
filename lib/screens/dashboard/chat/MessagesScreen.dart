@@ -78,9 +78,21 @@ class _MessagesScreenState extends State<MessagesScreen> {
             title: Row(
               children: [
                 CircleAvatar(
-                  radius: 48,
-                  backgroundImage:
-                      NetworkImage(currentRoomNotifier.currentRoom!.profile),
+                  backgroundImage: currentRoomNotifier.currentRoom!.profile ==
+                          null
+                      ? null
+                      : NetworkImage(currentRoomNotifier.currentRoom!.profile!),
+                  child: currentRoomNotifier.currentRoom!.profile == null
+                      ? currentRoomNotifier.currentRoom!.id == 'spartan_global'
+                          ? Image.asset(
+                              'assets/images/logo.png',
+                              width: 30,
+                            )
+                          : const Icon(
+                              Icons.group,
+                              color: Colors.white,
+                            )
+                      : null,
                 ),
                 const SizedBox(
                   width: 15,
@@ -254,7 +266,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                         chatTextController.text = '';
                       } catch (error) {
                         String errorMessage =
-                            displayErrorMessage(error as Exception);
+                            displayErrorMessage(error);
                         toastService.showErrorToast(errorMessage);
                       }
                     },
@@ -283,9 +295,10 @@ class _MessagesScreenState extends State<MessagesScreen> {
                             currentRoomNotifier.currentRoom!.id,
                             message,
                           );
+
                         } catch (error) {
                           String errorMessage =
-                              displayErrorMessage(error as Exception);
+                              displayErrorMessage(error);
                           toastService.showErrorToast(errorMessage);
                         }
                       }

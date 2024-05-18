@@ -286,7 +286,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               );
                             } catch (error) {
                               String errorMessage =
-                                  displayErrorMessage(error as Exception);
+                                  displayErrorMessage(error);
                               toastService.showErrorToast(errorMessage);
                             } finally {
                               loadingService.hide();
@@ -369,7 +369,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             }
                           } catch (error) {
                             String errorMessage =
-                                displayErrorMessage(error as Exception);
+                                displayErrorMessage(error);
                             toastService.showErrorToast(errorMessage);
                           } finally {
                             loadingService.hide();
@@ -481,7 +481,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             }
                           } catch (error) {
                             String errorMessage =
-                                displayErrorMessage(error as Exception);
+                                displayErrorMessage(error);
                             toastService.showErrorToast(errorMessage);
                           } finally {
                             loadingService.hide();

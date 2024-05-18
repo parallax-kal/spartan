@@ -21,10 +21,10 @@ class ChatService {
         .add(message.toJson());
   }
 
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getGlobalRoom() {
+  static Stream<DocumentSnapshot<Map<String, dynamic>>> getGlobalRoom() {
     return firestore
         .collection('rooms')
-        .where('name', isEqualTo: 'Spartan Global')
+        .doc('spartan_global')
         .snapshots();
   }
 

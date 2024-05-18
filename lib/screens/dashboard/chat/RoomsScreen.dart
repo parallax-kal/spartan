@@ -123,9 +123,13 @@ class _RoomsScreenState extends State<RoomsScreen> {
                     ChatService.getGlobalRoom(),
                     ChatService.getRooms(),
                   ]).map((event) {
+                    final globalRoomEvent =
+                        event[0] as DocumentSnapshot<Map<String, dynamic>>?;
+                    final roomsEvent =
+                        event[1] as QuerySnapshot<Map<String, dynamic>>?;
                     final data = [
-                      ...event[0].docs,
-                      ...event[1].docs,
+                      if (globalRoomEvent != null) globalRoomEvent,
+                      if (roomsEvent != null) ...roomsEvent.docs
                     ];
                     return data;
                   }),
@@ -213,7 +217,20 @@ class _RoomsScreenState extends State<RoomsScreen> {
                                     ),
                                   ),
                                   leading: CircleAvatar(
-                                    backgroundImage: NetworkImage(room.profile),
+                                    backgroundImage: room.profile == null
+                                        ? null
+                                        : NetworkImage(room.profile!),
+                                    child: room.profile == null
+                                        ? room.id == 'spartan_global'
+                                            ? Image.asset(
+                                                'assets/images/logo.png',
+                                                width: 30,
+                                              )
+                                            : const Icon(
+                                                Icons.group,
+                                                color: Colors.white,
+                                              )
+                                        : null,
                                   ),
                                   subtitle: (snapshot.connectionState ==
                                               ConnectionState.waiting ||

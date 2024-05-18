@@ -110,7 +110,7 @@ class _EditEmailScreenState extends State<EditEmailScreen> {
                   toastService.showSuccessToast(
                       'A verification email has been sent to ${auth.currentUser!.email!}.');
                 } catch (error) {
-                  String errorMessage = displayErrorMessage(error as Exception);
+                  String errorMessage = displayErrorMessage(error);
                   toastService.showErrorToast(errorMessage);
                 } finally {
                   loadingService.hide();

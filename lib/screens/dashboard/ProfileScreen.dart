@@ -217,7 +217,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   } catch (error) {
                                                     String errorMessage =
                                                         displayErrorMessage(
-                                                            error as Exception);
+                                                            error);
                                                     toastService.showErrorToast(
                                                         errorMessage);
                                                   } finally {
@@ -429,7 +429,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       } catch (error) {
                                         String errorMessage =
                                             displayErrorMessage(
-                                                error as Exception);
+                                                error);
                                         toastService
                                             .showErrorToast(errorMessage);
                                       } finally {
