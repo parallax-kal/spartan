@@ -174,10 +174,10 @@ class _MessagesScreenState extends State<MessagesScreen> {
 
                     return SingleChildScrollView(
                       controller: _messageScrollController,
-                      child: Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: sortedMessages.map((sortedMessage) {
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: sortedMessages.map(
+                          (sortedMessage) {
                             DateTime wholeday = sortedMessage.keys.first;
                             List<Message> messages = sortedMessage.values.first;
 
@@ -227,8 +227,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                 ),
                               ],
                             );
-                          }).toList(),
-                        ),
+                          },
+                        ).toList(),
                       ),
                     );
                 }
@@ -295,8 +295,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                   color: Color(0xFF7B7B7B),
                 ),
                 onPressed: () async {
-                  final List<XFile>? images = await picker.pickMultiImage();
-                  if (images == null) {
+                  List<XFile> images = await picker.pickMultiImage();
+                  if (images.isEmpty) {
                     return;
                   }
 

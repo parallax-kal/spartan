@@ -20,6 +20,7 @@ import 'package:spartan/screens/dashboard/chat/JoinCommunityScreen.dart';
 import 'package:spartan/screens/dashboard/HomeScreen.dart';
 import 'package:spartan/screens/dashboard/ProfileScreen.dart';
 import 'package:spartan/screens/dashboard/StreamScreen.dart';
+import 'package:spartan/screens/dashboard/chat/NewConversationScreen.dart';
 import 'package:spartan/screens/dashboard/chat/RoomsScreen.dart';
 import 'package:spartan/screens/dashboard/crib/AddCribScreen.dart';
 import 'package:spartan/screens/dashboard/profile/AccountLogScreen.dart';
@@ -266,6 +267,25 @@ final GoRouter router = GoRouter(
             return null;
           },
           routes: [
+            GoRoute(
+              path: 'new-conv',
+              pageBuilder: (context, state) {
+                return CustomTransitionPage(
+                  key: state.pageKey,
+                  child: NewConversationScreen(),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    return SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(1, 0),
+                        end: Offset.zero,
+                      ).animate(animation),
+                      child: child,
+                    );
+                  },
+                );
+              },
+            ),
             GoRoute(
               path: 'join-community',
               pageBuilder: (context, state) {
