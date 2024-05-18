@@ -214,17 +214,11 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
 }
 
 enum Location {
-  HOME([
-    '/',
-    '/qrcode/initialize',
-    '/crib/result',
-    '/crib/add',
-    '/crib/edit',
-    '/crib/edit-info',
-    '/manual'
-  ]),
+  HOME(['/', '/qrcode/initialize', '/crib/result', '/crib/add', '/manual']),
   CHAT(['/chat', '/chat/rooms', '/chat/messages', '/chat/join-community']),
-  STREAM(['/stream']),
+  STREAM([
+    '/stream',
+  ]),
   PROFILE([
     '/profile/index',
     '/profile/settings',

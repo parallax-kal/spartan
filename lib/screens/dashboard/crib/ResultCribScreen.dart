@@ -80,6 +80,7 @@ class _ResultCribScreenState extends State<ResultCribScreen> {
         }
       }
     }).catchError((error) {
+      print(error);
       _setErrorState(
         "Error",
         "There was an error while processing the crib data.",

@@ -422,7 +422,7 @@ class AcceptedPopover extends StatelessWidget {
               : InkWell(
                   onTap: () {
                     Navigator.of(context).pop();
-                    GoRouter.of(context).push('/cribs/edit');
+                    GoRouter.of(context).push('/crib/edit');
                   },
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
