@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +10,7 @@ import 'package:flutter/foundation.dart' as foundation;
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:spartan/services/chat.dart';
 import 'package:chat_composer/chat_composer.dart';
+import 'package:spartan/services/toast.dart';
 
 class MessagesScreen extends StatefulWidget {
   const MessagesScreen({super.key});
@@ -50,7 +53,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
   Widget build(BuildContext context) {
     CurrentRoomNotifier currentRoomNotifier =
         Provider.of<CurrentRoomNotifier>(context, listen: true);
-
+    ToastService toastService = ToastService(context);
     return GestureDetector(
       onTap: FocusScope.of(context).unfocus,
       child: PopScope(
@@ -231,26 +234,61 @@ class _MessagesScreenState extends State<MessagesScreen> {
                       ),
                     ),
                     onReceiveText: (str) async {
-                      setState(() {
-                        _emojiShowing = false;
-                      });
-                      Message message = Message(
-                        message: str!,
-                        sender: Sender(
-                          uid: auth.currentUser!.uid,
-                          profile: auth.currentUser!.photoURL!,
-                        ),
-                        type: MESSAGETYPE.TEXT,
-                        createdAt: DateTime.now(),
-                      );
-                      await ChatService.sendMessage(
-                        currentRoomNotifier.currentRoom!.id,
-                        message,
-                      );
-                      chatTextController.text = '';
+                      try {
+                        setState(() {
+                          _emojiShowing = false;
+                        });
+                        Message message = Message(
+                          message: str!,
+                          sender: Sender(
+                            uid: auth.currentUser!.uid,
+                            profile: auth.currentUser!.photoURL!,
+                          ),
+                          type: MESSAGETYPE.TEXT,
+                          createdAt: DateTime.now(),
+                        );
+                        await ChatService.sendMessage(
+                          currentRoomNotifier.currentRoom!.id,
+                          message,
+                        );
+                        chatTextController.text = '';
+                      } catch (error) {
+                        String errorMessage =
+                            displayErrorMessage(error as Exception);
+                        toastService.showErrorToast(errorMessage);
+                      }
                     },
-                    onRecordEnd: (path) {
-                      print('AUDIO PATH : ' + path!);
+                    onRecordEnd: (path) async {
+                      if (path != null) {
+                        try {
+                          File file = File(path);
+                          await storage
+                              .ref(
+                                  'messages/voice_note_${DateTime.now().microsecondsSinceEpoch}.${file.path.split('.').last}')
+                              .putFile(file);
+                          String url = await storage
+                              .ref(
+                                  'messages/voice_note_${DateTime.now().microsecondsSinceEpoch}.${file.path.split('.').last}')
+                              .getDownloadURL();
+                          Message message = Message(
+                            message: url,
+                            sender: Sender(
+                              uid: auth.currentUser!.uid,
+                              profile: auth.currentUser!.photoURL!,
+                            ),
+                            type: MESSAGETYPE.AUDIO,
+                            createdAt: DateTime.now(),
+                          );
+                          await ChatService.sendMessage(
+                            currentRoomNotifier.currentRoom!.id,
+                            message,
+                          );
+                        } catch (error) {
+                          String errorMessage =
+                              displayErrorMessage(error as Exception);
+                          toastService.showErrorToast(errorMessage);
+                        }
+                      }
                     },
                     actions: [
                       IconButton(
