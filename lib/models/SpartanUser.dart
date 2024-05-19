@@ -9,7 +9,6 @@ class SpartanUser {
   List<UnReadMessage>? unReadMessages;
   bool? community;
   bool? isOnline;
-  bool? hasCribs;
   USERSTATUS status = USERSTATUS.ACTIVE;
 
   SpartanUser({
@@ -18,7 +17,6 @@ class SpartanUser {
     required this.email,
     required this.tokens,
     this.status = USERSTATUS.ACTIVE,
-    this.hasCribs,
     this.profile,
     this.country,
     this.terms,
@@ -38,7 +36,6 @@ class SpartanUser {
       tokens: List<String>.from(json['tokens']),
       isOnline: json['isOnline'] ?? false,
       community: json['community'] ?? false,
-      hasCribs: json['hasCribs'] ?? false,
       status: USERSTATUS.values.firstWhere(
           (element) => element.name == json['status'],
           orElse: () => USERSTATUS.ACTIVE),
@@ -58,7 +55,6 @@ class SpartanUser {
       'tokens': tokens,
       'isOnline': isOnline ?? false,
       'community': community ?? false,
-      'hasCribs': hasCribs ?? false,
       'status': status.name,
       'unReadMessages': unReadMessages?.map((x) => x.toJson()).toList(),
     };

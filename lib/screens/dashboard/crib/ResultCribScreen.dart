@@ -7,7 +7,6 @@ import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/models/Crib.dart';
 import 'package:spartan/models/Log.dart';
 import 'package:spartan/notifiers/CurrentCribIdNotifier.dart';
-import 'package:spartan/screens/dashboard/BottomNavigationContainer.dart';
 import 'package:spartan/services/crib.dart';
 import 'package:spartan/services/log.dart';
 
@@ -98,14 +97,14 @@ class _ResultCribScreenState extends State<ResultCribScreen> {
       ]),
       'users': FieldValue.arrayUnion([auth.currentUser!.uid]),
     }).then((value) {
-       LogService.addUserLog(
-          Log(
-            title: 'Added Crib',
-            description: 'Added a new crib with ID ${previous.id}',
-            createdAt: DateTime.now(),
-          ),
-        );
-        _setProcessingState(false);
+      LogService.addUserLog(
+        Log(
+          title: 'Added Crib',
+          description: 'Added a new crib with ID ${previous.id}',
+          createdAt: DateTime.now(),
+        ),
+      );
+      _setProcessingState(false);
     }).catchError((error) {
       _setErrorState(
           "Error", "There was an error while updating the crib data.");
@@ -241,7 +240,7 @@ class ErrorResult extends StatelessWidget {
               const SizedBox(width: 20),
               ElevatedButton(
                 onPressed: () {
-                  BottomNavigationContainer.changeTab(context, '/stream');
+                  GoRouter.of(context).push('/stream');
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0XFF002E58),
@@ -303,7 +302,7 @@ class SuccessResult extends StatelessWidget {
             children: [
               OutlinedButton(
                 onPressed: () {
-                  BottomNavigationContainer.changeTab(context, '/stream');
+                  GoRouter.of(context).push('/stream');
                 },
                 style: OutlinedButton.styleFrom(
                   shape: RoundedRectangleBorder(

@@ -10,6 +10,14 @@ class CribService {
     return firestore.collection('cribs').doc(cribId).update(data);
   }
 
+  static Stream<int> countCribs() {
+    return firestore
+        .collection('cribs')
+        .where('users', arrayContains: auth.currentUser!.uid)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
+  }
+
   static Future deleteCrib(Crib crib) {
     bool isOwner = crib.access.any((access) =>
         access.status == ACCESSSTATUS.ADMIN &&

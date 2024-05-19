@@ -97,16 +97,6 @@ class BottomNavigationContainer extends StatefulWidget {
       {super.key, required this.child, required this.path});
 
   final Widget child;
-  static void changeTab(BuildContext context, String location) {
-    int index = tabs.indexWhere(
-        (element) => element.initialLocation.paths.contains(location));
-    if (index == -1) return;
-    GoRouter router = GoRouter.of(context);
-    _BottomNavigationContainerState? state =
-        context.findAncestorStateOfType<_BottomNavigationContainerState>();
-    state?.changeIndex(index);
-    router.push(location);
-  }
 
   @override
   State<BottomNavigationContainer> createState() =>

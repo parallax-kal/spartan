@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:spartan/screens/dashboard/BottomNavigationContainer.dart';
 import 'package:spartan/notifiers/CurrentSpartanUserNotifier.dart';
 import 'package:provider/provider.dart';
+import 'package:spartan/services/crib.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -44,71 +44,156 @@ class _HomeScreenState extends State<HomeScreen> {
                         width: 270,
                       ),
                     ),
-                    currentSpartanUser.currentSpartanUser?.hasCribs == true
-                        ? const Column(
-                            children: [
-                              Text(
-                                'Cribs connected',
-                                style: TextStyle(
-                                  color: Color(0xFF002E58),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              Text(
-                                'You have some cribs checkout stream.',
-                                style: TextStyle(
-                                  color: Color(0xFF002E58),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          )
-                        : const Column(
-                            children: [
-                              Text(
-                                'No cribs yet',
-                                style: TextStyle(
-                                  color: Color(0xFF002E58),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              Text(
-                                'You don\'t have any cribs connected yet.',
-                                style: TextStyle(
-                                  color: Color(0xFF002E58),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF002E58),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                      onPressed: () {
-                        showDialog(
-                          barrierColor: Colors.black.withOpacity(0.3),
-                          context: context,
-                          builder: (BuildContext context) {
-                            return const HomeDialog();
-                          },
-                        );
-                      },
-                      child: const Text(
-                        '+ Add new crib',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
+                    StreamBuilder(
+                        stream: CribService.countCribs(),
+                        builder: (context, snapshot) {
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.none:
+                            case ConnectionState.waiting:
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            case ConnectionState.done:
+                            case ConnectionState.active:
+                              if (snapshot.data == 0) {
+                                return Column(
+                                  children: [
+                                    const Text(
+                                      'No cribs yet',
+                                      style: TextStyle(
+                                        color: Color(0xFF002E58),
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    const Text(
+                                      'You don\'t have any cribs connected yet.',
+                                      style: TextStyle(
+                                        color: Color(0xFF002E58),
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            const Color(0xFF002E58),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        showDialog(
+                                          barrierColor:
+                                              Colors.black.withOpacity(0.3),
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return const HomeDialog();
+                                          },
+                                        );
+                                      },
+                                      child: const Text(
+                                        '+ Add new crib',
+                                        style: TextStyle(
+                                          color: Color(0XFFF3F6FC),
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }
+                              return Column(
+                                children: [
+                                  const Text(
+                                    'Cribs',
+                                    style: TextStyle(
+                                      color: Color(0xFF002E58),
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  Text(
+                                    'You have ${snapshot.data} cribs connected\ncheckout stream',
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      color: Color(0xFF002E58),
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              const Color(0xFF002E58),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          showDialog(
+                                            barrierColor:
+                                                Colors.black.withOpacity(0.3),
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return const HomeDialog();
+                                            },
+                                          );
+                                        },
+                                        child: const Text(
+                                          '+ Add new crib',
+                                          style: TextStyle(
+                                            color: Color(0XFFF3F6FC),
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              const Color(0xFF002E58),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          GoRouter.of(context).push('/stream');
+                                        },
+                                        child: const Text(
+                                          'Go to Stream',
+                                          style: TextStyle(
+                                            color: Color(0XFFF3F6FC),
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              );
+                          }
+                        }),
                     const SizedBox(
                       height: 25,
                     ),
@@ -117,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Column(
                 children: [
-                  currentSpartanUser.currentSpartanUser?.community != true
+                  currentSpartanUser.currentSpartanUser?.community == true
                       ? Container()
                       : Container(
                           padding: const EdgeInsets.all(10),
@@ -168,8 +253,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   ElevatedButton(
                                     onPressed: () {
-                                      BottomNavigationContainer.changeTab(
-                                          context, '/chat');
+                                      GoRouter.of(context).push('/chat');
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFF002E58),

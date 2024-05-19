@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/models/Crib.dart';
 import 'package:spartan/models/Log.dart';
 import 'package:spartan/notifiers/CurrentCribIdNotifier.dart';
-import 'package:spartan/screens/dashboard/BottomNavigationContainer.dart';
 import 'package:spartan/services/crib.dart';
 import 'package:spartan/services/log.dart';
 import 'package:spartan/services/toast.dart';
@@ -307,7 +307,7 @@ class _AddCribScreenState extends State<AddCribScreen> {
                 children: [
                   OutlinedButton(
                     onPressed: () {
-                      BottomNavigationContainer.changeTab(context, '/stream');
+                      GoRouter.of(context).push('/stream');
                     },
                     style: OutlinedButton.styleFrom(
                       side:
@@ -399,7 +399,7 @@ class _AddCribScreenState extends State<AddCribScreen> {
                             createdAt: DateTime.now(),
                           ),
                         );
-                        BottomNavigationContainer.changeTab(context, '/stream');
+                      GoRouter.of(context).push('/stream');
                         toastService
                             .showSuccessToast('Crib added successfully!');
                       } catch (error) {
