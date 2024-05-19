@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:spartan/constants/firebase.dart';
@@ -93,12 +94,7 @@ class AuthService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getUsers() async {
-    try {
-      final users = await firestore.collection('users').get();
-      return users.docs.map((doc) => doc.data()).toList();
-    } catch (e) {
-      throw Exception('Failed to get users: $e');
-    }
+  Stream<QuerySnapshot<Map<String, dynamic>>> getUsers() {
+    return firestore.collection('users').snapshots();
   }
 }

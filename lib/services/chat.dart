@@ -6,12 +6,7 @@ import 'package:rxdart/rxdart.dart';
 
 class ChatService {
   static Future createRoom(Room room) {
-    return firestore.collection('rooms').add({
-      'name': room.name,
-      'profile': room.profile,
-      'users_ids': room.invitedIds,
-      'private': room.private,
-    });
+    return firestore.collection('rooms').add(room.toJson());
   }
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getTips() {
@@ -68,7 +63,6 @@ class ChatService {
   }
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getRooms() {
-    // use auth.currentUser.uid to get the rooms of the current user
     return firestore
         .collection('rooms')
         .where(

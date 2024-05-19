@@ -74,7 +74,7 @@ class _ResultCribScreenState extends State<ResultCribScreen> {
             isOwner
                 ? "You are the owner of this crib. Go to Stream to Personalize it"
                 : isAlreadyConnected
-                    ? "You have already connected to this crib. You can now personalize your crib by tapping on continue or skip for later changes."
+                    ? "You have already connected to this crib. You can view the crib by tapping on continue or skip for later."
                     : "This crib has already been registered by another user. Please try another crib or contact support if you are the owner.",
           );
         }
@@ -98,14 +98,14 @@ class _ResultCribScreenState extends State<ResultCribScreen> {
       ]),
       'users': FieldValue.arrayUnion([auth.currentUser!.uid]),
     }).then((value) {
-      LogService.addUserLog(
-        Log(
-          title: 'Added Crib',
-          description: 'Added a new crib with ID ${previous.id}',
-          createdAt: DateTime.now(),
-        ),
-      );
-      _setProcessingState(false);
+       LogService.addUserLog(
+          Log(
+            title: 'Added Crib',
+            description: 'Added a new crib with ID ${previous.id}',
+            createdAt: DateTime.now(),
+          ),
+        );
+        _setProcessingState(false);
     }).catchError((error) {
       _setErrorState(
           "Error", "There was an error while updating the crib data.");

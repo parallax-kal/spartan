@@ -149,7 +149,7 @@ class _RoomsScreenState extends State<RoomsScreen> {
 
                                   return StreamBuilder(
                                     stream: CombineLatestStream.list([
-                                      ChatService.getLastMessage(room.id),
+                                      ChatService.getLastMessage(room.id!),
                                       ChatService.getUserStream(),
                                     ]),
                                     builder: ((context, snapshot) {

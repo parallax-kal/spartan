@@ -142,7 +142,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
           Expanded(
             child: StreamBuilder(
               stream:
-                  ChatService.getMessages(currentRoomNotifier.currentRoom!.id),
+                  ChatService.getMessages(currentRoomNotifier.currentRoom!.id!),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.none:
@@ -248,7 +248,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                   createdAt: DateTime.now(),
                 );
                 await ChatService.sendMessage(
-                  currentRoomNotifier.currentRoom!.id,
+                  currentRoomNotifier.currentRoom!.id!,
                   message,
                 );
                 chatTextController.text = '';
@@ -278,7 +278,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                     createdAt: DateTime.now(),
                   );
                   await ChatService.sendMessage(
-                    currentRoomNotifier.currentRoom!.id,
+                    currentRoomNotifier.currentRoom!.id!,
                     message,
                   );
                 } catch (error) {
@@ -318,7 +318,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                         createdAt: DateTime.now(),
                       );
                       await ChatService.sendMessage(
-                        currentRoomNotifier.currentRoom!.id,
+                        currentRoomNotifier.currentRoom!.id!,
                         message,
                       );
                     } catch (error) {

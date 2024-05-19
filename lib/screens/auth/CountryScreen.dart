@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:spartan/notifiers/CountryTermsNotifier.dart';
 
 class CountryScreen extends StatefulWidget {
-  const CountryScreen({Key? key}) : super(key: key);
+  const CountryScreen({super.key});
 
   @override
   State<CountryScreen> createState() => _CountryScreenState();

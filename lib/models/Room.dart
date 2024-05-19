@@ -1,23 +1,24 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:spartan/constants/firebase.dart';
 
 class Room {
-  String id;
+  String? id;
   String name;
   String? profile;
+  DateTime? lastMessageAt;
   List<String> invitedIds;
   bool private;
   bool group;
   List<String> acceptedIds = [];
-  Timestamp createdAt = Timestamp.now();
+  DateTime createdAt;
   int totalMembers = 0;
 
   Room({
-    required this.id,
     required this.name,
     required this.createdAt,
     required this.private,
     required this.group,
+    this.lastMessageAt,
+    this.id,
     this.profile,
     this.invitedIds = const [],
     this.acceptedIds = const [],
@@ -33,12 +34,12 @@ class Room {
       private: json['private'],
       group: json['group'],
       createdAt: json['createdAt'],
+      lastMessageAt: json['lastMessageAt'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'name': name,
       'profile': profile,
       'invitedIds': invitedIds,
@@ -46,6 +47,7 @@ class Room {
       'private': private,
       'group': group,
       'createdAt': createdAt,
+      'lastMessageAt': lastMessageAt,
     };
   }
 
