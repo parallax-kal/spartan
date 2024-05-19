@@ -96,7 +96,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                         )
                       : const Icon(
                           Icons.group,
-                          color: Colors.white,
+                          color: Colors.black,
                         )
                   : null,
             ),

@@ -1,16 +1,19 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 
 class NewConversationScreen extends StatefulWidget {
+  const NewConversationScreen({super.key});
+
   @override
   State<NewConversationScreen> createState() => _NewConversationScreenState();
 }
 
 class _NewConversationScreenState extends State<NewConversationScreen> {
+  TextEditingController nameController = TextEditingController();
   File? profile;
+
   @override
   Widget build(BuildContext context) {
     ImagePicker picker = ImagePicker();
@@ -19,6 +22,7 @@ class _NewConversationScreenState extends State<NewConversationScreen> {
       length: 2,
       child: Scaffold(
         backgroundColor: Colors.white,
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: Colors.white,
           surfaceTintColor: Colors.white,
@@ -81,7 +85,8 @@ class _NewConversationScreenState extends State<NewConversationScreen> {
                   ),
                 ),
               ),
-              SizedBox(
+              Padding(
+                padding: const EdgeInsets.only(top: 40),
                 child: Stack(
                   children: [
                     profile != null
@@ -91,7 +96,14 @@ class _NewConversationScreenState extends State<NewConversationScreen> {
                               profile!,
                             ),
                           )
-                        : const Icon(Icons.group),
+                        : const CircleAvatar(
+                            radius: 48,
+                            child: Icon(
+                              Icons.group,
+                              color: Colors.black,
+                              size: 50,
+                            ),
+                          ),
                     Positioned(
                       right: 0,
                       bottom: 8,
@@ -127,6 +139,44 @@ class _NewConversationScreenState extends State<NewConversationScreen> {
                   ],
                 ),
               ),
+              const SizedBox(
+                height: 10,
+              ),
+              const Text(
+                'Conversation name',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              TextFormField(
+                controller: nameController,
+                decoration: const InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 18,
+                  ),
+                  hintText: 'Add conversation name',
+                  labelText: 'Conversation name',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(6)),
+                    borderSide: BorderSide(
+                      color: Color(0xFFDFDFDF),
+                      width: 2,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(6)),
+                    borderSide: BorderSide(
+                      color: Color(0xFF1455A9),
+                      width: 2,
+                    ),
+                  ),
+                ),
+              )
             ],
           ),
         ),

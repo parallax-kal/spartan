@@ -24,6 +24,7 @@ class _StreamScreenState extends State<StreamScreen>
     return DefaultTabController(
       length: 4,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
         body: SafeArea(
           child: Padding(

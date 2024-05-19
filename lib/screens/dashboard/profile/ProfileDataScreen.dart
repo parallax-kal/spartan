@@ -46,10 +46,13 @@ class _ProfileDataScreenState extends State<ProfileDataScreen> {
                           auth.currentUser!.photoURL!,
                         ),
                       )
-                    : SvgPicture.asset(
-                        'assets/icons/profile/profile_outlined.svg',
-                        width: 65,
-                        height: 65,
+                    : CircleAvatar(
+                        radius: 48,
+                        child: SvgPicture.asset(
+                          'assets/icons/profile/profile_outlined.svg',
+                          width: 50,
+                          height: 50,
+                        ),
                       ),
               ),
               const SizedBox(
@@ -142,15 +145,13 @@ class _ProfileDataScreenState extends State<ProfileDataScreen> {
                           iOSBundleId: 'com.spartan.app',
                           androidPackageName: 'com.spartan.app',
                           androidInstallApp: true,
-                          
                         ),
                       );
                       toastService.showSuccessToast(
                         'Password reset link sent to your email',
                       );
                     } catch (error) {
-                      String errorMessage =
-                          displayErrorMessage(error);
+                      String errorMessage = displayErrorMessage(error);
                       toastService.showErrorToast(errorMessage);
                     } finally {
                       loadingService.hide();

@@ -20,6 +20,7 @@ class _EditEmailScreenState extends State<EditEmailScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
