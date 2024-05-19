@@ -57,7 +57,7 @@ class Room {
         totalMembers = value.docs.length;
       });
     } else {
-      totalMembers = acceptedIds.length;
+      totalMembers = invitedIds.length;
     }
   }
 }
