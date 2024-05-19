@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -120,7 +121,7 @@ class _RoomsScreenState extends State<RoomsScreen> {
               const SizedBox(
                 height: 20,
               ),
-              SingleChildScrollView(
+              Expanded(
                 child: TabBarView(
                   children: [
                     StreamBuilder(
@@ -153,193 +154,200 @@ class _RoomsScreenState extends State<RoomsScreen> {
                               );
                             }
 
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: snapshot.data?.length,
-                              padding: const EdgeInsets.all(0),
-                              itemBuilder: (context, index) {
-                                final room = Room.fromJson(
-                                  {
-                                    'id': snapshot.data?[index].id,
-                                    ...?snapshot.data?[index].data()
-                                  },
-                                );
+                            return SingleChildScrollView(
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: snapshot.data?.length,
+                                padding: const EdgeInsets.all(0),
+                                itemBuilder: (context, index) {
+                                  final room = Room.fromJson(
+                                    {
+                                      'id': snapshot.data?[index].id,
+                                      ...?snapshot.data?[index].data()
+                                    },
+                                  );
 
-                                return StreamBuilder(
-                                  stream: CombineLatestStream.list([
-                                    ChatService.getLastMessage(room.id),
-                                    ChatService.getUserStream(),
-                                  ]),
-                                  builder: ((context, snapshot) {
-                                    QuerySnapshot<Map<String, dynamic>>?
-                                        lastMessage = snapshot.data?[0]
-                                            as QuerySnapshot<
-                                                Map<String, dynamic>>?;
-                                    DocumentSnapshot<Map<String, dynamic>>?
-                                        user = snapshot.data?[1]
-                                            as DocumentSnapshot<
-                                                Map<String, dynamic>>?;
-                                    int count = 0;
-                                    if (user != null) {
-                                      SpartanUser spartanUser =
-                                          SpartanUser.fromJson(
-                                              {'id': user.id, ...?user.data()});
+                                  return StreamBuilder(
+                                    stream: CombineLatestStream.list([
+                                      ChatService.getLastMessage(room.id),
+                                      ChatService.getUserStream(),
+                                    ]),
+                                    builder: ((context, snapshot) {
+                                      QuerySnapshot<Map<String, dynamic>>?
+                                          lastMessage = snapshot.data?[0]
+                                              as QuerySnapshot<
+                                                  Map<String, dynamic>>?;
+                                      DocumentSnapshot<Map<String, dynamic>>?
+                                          user = snapshot.data?[1]
+                                              as DocumentSnapshot<
+                                                  Map<String, dynamic>>?;
+                                      int count = 0;
+                                      if (user != null) {
+                                        SpartanUser spartanUser =
+                                            SpartanUser.fromJson({
+                                          'id': user.id,
+                                          ...?user.data()
+                                        });
 
-                                      count = spartanUser.unReadMessages
-                                              ?.firstWhereOrNull((element) =>
-                                                  element.roomId == room.id)
-                                              ?.count ??
-                                          0;
-                                    }
-                                    Message? message;
-                                    String? formattedDate;
-                                    if (lastMessage != null &&
-                                        lastMessage.docs.isNotEmpty) {
-                                      message = Message.fromJson({
-                                        'id': lastMessage.docs.first.id,
-                                        ...lastMessage.docs.first.data()
-                                      });
-                                      DateFormat format;
-
-                                      if (DateTime.now()
-                                              .difference(message.createdAt)
-                                              .inDays ==
-                                          0) {
-                                        format = DateFormat('hh:mm a');
-                                      } else if (DateTime.now().year ==
-                                          message.createdAt.year) {
-                                        format = DateFormat('dd MMM');
-                                      } else {
-                                        format = DateFormat('dd MMM yyyy');
+                                        count = spartanUser.unReadMessages
+                                                ?.firstWhereOrNull((element) =>
+                                                    element.roomId == room.id)
+                                                ?.count ??
+                                            0;
                                       }
+                                      Message? message;
+                                      String? formattedDate;
+                                      if (lastMessage != null &&
+                                          lastMessage.docs.isNotEmpty) {
+                                        message = Message.fromJson({
+                                          'id': lastMessage.docs.first.id,
+                                          ...lastMessage.docs.first.data()
+                                        });
+                                        DateFormat format;
 
-                                      formattedDate =
-                                          format.format(message.createdAt);
-                                    }
-                                    return ListTile(
-                                      title: Text(
-                                        room.name,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13,
+                                        if (DateTime.now()
+                                                .difference(message.createdAt)
+                                                .inDays ==
+                                            0) {
+                                          format = DateFormat('hh:mm a');
+                                        } else if (DateTime.now().year ==
+                                            message.createdAt.year) {
+                                          format = DateFormat('dd MMM');
+                                        } else {
+                                          format = DateFormat('dd MMM yyyy');
+                                        }
+
+                                        formattedDate =
+                                            format.format(message.createdAt);
+                                      }
+                                      return ListTile(
+                                        title: Text(
+                                          room.name,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13,
+                                          ),
                                         ),
-                                      ),
-                                      leading: CircleAvatar(
-                                        backgroundImage: room.profile == null
-                                            ? null
-                                            : NetworkImage(room.profile!),
-                                        child: room.profile == null
-                                            ? room.id == 'spartan_global'
-                                                ? Image.asset(
-                                                    'assets/images/logo.png',
-                                                    width: 30,
-                                                  )
-                                                : const Icon(
-                                                    Icons.group,
-                                                    color: Colors.white,
-                                                  )
-                                            : null,
-                                      ),
-                                      subtitle: (snapshot.connectionState ==
-                                                  ConnectionState.waiting ||
-                                              snapshot.connectionState ==
-                                                  ConnectionState.none)
-                                          ? const Text('Loading...')
-                                          : message == null
+                                        leading: CircleAvatar(
+                                          backgroundImage: room.profile == null
                                               ? null
-                                              : Text(
-                                                  message.type ==
-                                                          MESSAGETYPE.TEXT
-                                                      ? message.message!
-                                                      : 'Shared an ${message.type.name.toLowerCase()} file',
-                                                  style: const TextStyle(
-                                                    color: Color(0XFF707070),
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 12,
+                                              : NetworkImage(room.profile!),
+                                          child: room.profile == null
+                                              ? room.id == 'spartan_global'
+                                                  ? Image.asset(
+                                                      'assets/images/logo.png',
+                                                      width: 30,
+                                                    )
+                                                  : const Icon(
+                                                      Icons.group,
+                                                      color: Colors.white,
+                                                    )
+                                              : null,
+                                        ),
+                                        subtitle: (snapshot.connectionState ==
+                                                    ConnectionState.waiting ||
+                                                snapshot.connectionState ==
+                                                    ConnectionState.none)
+                                            ? const Text('Loading...')
+                                            : message == null
+                                                ? null
+                                                : Text(
+                                                    message.type ==
+                                                            MESSAGETYPE.TEXT
+                                                        ? message.message!
+                                                        : 'Shared an ${message.type.name.toLowerCase()} file',
+                                                    style: const TextStyle(
+                                                      color: Color(0XFF707070),
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontSize: 12,
+                                                    ),
                                                   ),
-                                                ),
-                                      trailing: message == null
-                                          ? null
-                                          : Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                if (count == 0 &&
-                                                    message.sender.uid ==
-                                                        auth.currentUser!.uid)
+                                        trailing: message == null
+                                            ? null
+                                            : Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
+                                                children: [
+                                                  if (count == 0 &&
+                                                      message.sender.uid ==
+                                                          auth.currentUser!.uid)
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                  Text(
+                                                    formattedDate!,
+                                                    style: const TextStyle(
+                                                      color: Color(0XFF707070),
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
                                                   const SizedBox(
                                                     height: 10,
                                                   ),
-                                                Text(
-                                                  formattedDate!,
-                                                  style: const TextStyle(
-                                                    color: Color(0XFF707070),
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 10,
-                                                ),
-                                                if (count > 0 &&
-                                                    message.sender.uid ==
-                                                        auth.currentUser!.uid)
-                                                  Container(
-                                                    decoration: BoxDecoration(
-                                                      color: const Color(
-                                                          0XFFED6400),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              500),
-                                                    ),
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                      left: 4,
-                                                      right: 4,
-                                                    ),
-                                                    child: Text(
-                                                      count.toString(),
-                                                      style: const TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontSize: 10,
+                                                  if (count > 0 &&
+                                                      message.sender.uid ==
+                                                          auth.currentUser!.uid)
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        color: const Color(
+                                                            0XFFED6400),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(500),
+                                                      ),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                        left: 4,
+                                                        right: 4,
+                                                      ),
+                                                      child: Text(
+                                                        count.toString(),
+                                                        style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          fontSize: 10,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                if (message.sender.uid ==
-                                                    auth.currentUser!.uid)
-                                                  SvgPicture.asset(room.group
-                                                      ? 'assets/icons/ticks/single.svg'
-                                                      : message.status ==
-                                                              MESSAGESTATUS.SENT
-                                                          ? 'assets/icons/ticks/single.svg'
-                                                          : message.status ==
-                                                                  MESSAGESTATUS
-                                                                      .RECEIVED
-                                                              ? 'assets/icons/ticks/double.svg'
-                                                              : message.status ==
-                                                                      MESSAGESTATUS
-                                                                          .READ
-                                                                  ? 'assets/icons/ticks/colored-double.svg'
-                                                                  : 'assets/icons/single.svg')
-                                              ],
-                                            ),
-                                      onTap: () async {
-                                        if (room.id == 'spartan_global') {
-                                          if (room.totalMembers == 0) {
-                                            await room.getTotalMembers();
+                                                  if (message.sender.uid ==
+                                                      auth.currentUser!.uid)
+                                                    SvgPicture.asset(room.group
+                                                        ? 'assets/icons/ticks/single.svg'
+                                                        : message.status ==
+                                                                MESSAGESTATUS
+                                                                    .SENT
+                                                            ? 'assets/icons/ticks/single.svg'
+                                                            : message.status ==
+                                                                    MESSAGESTATUS
+                                                                        .RECEIVED
+                                                                ? 'assets/icons/ticks/double.svg'
+                                                                : message.status ==
+                                                                        MESSAGESTATUS
+                                                                            .READ
+                                                                    ? 'assets/icons/ticks/colored-double.svg'
+                                                                    : 'assets/icons/single.svg')
+                                                ],
+                                              ),
+                                        onTap: () async {
+                                          if (room.id == 'spartan_global') {
+                                            if (room.totalMembers == 0) {
+                                              await room.getTotalMembers();
+                                            }
                                           }
-                                        }
-                                        currentRoomNotifier
-                                            .setCurrentRoom(room);
-                                        GoRouter.of(context)
-                                            .push('/chat/messages');
-                                      },
-                                    );
-                                  }),
-                                );
-                              },
+                                          currentRoomNotifier
+                                              .setCurrentRoom(room);
+                                          GoRouter.of(context)
+                                              .push('/chat/messages');
+                                        },
+                                      );
+                                    }),
+                                  );
+                                },
+                              ),
                             );
                         }
                       },
@@ -363,20 +371,22 @@ class _RoomsScreenState extends State<RoomsScreen> {
                             List<Tip> tips = snapshot.data!.docs
                                 .map((tip) => Tip.fromJson(tip.data()))
                                 .toList();
-                            return Column(
-                              children: tips
-                                  .map(
-                                    (tip) => Column(
-                                      children: [
-                                        tip.coverImage == null
-                                            ? const SizedBox()
-                                            : Image.network(tip.coverImage!),
-                                        Text(tip.title),
-                                        Text(tip.description),
-                                      ],
-                                    ),
-                                  )
-                                  .toList(),
+                            return SingleChildScrollView(
+                              child: Column(
+                                children: tips
+                                    .map(
+                                      (tip) => Column(
+                                        children: [
+                                          tip.coverImage == null
+                                              ? const SizedBox()
+                                              : Image.network(tip.coverImage!),
+                                          Text(tip.title),
+                                          Text(tip.description),
+                                        ],
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
                             );
                         }
                       },

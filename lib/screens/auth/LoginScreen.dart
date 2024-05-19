@@ -185,7 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     iOSBundleId: 'com.spartan.app',
                                     androidPackageName: 'com.spartan.app',
                                     androidInstallApp: true,
-                                    androidMinimumVersion: '16',
+                                    
                                   ),
                                 );
 

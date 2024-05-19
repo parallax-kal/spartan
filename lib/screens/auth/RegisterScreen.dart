@@ -262,7 +262,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   iOSBundleId: 'com.spartan.app',
                                   androidPackageName: 'com.spartan.app',
                                   androidInstallApp: true,
-                                  androidMinimumVersion: '16',
+                                  
                                 ),
                               );
                               await authService.signOut();

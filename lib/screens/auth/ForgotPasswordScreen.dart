@@ -5,10 +5,10 @@ import 'package:spartan/services/loading.dart';
 import 'package:spartan/services/toast.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
-  const ForgotPasswordScreen({Key? key}) : super(key: key);
+  const ForgotPasswordScreen({super.key});
 
   @override
-  _ForgotPasswordScreenState createState() => _ForgotPasswordScreenState();
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
@@ -86,15 +86,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           iOSBundleId: 'com.spartan.app',
                           androidPackageName: 'com.spartan.app',
                           androidInstallApp: true,
-                          androidMinimumVersion: '16',
                         ),
                       );
                       toastService.showSuccessToast(
                         'We have sent a password reset link to your email address.',
                       );
                     } catch (error) {
-                      String errorMessage =
-                          displayErrorMessage(error);
+                      String errorMessage = displayErrorMessage(error);
                       toastService.showErrorToast(errorMessage);
                     } finally {
                       loadingService.hide();

@@ -104,7 +104,6 @@ class _EditEmailScreenState extends State<EditEmailScreen> {
                       iOSBundleId: 'com.spartan.app',
                       androidPackageName: 'com.spartan.app',
                       androidInstallApp: true,
-                      androidMinimumVersion: '16',
                     ),
                   );
                   toastService.showSuccessToast(

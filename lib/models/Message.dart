@@ -20,9 +20,9 @@ class Message {
     return Message(
       message: json['message'],
       sender: Sender.fromJson(json['sender']),
-      type: MESSAGETYPE.values.firstWhere((e) => e.toString() == json['type']),
+      type: MESSAGETYPE.values.firstWhere((e) => e.name == json['type']),
       status: MESSAGESTATUS.values
-          .firstWhere((e) => e.toString() == json['status']),
+          .firstWhere((e) => e.name == json['status']),
       createdAt: json['createdAt'].toDate(),
     );
   }
@@ -31,8 +31,8 @@ class Message {
     return {
       'message': message,
       'sender': sender.tojson(),
-      'type': type.toString(),
-      'status': status.toString(),
+      'type': type.name,
+      'status': status.name,
       'createdAt': createdAt,
     };
   }
