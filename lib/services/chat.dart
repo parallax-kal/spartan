@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/models/Message.dart';
 import 'package:spartan/models/Room.dart';
+import 'package:rxdart/rxdart.dart';
 
 class ChatService {
   static Future createRoom(Room room) {
@@ -30,6 +31,40 @@ class ChatService {
 
   static Stream<DocumentSnapshot<Map<String, dynamic>>> getGlobalRoom() {
     return firestore.collection('rooms').doc('spartan_global').snapshots();
+  }
+
+  static Stream<List<Room>> getAllRooms() {
+    return BehaviorSubject<void>.seeded(null).switchMap((_) {
+      var globalRoom =
+          firestore.collection('rooms').doc('spartan_global').snapshots();
+      var userRooms = firestore
+          .collection('rooms')
+          .where('invitedIds', arrayContains: auth.currentUser!.uid)
+          .snapshots();
+
+      return CombineLatestStream.list([
+        globalRoom,
+        userRooms,
+      ]).map((rooms) {
+        var globalRoom = rooms[0] as DocumentSnapshot<Map<String, dynamic>>;
+        var userRooms = rooms[1] as QuerySnapshot<Map<String, dynamic>>;
+
+        List<Room> allRooms = [];
+        allRooms.add(Room.fromJson({
+          'id': globalRoom.id,
+          ...globalRoom.data()!,
+        }));
+
+        allRooms.addAll(userRooms.docs.map((doc) {
+          return Room.fromJson({
+            'id': doc.id,
+            ...doc.data(),
+          });
+        }));
+
+        return allRooms;
+      });
+    });
   }
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getRooms() {

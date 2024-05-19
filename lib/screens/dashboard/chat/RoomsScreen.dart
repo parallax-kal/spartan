@@ -1,14 +1,12 @@
 // ignore_for_file: depend_on_referenced_packages
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/models/Message.dart';
-import 'package:spartan/models/Room.dart';
 import 'package:spartan/models/Tip.dart';
 import 'package:spartan/notifiers/CurrentRoomNotifier.dart';
 import 'package:spartan/services/chat.dart';
@@ -17,7 +15,7 @@ import 'package:collection/collection.dart';
 import 'package:spartan/models/SpartanUser.dart';
 
 class RoomsScreen extends StatefulWidget {
-  const RoomsScreen({Key? key}) : super(key: key);
+  const RoomsScreen({super.key});
 
   @override
   State<RoomsScreen> createState() => _RoomsScreenState();
@@ -125,20 +123,7 @@ class _RoomsScreenState extends State<RoomsScreen> {
                 child: TabBarView(
                   children: [
                     StreamBuilder(
-                      stream: CombineLatestStream.list([
-                        ChatService.getGlobalRoom(),
-                        ChatService.getRooms(),
-                      ]).map((event) {
-                        final globalRoomEvent =
-                            event[0] as DocumentSnapshot<Map<String, dynamic>>?;
-                        final roomsEvent =
-                            event[1] as QuerySnapshot<Map<String, dynamic>>?;
-                        final data = [
-                          if (globalRoomEvent != null) globalRoomEvent,
-                          if (roomsEvent != null) ...roomsEvent.docs
-                        ];
-                        return data;
-                      }),
+                      stream: ChatService.getAllRooms(),
                       builder: (context, snapshot) {
                         switch (snapshot.connectionState) {
                           case ConnectionState.none:
@@ -160,12 +145,7 @@ class _RoomsScreenState extends State<RoomsScreen> {
                                 itemCount: snapshot.data?.length,
                                 padding: const EdgeInsets.all(0),
                                 itemBuilder: (context, index) {
-                                  final room = Room.fromJson(
-                                    {
-                                      'id': snapshot.data?[index].id,
-                                      ...?snapshot.data?[index].data()
-                                    },
-                                  );
+                                  final room = snapshot.data![index];
 
                                   return StreamBuilder(
                                     stream: CombineLatestStream.list([
@@ -371,18 +351,23 @@ class _RoomsScreenState extends State<RoomsScreen> {
                             List<Tip> tips = snapshot.data!.docs
                                 .map((tip) => Tip.fromJson(tip.data()))
                                 .toList();
+
                             return SingleChildScrollView(
                               child: Column(
                                 children: tips
                                     .map(
-                                      (tip) => Column(
-                                        children: [
-                                          tip.coverImage == null
-                                              ? const SizedBox()
-                                              : Image.network(tip.coverImage!),
-                                          Text(tip.title),
-                                          Text(tip.description),
-                                        ],
+                                      (tip) => Container(
+                                        child: Column(
+                                          co
+                                          children: [
+                                            tip.coverImage == null
+                                                ? const SizedBox()
+                                                : Image.network(
+                                                    tip.coverImage!),
+                                            Text(tip.title),
+                                            Text(tip.description),
+                                          ],
+                                        ),
                                       ),
                                     )
                                     .toList(),
@@ -390,7 +375,7 @@ class _RoomsScreenState extends State<RoomsScreen> {
                             );
                         }
                       },
-                    )
+                    ),
                   ],
                 ),
               ),
