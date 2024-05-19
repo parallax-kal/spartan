@@ -111,7 +111,7 @@ class _RoomsScreenState extends State<RoomsScreen> {
                       child: SvgPicture.asset('assets/icons/edit_line.svg'),
                     ),
                     onTap: () {
-                      GoRouter.of(context).push('/chat/new-conv');
+                      GoRouter.of(context).push('/chat/new-room');
                     },
                   ),
                 ],

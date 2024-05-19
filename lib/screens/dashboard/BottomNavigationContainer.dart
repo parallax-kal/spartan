@@ -85,7 +85,8 @@ List<String> noAppbarScreens = [
   '/profile/account-log',
   '/profile/edit-email',
   '/profile/edit-password',
-  '/notifications'
+  '/notifications',
+  '/chat/new-room'
 ];
 
 List noBottomNavScreens = ['/chat/messages', '/qrcode/scan'];
@@ -132,10 +133,12 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _currentIndex = tabs.indexWhere(
+  void didUpdateWidget(covariant BottomNavigationContainer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    int index = tabs.indexWhere(
         (element) => element.initialLocation.paths.contains(widget.path));
+    if (index == -1) return;
+    changeIndex(index);
   }
 
   @override

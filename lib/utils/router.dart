@@ -20,7 +20,7 @@ import 'package:spartan/screens/dashboard/chat/JoinCommunityScreen.dart';
 import 'package:spartan/screens/dashboard/HomeScreen.dart';
 import 'package:spartan/screens/dashboard/ProfileScreen.dart';
 import 'package:spartan/screens/dashboard/StreamScreen.dart';
-import 'package:spartan/screens/dashboard/chat/NewConversationScreen.dart';
+import 'package:spartan/screens/dashboard/chat/NewRoomScreen.dart';
 import 'package:spartan/screens/dashboard/chat/RoomsScreen.dart';
 import 'package:spartan/screens/dashboard/crib/AddCribScreen.dart';
 import 'package:spartan/screens/dashboard/profile/AccountLogScreen.dart';
@@ -268,7 +268,7 @@ final GoRouter router = GoRouter(
           },
           routes: [
             GoRoute(
-              path: 'new-conv',
+              path: 'new-room',
               pageBuilder: (context, state) {
                 return CustomTransitionPage(
                   key: state.pageKey,

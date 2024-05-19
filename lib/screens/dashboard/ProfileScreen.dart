@@ -88,20 +88,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         Stack(
                           children: [
-                            Container(
-                              child: profile != null
-                                  ? CircleAvatar(
-                                      radius: 48,
-                                      backgroundImage: NetworkImage(
-                                        profile!,
-                                      ),
-                                    )
-                                  : SvgPicture.asset(
-                                      'assets/icons/profile/profile_outlined.svg',
-                                      width: 65,
-                                      height: 65,
+                            profile != null
+                                ? CircleAvatar(
+                                    radius: 48,
+                                    backgroundImage: NetworkImage(
+                                      profile!,
                                     ),
-                            ),
+                                  )
+                                : SvgPicture.asset(
+                                    'assets/icons/profile/profile_outlined.svg',
+                                    width: 65,
+                                    height: 65,
+                                  ),
                             Positioned(
                               right: 0,
                               bottom: 8,
