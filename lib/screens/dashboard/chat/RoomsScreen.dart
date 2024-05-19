@@ -357,15 +357,56 @@ class _RoomsScreenState extends State<RoomsScreen> {
                                 children: tips
                                     .map(
                                       (tip) => Container(
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          color: const Color(0XFFEFEFEF),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
                                         child: Column(
-                                          co
                                           children: [
                                             tip.coverImage == null
                                                 ? const SizedBox()
-                                                : Image.network(
-                                                    tip.coverImage!),
-                                            Text(tip.title),
-                                            Text(tip.description),
+                                                : Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            10),
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                      child: Image.network(
+                                                        tip.coverImage!,
+                                                      ),
+                                                    ),
+                                                  ),
+                                            Container(
+                                              padding: const EdgeInsets.all(18),
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                color: Colors.white,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color:
+                                                        const Color(0xFF000000)
+                                                            .withOpacity(0.1),
+                                                    offset: const Offset(0, 4),
+                                                    blurRadius: 7.3,
+                                                    spreadRadius: 0,
+                                                  ),
+                                                ],
+                                              ),
+                                              child: Text(
+                                                tip.description,
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            )
                                           ],
                                         ),
                                       ),
