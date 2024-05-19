@@ -244,8 +244,7 @@ class _NewConversationScreenState extends State<NewConversationScreen> {
                               );
                             }
                             if (snapshot.data == null ||
-                                snapshot.data!.docs.isEmpty ||
-                                snapshot.data!.docs.length == 1) {
+                                snapshot.data!.docs.isEmpty ) {
                               return const Center(
                                 child: Text('No users found'),
                               );

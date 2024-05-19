@@ -4,7 +4,6 @@ class Room {
   String? id;
   String name;
   String? profile;
-  DateTime? lastMessageAt;
   List<String> invitedIds;
   bool private;
   bool group;
@@ -17,7 +16,6 @@ class Room {
     required this.createdAt,
     required this.private,
     required this.group,
-    this.lastMessageAt,
     this.id,
     this.profile,
     this.invitedIds = const [],
@@ -33,8 +31,7 @@ class Room {
       acceptedIds: List<String>.from(json['acceptedIds'] ?? []),
       private: json['private'],
       group: json['group'],
-      createdAt: json['createdAt'],
-      lastMessageAt: json['lastMessageAt'],
+      createdAt: json['createdAt'].toDate(),
     );
   }
 
@@ -47,7 +44,6 @@ class Room {
       'private': private,
       'group': group,
       'createdAt': createdAt,
-      'lastMessageAt': lastMessageAt,
     };
   }
 
