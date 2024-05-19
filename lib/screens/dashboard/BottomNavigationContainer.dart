@@ -146,8 +146,18 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
               ),
               leadingWidth: 110,
               actions: [
-                Badge(
-                  child: SvgPicture.asset('assets/icons/notifications.svg'),
+                GestureDetector(
+                  onTap: () {
+                    GoRouter.of(context).push('/notifications');
+                  },
+                  child: Badge(
+                    // label: Text('2'),
+                    isLabelVisible: false,
+                    child: SvgPicture.asset(
+                      'assets/icons/notifications.svg',
+                      width: 18,
+                    ),
+                  ),
                 ),
                 const SizedBox(
                   width: 20,

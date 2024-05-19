@@ -9,4 +9,6 @@ class NotificationService {
   ) async {
     messaging.requestPermission();
   }
+
+  
 }
