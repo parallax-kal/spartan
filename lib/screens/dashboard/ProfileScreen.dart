@@ -86,7 +86,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         Stack(
                           children: [
-                            profile == null
+                            profile != null
                                 ? CircleAvatar(
                                     radius: 48,
                                     backgroundImage: NetworkImage(
