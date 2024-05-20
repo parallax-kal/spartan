@@ -58,8 +58,8 @@ class Crib {
 class Location {
   String country;
   String city;
-  String latitude;
-  String longitude;
+  double latitude;
+  double longitude;
   String ipaddress;
 
   Location({
@@ -128,5 +128,5 @@ class Access {
 enum ACCESSSTATUS {
   ADMIN,
   OPERATOR,
-  GUEST, ACTIVE,
+  GUEST,
 }

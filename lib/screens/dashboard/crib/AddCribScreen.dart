@@ -219,22 +219,22 @@ class _AddCribScreenState extends State<AddCribScreen> {
                                       ],
                                     ),
                                     const SizedBox(width: 10),
-                                    PopupMenuButton<String>(
+                                    PopupMenuButton<ACCESSSTATUS>(
                                       color: Colors.white,
                                       surfaceTintColor: Colors.white,
                                       itemBuilder: (context) {
                                         return [
                                           const PopupMenuItem(
-                                            value: 'Operator',
+                                            value: ACCESSSTATUS.OPERATOR,
                                             child: Text('Operator'),
                                           ),
                                           const PopupMenuItem(
-                                            value: 'Guest',
+                                            value: ACCESSSTATUS.GUEST,
                                             child: Text('Guest'),
                                           ),
                                         ];
                                       },
-                                      onSelected: (String value) {
+                                      onSelected: (ACCESSSTATUS value) {
                                         setState(() {
                                           final access = accesses.firstWhere(
                                               (element) =>
@@ -262,9 +262,10 @@ class _AddCribScreenState extends State<AddCribScreen> {
                                           ],
                                         ),
                                         child: Text(
-                                          accesses.firstWhere((element) =>
-                                              element['user'] ==
-                                              email)['status'],
+                                          renderStatus(accesses.firstWhere(
+                                              (element) =>
+                                                  element['user'] ==
+                                                  email)['status']),
                                           style: const TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.w500,
@@ -399,7 +400,7 @@ class _AddCribScreenState extends State<AddCribScreen> {
                             createdAt: DateTime.now(),
                           ),
                         );
-                      GoRouter.of(context).push('/stream');
+                        GoRouter.of(context).push('/stream');
                         toastService
                             .showSuccessToast('Crib added successfully!');
                       } catch (error) {

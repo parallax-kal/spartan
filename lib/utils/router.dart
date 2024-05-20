@@ -185,7 +185,7 @@ final GoRouter router = GoRouter(
             GoRoute(
               path: 'add',
               pageBuilder: (context, state) {
-                Crib crib = state.extra as Crib;
+                Crib? crib = state.extra as Crib?;
                 return CustomTransitionPage(
                   key: state.pageKey,
                   child: AddCribScreen(crib: crib),
