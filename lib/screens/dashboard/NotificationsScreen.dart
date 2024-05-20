@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:spartan/models/Notification.dart';
 import 'package:spartan/services/notification.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:spartan/utils/sort.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({
@@ -14,6 +18,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
@@ -57,24 +62,90 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     }
                     if (snapshot.data?.isEmpty ?? true) {
                       return const Center(
-                        child: Text('No notifications'),
+                        child: Text('No notifications yet'),
                       );
                     }
+                    List<Map<DateTime, List<ANotification>>>
+                        sortedNotifications = sortItems(snapshot.data!);
                     return SingleChildScrollView(
-                      child: ListView.builder(
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) {
-                            return ListTile(
-                            title: Text(snapshot.data![index].title),
-                            subtitle: Text(snapshot.data![index].body),
-                            leading:  CircleAvatar(
-                              backgroundImage: 
-                              snapshot.data![index] == null ? null : 
-                              NetworkImage(snapshot.data![index].image!),
-                            child: SvgPicture.asset('assets/icons/notifications.svg')
-                            ),
-                            );
-                        },
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 15,
+                        vertical: 5,
+                      ),
+                      child: Column(
+                        children: sortedNotifications.map((sortedNoti) {
+                          DateTime wholeday = sortedNoti.keys.first;
+                          return Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 10,
+                                  bottom: 5,
+                                ),
+                                child: Text(
+                                  DateFormat(
+                                    'd MMM${wholeday.year != DateTime.now().year ? ' yyyy' : ''}',
+                                  ).format(wholeday),
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                              ...sortedNoti.values.first
+                                  .map(
+                                    (notification) => Padding(
+                                      padding: const EdgeInsets.only(
+                                        top: 10,
+                                        bottom: 10,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 25,
+                                            backgroundImage: notification.image != null
+                                                ? NetworkImage(notification.image!)
+                                                : null,
+                                            child: notification.image == null
+                                                ? SvgPicture.asset(
+                                                    'assets/icons/notifications.svg',
+                                                    width: 25,
+                                                  )
+                                                : null,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  notification.title,
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  notification.body,
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                  ,
+                            ],
+                          );
+                        }).toList(),
                       ),
                     );
                 }

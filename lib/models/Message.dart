@@ -6,6 +6,7 @@ class Message implements HasCreatedAt {
   String? message;
   Sender sender;
   MESSAGETYPE type;
+  @override
   DateTime createdAt;
   MESSAGESTATUS status;
 

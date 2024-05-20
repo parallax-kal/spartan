@@ -46,17 +46,17 @@ class NotificationController extends ChangeNotifier {
   static Future<void> initializeLocalNotifications(
       {required bool debug}) async {
     await AwesomeNotifications().initialize(
-      null, //'resource://drawable/res_app_icon',//
+      'resource://drawable/res_app_icon',
       [
-        // NotificationChannel(
-        //     channelKey: 'alerts',
-        //     channelName: 'Alerts',
-        //     channelDescription: 'Notification tests as alerts',
-        //     playSound: true,
-        //     importance: NotificationImportance.High,
-        //     defaultPrivacy: NotificationPrivacy.Private,
-        //     defaultColor: Colors.deepPurple,
-        //     ledColor: Colors.deepPurple)
+        NotificationChannel(
+            channelKey: 'alerts',
+            channelName: 'Alerts',
+            channelDescription: 'Notification as alerts',
+            playSound: true,
+            importance: NotificationImportance.High,
+            defaultPrivacy: NotificationPrivacy.Private,
+            defaultColor: Colors.deepPurple,
+            ledColor: Colors.deepPurple)
       ],
       debug: debug,
       languageCode: 'ko',

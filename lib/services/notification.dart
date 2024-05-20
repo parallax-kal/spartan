@@ -7,7 +7,7 @@ import 'notification_access.dart';
 
 class NotificationService {
   static Future<void> postSendNotification(
-    Notification notification,
+    ANotification notification,
   ) async {
     try {
       final body = {
@@ -62,15 +62,18 @@ class NotificationService {
     }
   }
 
-  static Stream<List<Notification>> getNotifications() {
+  static Stream<List<ANotification>> getNotifications() {
     return firestore
         .collection('notifications')
+        .where('user', isEqualTo: auth.currentUser!.uid)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => Notification.fromJson({
-                  'id': doc.id,
-                  ...doc.data(),
-                }))
-            .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => ANotification.fromJson({
+                    'id': doc.id,
+                    ...doc.data(),
+                  }))
+              .toList(),
+        );
   }
 }

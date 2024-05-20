@@ -4,6 +4,7 @@ class Log implements HasCreatedAt {
   final String? id;
   final String title;
   final String description;
+  @override
   final DateTime createdAt;
 
   Log({

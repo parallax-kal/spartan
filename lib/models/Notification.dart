@@ -1,25 +1,33 @@
-class Notification {
+import 'package:spartan/utils/sort.dart';
+
+class ANotification implements HasCreatedAt {
+  String? id;
   final String title;
   final String body;
   final String? image;
-  final String? time;
-  final String priority = 'high';
-  final String token;
+  @override
+  final DateTime createdAt;
+  final String priority;
+  final String? token;
 
-  Notification({
+  ANotification({
+    this.id,
     required this.title,
     required this.body,
-    required this.time,
-    required this.token,
+    required this.createdAt,
+    required this.priority,
+    this.token,
     this.image,
   });
 
-  factory Notification.fromJson(Map<String, dynamic> json) {
-    return Notification(
+  factory ANotification.fromJson(Map<String, dynamic> json) {
+    return ANotification(
+      id: json['id'],
       title: json['title'],
       body: json['body'],
+      priority: json['priority'] ?? 'high',
       image: json['image'],
-      time: json['time'],
+      createdAt: json['createdAt'].toDate(),
       token: json['token'],
     );
   }
@@ -29,8 +37,9 @@ class Notification {
       'title': title,
       'body': body,
       'image': image,
-      'time': time,
+      'createdAt': createdAt,
       'token': token,
+      'priority': priority,
     };
   }
 }
