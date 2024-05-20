@@ -66,6 +66,7 @@ class NotificationService {
     return firestore
         .collection('notifications')
         .where('user', isEqualTo: auth.currentUser!.uid)
+        .orderBy('createdAt', descending: true)
         .snapshots()
         .map(
           (snapshot) => snapshot.docs
