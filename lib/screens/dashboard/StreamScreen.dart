@@ -186,14 +186,16 @@ class CribWidget extends StatelessWidget {
                           fontSize: 12,
                         ),
                       ),
-                      Text(
-                        "${crib.location.city} | ${crib.location.country}",
-                        style: const TextStyle(
-                          color: Color(0xFF454545),
-                          fontWeight: FontWeight.w400,
-                          fontSize: 10,
-                        ),
-                      ),
+                      crib.location == null
+                          ? const SizedBox()
+                          : Text(
+                              "${crib.location?.city} | ${crib.location?.country}",
+                              style: const TextStyle(
+                                color: Color(0xFF454545),
+                                fontWeight: FontWeight.w400,
+                                fontSize: 10,
+                              ),
+                            ),
                     ],
                   )
                 ],

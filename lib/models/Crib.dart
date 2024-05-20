@@ -3,20 +3,20 @@
 class Crib {
   String id;
   String? name;
-  List<Access> access;
+  List<Access> access = [];
   STATUS status;
   String? ipaddress;
   String? wifissid;
-  Location location;
+  Location? location;
   DateTime createdAt;
   List<String> users;
 
   Crib({
     required this.id,
-    required this.access,
     required this.status,
-    required this.location,
     required this.createdAt,
+    required this.location,
+    this.access = const [],
     this.users = const [],
     this.name,
     this.ipaddress,
@@ -48,7 +48,7 @@ class Crib {
       'status': status.name,
       'ipaddress': ipaddress,
       'wifissid': wifissid,
-      'location': location.toJson(),
+      'location': location?.toJson(),
       'users': users,
       'createdAt': createdAt,
     };
@@ -60,12 +60,14 @@ class Location {
   String city;
   String latitude;
   String longitude;
+  String ipaddress;
 
   Location({
     required this.country,
     required this.city,
     required this.latitude,
     required this.longitude,
+    required this.ipaddress,
   });
 
   factory Location.fromJson(Map<String, dynamic> json) {
@@ -74,6 +76,7 @@ class Location {
       city: json['city'],
       latitude: json['latitude'],
       longitude: json['longitude'],
+      ipaddress: json['ipaddress'],
     );
   }
 
@@ -83,6 +86,7 @@ class Location {
       'city': city,
       'latitude': latitude,
       'longitude': longitude,
+      'ipaddress': ipaddress,
     };
   }
 }
