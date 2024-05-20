@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               BorderRadius.circular(5),
                                         ),
                                       ),
-                                      onPressed: () {
+                                      onPressed: () async {
                                         showDialog(
                                           barrierColor:
                                               Colors.black.withOpacity(0.3),

@@ -1,4 +1,6 @@
-class Log {
+import 'package:spartan/utils/sort.dart';
+
+class Log implements HasCreatedAt {
   final String? id;
   final String title;
   final String description;

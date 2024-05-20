@@ -10,6 +10,7 @@ import 'package:spartan/services/auth.dart';
 import 'package:spartan/services/loading.dart';
 import 'package:spartan/services/log.dart';
 import 'package:spartan/services/toast.dart';
+import 'package:spartan/utils/notifications.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -185,7 +186,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                     iOSBundleId: 'com.spartan.app',
                                     androidPackageName: 'com.spartan.app',
                                     androidInstallApp: true,
-                                    
                                   ),
                                 );
 
@@ -202,7 +202,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                     'This account has been deleted wait for 7 days to reactivate it');
                                 return;
                               }
-                              String? token = await messaging.getToken();
+
+                              String token =
+                                  NotificationController().firebaseToken;
+                              if (token.isEmpty) {
+                                await NotificationController
+                                    .displayNotificationRationale();
+                                token = await NotificationController
+                                    .requestFirebaseToken();
+                              }
+
                               await firestore
                                   .collection('users')
                                   .doc(userCredential.user!.uid)
@@ -225,8 +234,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               );
                               context.go('/');
                             } catch (error) {
-                              String errorMessage =
-                                  displayErrorMessage(error);
+                              String errorMessage = displayErrorMessage(error);
                               toastService.showErrorToast(errorMessage);
                             } finally {
                               loadingService.hide();
@@ -267,7 +275,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               .collection('users')
                               .doc(userCredential.user!.uid)
                               .get();
-                          String? token = await messaging.getToken();
                           final userData = user.data();
                           if (userData?['status'] == USERSTATUS.DELETED.name) {
                             toastService.showErrorToast(
@@ -287,6 +294,15 @@ class _LoginScreenState extends State<LoginScreen> {
                               toastService.showErrorToast(
                                   'This account has been deactivated contact us for info');
                               return;
+                            }
+
+                            String token =
+                                NotificationController().firebaseToken;
+                            if (token.isEmpty) {
+                              await NotificationController
+                                  .displayNotificationRationale();
+                              token = await NotificationController
+                                  .requestFirebaseToken();
                             }
 
                             await firestore
@@ -315,8 +331,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                           return;
                         } catch (error) {
-                          String errorMessage =
-                              displayErrorMessage(error);
+                          String errorMessage = displayErrorMessage(error);
                           toastService.showErrorToast(errorMessage);
                         } finally {
                           loadingService.hide();
@@ -390,7 +405,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               .collection('users')
                               .doc(userCredential.user!.uid)
                               .get();
-                          String? token = await messaging.getToken();
+
                           if (!user.exists) {
                             toastService.showErrorToast(
                                 'This account does not exist go to signup page to create an account');
@@ -403,6 +418,16 @@ class _LoginScreenState extends State<LoginScreen> {
                               await authService.signOut();
                               return;
                             }
+
+                            String token =
+                                NotificationController().firebaseToken;
+                            if (token.isEmpty) {
+                              await NotificationController
+                                  .displayNotificationRationale();
+                              token = await NotificationController
+                                  .requestFirebaseToken();
+                            }
+                            
                             await firestore
                                 .collection('users')
                                 .doc(userCredential.user!.uid)
@@ -427,8 +452,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             context.go('/');
                           }
                         } catch (error) {
-                          String errorMessage =
-                              displayErrorMessage(error);
+                          String errorMessage = displayErrorMessage(error);
                           toastService.showErrorToast(errorMessage);
                         } finally {
                           loadingService.hide();

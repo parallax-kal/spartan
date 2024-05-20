@@ -5,6 +5,7 @@ import 'package:spartan/models/Log.dart';
 import 'package:spartan/services/loading.dart';
 import 'package:spartan/services/log.dart';
 import 'package:spartan/services/toast.dart';
+import 'package:spartan/utils/sort.dart';
 
 class AccountLogScreen extends StatefulWidget {
   const AccountLogScreen({super.key});
@@ -14,28 +15,7 @@ class AccountLogScreen extends StatefulWidget {
 }
 
 class _AccountLogScreenState extends State<AccountLogScreen> {
-  List<Map<DateTime, List<Log>>> sortLogs(List<Log> logs) {
-    Map<DateTime, List<Log>> sortedMessages = {};
 
-    for (Log log in logs) {
-      DateTime logDate = log.createdAt;
-      DateTime logDay = DateTime(logDate.year, logDate.month, logDate.day);
-
-      if (sortedMessages.containsKey(logDay)) {
-        sortedMessages[logDay]!.add(log);
-      } else {
-        sortedMessages[logDay] = [log];
-      }
-    }
-
-    List<Map<DateTime, List<Log>>> sortedList = [];
-
-    sortedMessages.forEach((key, value) {
-      sortedList.add({key: value});
-    });
-
-    return sortedList;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -181,7 +161,7 @@ class _AccountLogScreenState extends State<AccountLogScreen> {
                     List<Log> logs = snapshot.data!.docs
                         .map((e) => Log.fromJson(e.data()))
                         .toList();
-                    List<Map<DateTime, List<Log>>> sortedLogs = sortLogs(logs);
+                    List<Map<DateTime, List<Log>>> sortedLogs = sortItems(logs);
                     return SingleChildScrollView(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(

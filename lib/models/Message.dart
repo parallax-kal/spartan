@@ -1,5 +1,7 @@
 // ignore_for_file: constant_identifier_names
-class Message {
+import 'package:spartan/utils/sort.dart';
+
+class Message implements HasCreatedAt {
   String? id;
   String? message;
   Sender sender;

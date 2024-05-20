@@ -11,6 +11,7 @@ import 'package:spartan/services/log.dart';
 import 'package:spartan/services/toast.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/models/Log.dart';
+import 'package:spartan/utils/notifications.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -242,7 +243,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               SharedPreferences prefs =
                                   await SharedPreferences.getInstance();
                               await prefs.setBool('isFirstTime', false);
-                              String? token = await messaging.getToken();
+
+                              String token =
+                                  NotificationController().firebaseToken;
+                              if (token.isEmpty) {
+                                await NotificationController
+                                    .displayNotificationRationale();
+                                token = await NotificationController
+                                    .requestFirebaseToken();
+                              }
 
                               await firestore
                                   .collection('users')
@@ -262,7 +271,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   iOSBundleId: 'com.spartan.app',
                                   androidPackageName: 'com.spartan.app',
                                   androidInstallApp: true,
-                                  
                                 ),
                               );
                               await authService.signOut();
@@ -334,7 +342,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 .collection('users')
                                 .doc(userCredential.user!.uid)
                                 .get();
-                            String? token = await messaging.getToken();
+
+                            String token =
+                                NotificationController().firebaseToken;
+                            if (token.isEmpty) {
+                              await NotificationController
+                                  .displayNotificationRationale();
+                              token = await NotificationController
+                                  .requestFirebaseToken();
+                            }
                             if (!user.exists) {
                               await firestore
                                   .collection('users')
@@ -446,7 +462,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 .doc(userCredential.user!.uid)
                                 .get();
 
-                            String? token = await messaging.getToken();
+                            String token =
+                                NotificationController().firebaseToken;
+                            if (token.isEmpty) {
+                              await NotificationController
+                                  .displayNotificationRationale();
+                              token = await NotificationController
+                                  .requestFirebaseToken();
+                            }
+                            
                             if (!user.exists) {
                               await firestore
                                   .collection('users')

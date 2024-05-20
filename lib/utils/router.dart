@@ -33,12 +33,14 @@ import 'package:spartan/screens/dashboard/qrcode/ScanQrcodeScreen.dart';
 import 'package:spartan/screens/dashboard/crib/ResultCribScreen.dart';
 import 'package:spartan/screens/dashboard/stream/PreviewStreamScreen.dart';
 import 'package:spartan/screens/manual/ManualScreen.dart';
+import 'package:spartan/utils/notifications.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final shellNavigatorKey = GlobalKey<NavigatorState>();
 
 final GoRouter router = GoRouter(
-  initialLocation: '/',
+  initialLocation:
+      NotificationController().initialAction != null ? '/notifications' : '/',
   navigatorKey: rootNavigatorKey,
   redirect: (context, state) async {
     if (publicRoutes.contains(state.fullPath)) {
@@ -107,7 +109,7 @@ final GoRouter router = GoRouter(
           parentNavigatorKey: shellNavigatorKey,
           pageBuilder: (context, state) {
             return CustomTransitionPage(
-              child: NotificationsSCreen(),
+              child: const NotificationsScreen(),
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
                 return SlideTransition(

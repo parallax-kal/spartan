@@ -8,6 +8,7 @@ import 'package:spartan/notifiers/CurrentRoomNotifier.dart';
 import 'package:spartan/services/chat.dart';
 import 'package:chat_composer/chat_composer.dart';
 import 'package:spartan/services/toast.dart';
+import 'package:spartan/utils/sort.dart';
 import 'package:voice_message_package/voice_message_package.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -27,30 +28,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
   void dispose() {
     _messageScrollController.dispose();
     super.dispose();
-  }
-
-  List<Map<DateTime, List<Message>>> sortMessages(List<Message> messages) {
-    Map<DateTime, List<Message>> sortedMessages = {};
-
-    for (Message message in messages) {
-      DateTime messageDate = message.createdAt;
-      DateTime messageDay =
-          DateTime(messageDate.year, messageDate.month, messageDate.day);
-
-      if (sortedMessages.containsKey(messageDay)) {
-        sortedMessages[messageDay]!.add(message);
-      } else {
-        sortedMessages[messageDay] = [message];
-      }
-    }
-
-    List<Map<DateTime, List<Message>>> sortedList = [];
-
-    sortedMessages.forEach((key, value) {
-      sortedList.add({key: value});
-    });
-
-    return sortedList;
   }
 
   MESSAGETYPE checkFileType(String extension) {
@@ -169,7 +146,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                     }
 
                     List<Map<DateTime, List<Message>>> sortedMessages =
-                        sortMessages(messages);
+                        sortItems(messages);
 
                     return SingleChildScrollView(
                       controller: _messageScrollController,

@@ -151,7 +151,7 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
                     GoRouter.of(context).push('/notifications');
                   },
                   child: Badge(
-                    // label: Text('2'),
+                    label: Text('2'),
                     isLabelVisible: false,
                     child: SvgPicture.asset(
                       'assets/icons/notifications.svg',

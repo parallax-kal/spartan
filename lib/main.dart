@@ -24,8 +24,11 @@ void main() async {
     persistenceEnabled: true,
     cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
   );
-  await NotificationController.initializeLocalNotifications();
+
+  await NotificationController.initializeLocalNotifications(debug: true);
+  await NotificationController.initializeRemoteNotifications(debug: true);
   await NotificationController.initializeIsolateReceivePort();
+  await NotificationController.getInitialNotificationAction();
 
   initializeDateFormatting().then(
     (_) => runApp(
@@ -56,6 +59,10 @@ void main() async {
       systemNavigationBarIconBrightness: Brightness.dark,
     ),
   );
+
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
   FlutterNativeSplash.remove();
 }
 
@@ -67,6 +74,14 @@ class SpartanApp extends StatefulWidget {
 }
 
 class _SpartanAppState extends State<SpartanApp> {
+
+ @override
+  void initState() {
+    NotificationController.startListeningNotificationEvents();
+    NotificationController.requestFirebaseToken();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(

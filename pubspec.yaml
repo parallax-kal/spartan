@@ -43,6 +43,8 @@ dependencies:
   sn_progress_dialog: ^1.1.4
   image_picker: ^1.1.1
   rxdart: ^0.27.7
+  awesome_notifications_fcm: ^0.8.0
+  fluttertoast: ^8.2.5
 
 dev_dependencies:
   flutter_test:
