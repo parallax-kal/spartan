@@ -21,7 +21,7 @@ class AddCribScreen extends StatefulWidget {
 
 class _AddCribScreenState extends State<AddCribScreen> {
   late StringTagController _stringTagController;
-
+  late TextEditingController _nameController;
   List<Map<String, dynamic>> accesses = [];
 
   String renderStatus(ACCESSSTATUS? status) {
@@ -35,10 +35,13 @@ class _AddCribScreenState extends State<AddCribScreen> {
   @override
   void initState() {
     super.initState();
+    _nameController = TextEditingController(
+      text: widget.crib?.name ?? '',
+    );
     accesses = widget.crib?.access.map((access) {
           return {
             'user': access.user,
-            'status': renderStatus(access.status),
+            'status': access.status,
           };
         }).toList() ??
         [];
@@ -62,8 +65,6 @@ class _AddCribScreenState extends State<AddCribScreen> {
     super.dispose();
     _stringTagController.dispose();
   }
-
-  final TextEditingController _nameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +112,6 @@ class _AddCribScreenState extends State<AddCribScreen> {
               const SizedBox(height: 6),
               TextFormField(
                 controller: _nameController,
-                initialValue: widget.crib?.name,
                 decoration: const InputDecoration(
                   contentPadding: EdgeInsets.symmetric(
                     horizontal: 18,

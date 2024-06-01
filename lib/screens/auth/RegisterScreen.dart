@@ -48,7 +48,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               right: 20,
               bottom: 5,
             ),
-            height: MediaQuery.of(context).size.height - 19,
             child: Form(
               key: _formKey,
               child: Column(
