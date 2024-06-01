@@ -458,13 +458,17 @@ class AcceptedPopover extends StatelessWidget {
                 try {
                   await http
                       .get(Uri.parse('http://${crib.ipaddress}:8000/check'));
-                  Navigator.of(context).pop();
-                  GoRouter.of(context).push('/stream/preview');
+                  GoRouter.of(context).push('/stream/preview', extra: crib);
                 } catch (error) {
+                  await CribService.updateCrib(crib.id, {
+                    'status': 'INACTIVE',
+                  });
                   toastService.showErrorToast('Crib is inactive');
+                  Navigator.pop(context);
                 }
               } else {
                 toastService.showErrorToast('Crib is inactive');
+                Navigator.pop(context);
               }
             },
             child: const Row(

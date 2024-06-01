@@ -226,7 +226,7 @@ class NotificationController extends ChangeNotifier {
     //     backgroundColor: Colors.blueAccent,
     //     textColor: Colors.white,
     //     fontSize: 16);
-    debugPrint('Native Token:"$token"');
+    // debugPrint('Native Token:"$token"');
 
     _instance._nativeToken = token;
     _instance.notifyListeners();
@@ -369,10 +369,10 @@ class NotificationController extends ChangeNotifier {
       try {
         return await AwesomeNotificationsFcm().requestFirebaseAppToken();
       } catch (exception) {
-        debugPrint('$exception');
+        // debugPrint('$exception');
       }
     } else {
-      debugPrint('Firebase is not available on this project');
+      // debugPrint('Firebase is not available on this project');
     }
     return '';
   }

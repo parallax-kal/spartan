@@ -57,8 +57,8 @@ class NotificationService {
         },
         body: jsonEncode(body),
       );
-    } on Exception catch (e) {
-      print("Error with sending push notification - $e");
+    } on Exception  {
+      // print("Error with sending push notification - $e");
     }
   }
 

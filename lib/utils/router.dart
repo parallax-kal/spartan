@@ -341,9 +341,10 @@ final GoRouter router = GoRouter(
           path: '/stream/preview',
           parentNavigatorKey: shellNavigatorKey,
           pageBuilder: (context, state) {
+            Crib crib = state.extra as Crib;
             return CustomTransitionPage(
               key: state.pageKey,
-              child: const PreviewStreamScreen(),
+              child:  PreviewStreamScreen(crib: crib,),
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
                 return SlideTransition(

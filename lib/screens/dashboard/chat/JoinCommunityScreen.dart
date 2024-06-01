@@ -154,10 +154,10 @@ class _JoinCommunityScreenState extends State<JoinCommunityScreen> {
                                         'Joined Spartan Global Communty');
                                     GoRouter.of(context).push('/chat/messages');
                                   } catch (error) {
-                                    print(error);
-                                    // String message =
-                                    //     displayErrorMessage(error);
-                                    // toastService.showErrorToast(message);
+                                    // print(error);
+                                    String message =
+                                        displayErrorMessage(error);
+                                    toastService.showErrorToast(message);
                                   } finally {
                                     loadingService.hide();
                                     Navigator.of(context).pop();
