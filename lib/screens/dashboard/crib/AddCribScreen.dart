@@ -22,7 +22,7 @@ class AddCribScreen extends StatefulWidget {
 class _AddCribScreenState extends State<AddCribScreen> {
   late StringTagController _stringTagController;
   late TextEditingController _nameController;
-  List<Map<String, dynamic>> accesses = [];
+  List<Access> accesses = [];
 
   String renderStatus(ACCESSSTATUS? status) {
     if (status == null) {
@@ -38,22 +38,13 @@ class _AddCribScreenState extends State<AddCribScreen> {
     _nameController = TextEditingController(
       text: widget.crib?.name ?? '',
     );
-    accesses = widget.crib?.access.map((access) {
-          return {
-            'user': access.user,
-            'status': access.status,
-          };
-        }).toList() ??
-        [];
+    accesses = widget.crib?.access ??  [];
     _stringTagController = StringTagController();
     _stringTagController.addListener(() {
       accesses = _stringTagController.getTags!.map((email) {
         final access = accesses.firstWhere(
-          (element) => element['user'] == email,
-          orElse: () => {
-            'user': email,
-            'accepted': false,
-          },
+          (element) => element.user == email,
+          orElse: () => Access(user: email, accepted: false),
         );
         return access;
       }).toList();
@@ -211,7 +202,7 @@ class _AddCribScreenState extends State<AddCribScreen> {
                                                   .onTagRemoved(email);
                                               setState(() {
                                                 accesses.removeWhere((access) =>
-                                                    access['user'] == email);
+                                                    access.user == email);
                                               });
                                             },
                                           ),
@@ -238,8 +229,8 @@ class _AddCribScreenState extends State<AddCribScreen> {
                                         setState(() {
                                           final access = accesses.firstWhere(
                                               (element) =>
-                                                  element['user'] == email);
-                                          access['status'] = value;
+                                                  element.user == email);
+                                          access.status = value;
                                         });
                                       },
                                       child: Container(
@@ -264,8 +255,8 @@ class _AddCribScreenState extends State<AddCribScreen> {
                                         child: Text(
                                           renderStatus(accesses.firstWhere(
                                               (element) =>
-                                                  element['user'] ==
-                                                  email)['status']),
+                                                  element.user ==
+                                                  email).status),
                                           style: const TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.w500,
@@ -306,27 +297,29 @@ class _AddCribScreenState extends State<AddCribScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  OutlinedButton(
-                    onPressed: () {
-                      GoRouter.of(context).push('/stream');
-                    },
-                    style: OutlinedButton.styleFrom(
-                      side:
-                          const BorderSide(color: Color(0XFF002E58), width: 2),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      minimumSize: const Size(103, 32),
-                    ),
-                    child: const Text(
-                      'Skip for later',
-                      style: TextStyle(
-                        color: Color(0XFF002E58),
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                  widget.crib == null
+                      ? OutlinedButton(
+                          onPressed: () {
+                            GoRouter.of(context).push('/stream');
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                                color: Color(0XFF002E58), width: 2),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            minimumSize: const Size(103, 32),
+                          ),
+                          child: const Text(
+                            'Skip for later',
+                            style: TextStyle(
+                              color: Color(0XFF002E58),
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        )
+                      : Container(),
                   const SizedBox(
                     width: 15,
                   ),
@@ -341,6 +334,8 @@ class _AddCribScreenState extends State<AddCribScreen> {
                     onPressed: () async {
                       try {
                         String name = _nameController.text.trim();
+                        String operation =
+                            widget.crib != null ? 'Updat' : 'Add';
                         if (name.isEmpty) {
                           toastService.showErrorToast('Please add a name');
                           return;
@@ -351,59 +346,49 @@ class _AddCribScreenState extends State<AddCribScreen> {
                         }
 
                         for (var access in accesses) {
-                          if (!access.containsKey('status')) {
+                          if (access.status == null) {
                             toastService.showErrorToast('Please add roles');
                             return;
                           }
                         }
 
                         if (currentCribIdNotifier.cribId == null) {
-                          toastService.showErrorToast('Error adding crib');
+                          toastService
+                              .showErrorToast('Error ${operation}ing crib');
                           return;
                         }
 
-                        List<Access> accessList = accesses
-                            .map((access) => Access(
-                                  user: access['user'],
-                                  status: access['status'] == 'Operator'
-                                      ? ACCESSSTATUS.OPERATOR
-                                      : ACCESSSTATUS.GUEST,
-                                ))
-                            .toList();
                         await CribService.updateCrib(
                             currentCribIdNotifier.cribId!, {
                           'name': _nameController.text,
-                          'access': FieldValue.arrayUnion(
-                            accessList
-                                .map(
-                                  (access) => access.toJson(),
-                                )
-                                .toList(),
+                          'access': FieldValue.arrayUnion(accesses
+                          .map((access) => access.toJson()).toList()
                           ),
                         });
                         String message = '';
                         if (name.isNotEmpty) {
-                          message = 'Updated crib $name';
+                          message = '$operation crib $name';
                         }
                         if (accesses.isNotEmpty) {
                           if (message.isNotEmpty) {
                             message += ' and ';
                           } else {
-                            message = 'Updated';
+                            message = operation;
                           }
                           message += ' access to ${accesses.length} users';
                         }
                         await LogService.addUserLog(
                           Log(
-                            title: 'Updated Crib',
+                            title: '$operation Crib',
                             description: message,
                             createdAt: DateTime.now(),
                           ),
                         );
                         GoRouter.of(context).push('/stream');
-                        toastService
-                            .showSuccessToast('Crib added successfully!');
+                        toastService.showSuccessToast(
+                            'Crib ${operation}ed successfully!');
                       } catch (error) {
+                        print(error);
                         toastService.showErrorToast('Error adding crib');
                       }
                     },

@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:spartan/constants/firebase.dart';
 import 'package:spartan/models/Crib.dart';
+import 'package:spartan/notifiers/CurrentCribIdNotifier.dart';
 import 'package:spartan/services/crib.dart';
 import 'package:popover/popover.dart';
 import 'package:spartan/services/loading.dart';
@@ -413,6 +415,8 @@ class AcceptedPopover extends StatelessWidget {
   Widget build(BuildContext context) {
     LoadingService loadingService = LoadingService(context);
     ToastService toastService = ToastService(context);
+    CurrentCribIdNotifier currentCribIdNotifier =
+        Provider.of<CurrentCribIdNotifier>(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: ListView(
@@ -425,6 +429,7 @@ class AcceptedPopover extends StatelessWidget {
               : InkWell(
                   onTap: () {
                     Navigator.of(context).pop();
+                    currentCribIdNotifier.setCribId(crib.id);
                     GoRouter.of(context).push('/crib/add', extra: crib);
                   },
                   child: const Row(

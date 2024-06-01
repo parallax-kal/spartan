@@ -166,6 +166,7 @@ class _ScanQrcodeScreenState extends State<ScanQrcodeScreen> {
         GoRouter.of(context).push('/crib/result', extra: {
           'result': result,
         });
+        
       });
     }
 
