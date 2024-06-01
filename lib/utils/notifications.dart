@@ -131,7 +131,7 @@ class NotificationController extends ChangeNotifier {
   @pragma('vm:entry-point')
   static Future<void> onActionReceivedMethod(
       ReceivedAction receivedAction) async {
-    print(receivedAction);
+    // print(receivedAction);
     if (receivedAction.actionType == ActionType.SilentAction ||
         receivedAction.actionType == ActionType.SilentBackgroundAction) {
       // For background actions, you must hold the execution until the end
@@ -160,9 +160,9 @@ class NotificationController extends ChangeNotifier {
   static Future<void> onActionReceivedImplementationMethod(
       ReceivedAction receivedAction) async {
     rootNavigatorKey.currentState?.pushNamedAndRemoveUntil(
-        '/notification-page',
+        '/notifications',
         (route) =>
-            (route.settings.name != '/notification-page') || route.isFirst,
+            (route.settings.name != '/notifications') || route.isFirst,
         arguments: receivedAction);
   }
 
