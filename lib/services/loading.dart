@@ -17,10 +17,12 @@ class LoadingService {
       msg: message,
       msgColor: const Color(0XFF0C3D6B),
       backgroundColor: Colors.white,
-      progressBgColor: Colors.black.withOpacity(0.5),
+      progressBgColor: Colors.white,
+      progressValueColor: Color(0XFFa3a3a3),
       surfaceTintColor: Colors.white,
       barrierColor: Colors.black.withOpacity(0.7),
       valuePosition: ValuePosition.center,
+      
     );
   }
 

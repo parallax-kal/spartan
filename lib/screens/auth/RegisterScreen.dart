@@ -469,7 +469,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               token = await NotificationController
                                   .requestFirebaseToken();
                             }
-                            
+
                             if (!user.exists) {
                               await firestore
                                   .collection('users')
