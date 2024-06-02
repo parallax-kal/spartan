@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:spartan/models/Notification.dart';
 import 'package:spartan/services/notification.dart';
@@ -23,7 +24,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Navigator.of(context).pop();
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            } else {
+              GoRouter.of(context).push('/');
+            }
           },
         ),
         centerTitle: true,
@@ -60,10 +65,12 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   );
                 }
 
-                List<Map<DateTime, List<ANotification>>> sortedNotifications = sortItems(snapshot.data!);
+                List<Map<DateTime, List<ANotification>>> sortedNotifications =
+                    sortItems(snapshot.data!);
 
                 return SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                   child: Column(
                     children: sortedNotifications.map((sortedNoti) {
                       DateTime wholeday = sortedNoti.keys.first;
@@ -72,7 +79,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           Padding(
                             padding: const EdgeInsets.only(top: 10, bottom: 5),
                             child: Text(
-                              DateFormat('d MMM${wholeday.year != DateTime.now().year ? ' yyyy' : ''}')
+                              DateFormat(
+                                      'd MMM${wholeday.year != DateTime.now().year ? ' yyyy' : ''}')
                                   .format(wholeday),
                               style: const TextStyle(
                                 color: Colors.grey,
@@ -100,7 +108,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                   const SizedBox(width: 10),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           notification.title,

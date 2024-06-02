@@ -192,11 +192,15 @@ class _BottomNavigationContainerState extends State<BottomNavigationContainer> {
                 height: 74,
                 color: Colors.transparent,
                 index: _currentIndex,
-                items: tabs.map((tab) {
+                items: tabs.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final tab = entry.value;
                   return CurvedNavigationBarItem(
                     child: tab.initialLocation.paths.contains(widget.path)
                         ? tab.activeChild
-                        : tab.child,
+                        : index == _currentIndex
+                            ? tab.activeChild
+                            : tab.child,
                     label: tab.label,
                   );
                 }).toList(),
