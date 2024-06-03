@@ -242,15 +242,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               SharedPreferences prefs =
                                   await SharedPreferences.getInstance();
                               await prefs.setBool('isFirstTime', false);
-
-                              String token =
-                                  NotificationController().firebaseToken;
-                              if (token.isEmpty) {
-                                await NotificationController
-                                    .displayNotificationRationale();
-                                token = await NotificationController
-                                    .requestFirebaseToken();
-                              }
+                              
+                              await NotificationController
+                                  .displayNotificationRationale();
+                              String token = await NotificationController
+                                  .requestFirebaseToken();
 
                               await firestore
                                   .collection('users')
@@ -342,14 +338,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 .doc(userCredential.user!.uid)
                                 .get();
 
-                            String token =
-                                NotificationController().firebaseToken;
-                            if (token.isEmpty) {
-                              await NotificationController
-                                  .displayNotificationRationale();
-                              token = await NotificationController
-                                  .requestFirebaseToken();
-                            }
+                            await NotificationController
+                                .displayNotificationRationale();
+                            String token = await NotificationController
+                                .requestFirebaseToken();
                             if (!user.exists) {
                               await firestore
                                   .collection('users')
@@ -461,14 +453,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 .doc(userCredential.user!.uid)
                                 .get();
 
-                            String token =
-                                NotificationController().firebaseToken;
-                            if (token.isEmpty) {
-                              await NotificationController
-                                  .displayNotificationRationale();
-                              token = await NotificationController
-                                  .requestFirebaseToken();
-                            }
+                            await NotificationController
+                                .displayNotificationRationale();
+                            String token = await NotificationController
+                                .requestFirebaseToken();
 
                             if (!user.exists) {
                               await firestore

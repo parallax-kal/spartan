@@ -28,7 +28,6 @@ class ANotification implements HasCreatedAt {
       priority: json['priority'] ?? 'high',
       image: json['image'],
       createdAt: json['createdAt'].toDate(),
-      token: json['token'],
     );
   }
 

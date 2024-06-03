@@ -203,14 +203,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                 return;
                               }
 
-                              String token =
-                                  NotificationController().firebaseToken;
-                              if (token.isEmpty) {
-                                await NotificationController
-                                    .displayNotificationRationale();
-                                token = await NotificationController
-                                    .requestFirebaseToken();
-                              }
+                              // String token =
+                              //     NotificationController().firebaseToken;
+                              // if (token.isEmpty) {
+                              await NotificationController
+                                  .displayNotificationRationale();
+                              String token = await NotificationController
+                                  .requestFirebaseToken();
+                              // }
 
                               await firestore
                                   .collection('users')
@@ -296,14 +296,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               return;
                             }
 
-                            String token =
-                                NotificationController().firebaseToken;
-                            if (token.isEmpty) {
-                              await NotificationController
+                            await NotificationController
                                   .displayNotificationRationale();
-                              token = await NotificationController
+                              String token = await NotificationController
                                   .requestFirebaseToken();
-                            }
 
                             await firestore
                                 .collection('users')
@@ -419,15 +415,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               return;
                             }
 
-                            String token =
-                                NotificationController().firebaseToken;
-                            if (token.isEmpty) {
-                              await NotificationController
+                           await NotificationController
                                   .displayNotificationRationale();
-                              token = await NotificationController
+                              String token = await NotificationController
                                   .requestFirebaseToken();
-                            }
-                            
+
                             await firestore
                                 .collection('users')
                                 .doc(userCredential.user!.uid)
