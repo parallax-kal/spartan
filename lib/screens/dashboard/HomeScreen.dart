@@ -200,95 +200,90 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              Expanded(
-                child: Column(
-                  children: [
-                    currentSpartanUser.currentSpartanUser?.community == true
-                        ? Container()
-                        : Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color:
-                                      const Color(0xFF84AFEF).withOpacity(0.3),
-                                  offset: const Offset(0, 4),
-                                  blurRadius: 24,
-                                  spreadRadius: 0,
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  children: [
-                                    SvgPicture.asset(
-                                        'assets/svg/ask_customer.svg'),
-                                    const SizedBox(
-                                      height: 5,
+              Column(
+                children: [
+                  currentSpartanUser.currentSpartanUser?.community == true
+                      ? Container()
+                      : Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF84AFEF).withOpacity(0.3),
+                                offset: const Offset(0, 4),
+                                blurRadius: 24,
+                                spreadRadius: 0,
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                children: [
+                                  SvgPicture.asset(
+                                      'assets/svg/ask_customer.svg'),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  const Text(
+                                    'Join chat room for parenting',
+                                    style: TextStyle(
+                                      color: Color(0xFF747373),
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w400,
                                     ),
-                                    const Text(
-                                      'Join chat room for parenting',
-                                      style: TextStyle(
-                                        color: Color(0xFF747373),
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w400,
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  const Text(
+                                    'Ask other parents and baby\ncare through our chat room',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 16,
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      GoRouter.of(context).push('/chat');
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF002E58),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(6),
                                       ),
                                     ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    const Text(
-                                      'Ask other parents and baby\ncare through our chat room',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 16,
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        GoRouter.of(context).push('/chat');
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            const Color(0xFF002E58),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(6),
-                                        ),
-                                      ),
-                                      child: const Row(
-                                        children: [
-                                          Text(
-                                            'Join Chat room',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w700,
-                                              fontSize: 11,
-                                            ),
-                                          ),
-                                          Icon(
-                                            Icons.keyboard_arrow_right,
+                                    child: const Row(
+                                      children: [
+                                        Text(
+                                          'Join Chat room',
+                                          style: TextStyle(
                                             color: Colors.white,
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                )
-                              ],
-                            ),
-                          )
-                  ],
-                ),
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 11,
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.keyboard_arrow_right,
+                                          color: Colors.white,
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        )
+                ],
               ),
             ],
           ),
