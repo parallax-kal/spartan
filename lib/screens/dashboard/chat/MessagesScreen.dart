@@ -350,14 +350,14 @@ class ChatBubble extends StatelessWidget {
         if (!isSender)
           if (profile != null)
             CircleAvatar(
-              radius: 48,
+              radius: 20,
               backgroundImage: NetworkImage(profile!),
             ),
         if (profile == null)
           const CircleAvatar(
             child: Icon(Icons.person),
           ),
-        if (isSender) const SizedBox(width: 10),
+        const SizedBox(width: 10),
         MessageRender(message: message, type: type, isSender: isSender),
         if (!isSender) const SizedBox(width: 10),
         if (!isSender)
@@ -421,7 +421,7 @@ class MessageRender extends StatelessWidget {
             : Container(
                 padding: EdgeInsets.only(
                   top: 12,
-                  bottom: isSender ? 12 : 30,
+                  bottom: isSender ? 12 : 14,
                   left: 15,
                   right: isSender ? 30 : 12,
                 ),

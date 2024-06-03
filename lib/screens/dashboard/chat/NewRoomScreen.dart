@@ -244,70 +244,70 @@ class _NewConversationScreenState extends State<NewConversationScreen> {
                               );
                             }
                             if (snapshot.data == null ||
-                                snapshot.data!.docs.isEmpty ) {
+                                snapshot.data!.docs.isEmpty) {
                               return const Center(
                                 child: Text('No users found'),
                               );
                             }
-                            return Expanded(
-                              child: ListView.builder(
-                                itemCount: snapshot.data!.docs.length,
-                                itemBuilder: (context, index) {
-                                  SpartanUser spartanUser =
-                                      SpartanUser.fromJson({
-                                    'id': snapshot.data!.docs[index].id,
-                                    ...snapshot.data!.docs[index].data(),
-                                  });
+                            List<SpartanUser> users = snapshot.data!.docs
+                                .map((doc) => SpartanUser.fromJson({
+                                      'id': doc.id,
+                                      ...doc.data() as Map<String, dynamic>,
+                                    }))
+                                .toList();
 
-                                  return ListTile(
-                                    onTap: () {
-                                      setState(() {
-                                        if (selectedUsers
-                                            .contains(spartanUser.id)) {
-                                          selectedUsers.remove(spartanUser.id);
-                                        } else {
-                                          selectedUsers.add(spartanUser.id);
-                                        }
-                                      });
-                                    },
-                                    title: Text(
-                                      spartanUser.fullname,
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 13,
-                                      ),
+                            return ListView.builder(
+                              itemCount: users.length,
+                              itemBuilder: (context, index) {
+                                SpartanUser spartanUser = users[index];
+
+                                return ListTile(
+                                  onTap: () {
+                                    setState(() {
+                                      if (selectedUsers
+                                          .contains(spartanUser.id)) {
+                                        selectedUsers.remove(spartanUser.id);
+                                      } else {
+                                        selectedUsers.add(spartanUser.id);
+                                      }
+                                    });
+                                  },
+                                  title: Text(
+                                    spartanUser.fullname,
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13,
                                     ),
-                                    subtitle: Text(
-                                      spartanUser.email,
-                                      style: const TextStyle(
-                                        color: Color(0XFF707070),
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 12,
-                                      ),
+                                  ),
+                                  subtitle: Text(
+                                    spartanUser.email,
+                                    style: const TextStyle(
+                                      color: Color(0XFF707070),
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12,
                                     ),
-                                    trailing: SvgPicture.asset(
-                                        selectedUsers.contains(spartanUser.id)
-                                            ? 'assets/icons/checked.svg'
-                                            : 'assets/icons/circle.svg'),
-                                    leading: CircleAvatar(
-                                      backgroundImage:
-                                          spartanUser.profile != null
-                                              ? NetworkImage(
-                                                  spartanUser.profile!,
-                                                )
-                                              : null,
-                                      child: spartanUser.profile == null
-                                          ? SvgPicture.asset(
-                                              'assets/icons/profile/profile_outlined.svg',
-                                              width: 50,
-                                              height: 50,
-                                            )
-                                          : null,
-                                    ),
-                                  );
-                                },
-                              ),
+                                  ),
+                                  trailing: SvgPicture.asset(
+                                      selectedUsers.contains(spartanUser.id)
+                                          ? 'assets/icons/checked.svg'
+                                          : 'assets/icons/circle.svg'),
+                                  leading: CircleAvatar(
+                                    backgroundImage: spartanUser.profile != null
+                                        ? NetworkImage(
+                                            spartanUser.profile!,
+                                          )
+                                        : null,
+                                    child: spartanUser.profile == null
+                                        ? SvgPicture.asset(
+                                            'assets/icons/profile/profile_outlined.svg',
+                                            width: 50,
+                                            height: 50,
+                                          )
+                                        : null,
+                                  ),
+                                );
+                              },
                             );
                         }
                       },
