@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spartan/services/crib.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -56,7 +55,7 @@ class _PreviewStreamScreenState extends State<PreviewStreamScreen> {
               children: [
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
-                  height: 300,
+                  height: 400,
                   child: WebViewWidget(controller: spartancamera),
                 ),
                 Positioned(
